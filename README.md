@@ -1,3 +1,3 @@
 # Fashion-Forge
-Online Clothing website built using MERN STACK
+Online Clothing website built using MERN STACK innostack
 
