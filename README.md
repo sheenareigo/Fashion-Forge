@@ -2,6 +2,6 @@
 
 Online Clothing website.
 =======
-Online Clothing website built using MERN STACK innostack
+Online Clothing website built using MERN
 
 
