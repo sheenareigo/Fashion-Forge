@@ -10,7 +10,6 @@ router.route('/:id').put(updateUser);
 router.route('/:id').delete(deleteUser);
 router.route('/register').post(Register);
 router.route('/login').post(Login);
-//router.route('/:id/favorite/:favorite').post(addFavorite);
-//router.route('/:id/favorite/:favorite').delete(deleteFavorite);
+
 
 module.exports = router;
