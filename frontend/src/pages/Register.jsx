@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, FormControl, FormLabel, FormErrorMessage, InputGroup, Input, Select, Text, InputRightElement, Button, Checkbox, useToast } from '@chakra-ui/react';
@@ -27,48 +28,135 @@ const Register = () => {
       country: '',
       terms: false
     },
-    onSubmit: values => {
-      if (values.phone.length === 11) {
-        Signup(values.firstName, values.lastName, values.email, values.password, values.street, values.city,
-               values.province, values.zip, values.country, values.phone)
-          .then(result => {
-            console.log("return0");
-            console.log(result.data);
-            console.log("return1");
-            if (result.data.newUser) {
-              navigate('/login');
-              toast({
-                title: 'Welcome to FashionForge!',
-                description: 'You have successfully registered.',
-                status: 'success',
-                duration: 2000,
-                isClosable: true
-              });
-            } else {
-              resetForm();
-              toast({
-                title: 'Error!',
-                description: 'This email is already in use.',
-                status: 'error',
-                duration: 2000,
-                isClosable: true
-              });
-            }
+    
+   onSubmit: values => {
+  
+  const phonePattern = /^\+1[0-9]{10}$/;
+  const namePattern = /^[A-Za-z]+$/;
+  const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#_])[A-Za-z\d@#_]{8,}$/;
+  const canadaPostalCodePattern = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  
+  // Validation flags
+  let isValid = true;
+  let errorMessage = '';
+
+  // Validate Password
+  if (!values.password) {
+    errorMessage = 'Password is required.';
+    isValid = false;
+  } else if (values.password.length < 8) {
+    errorMessage = 'Password must be at least 8 characters long.';
+    isValid = false;
+  } else if (!/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#_])[A-Za-z\d@#_]{8,}$/.test(values.password)) {
+    errorMessage = 'Password must contain at least one letter, one number, and one of the following: #, _, @';
+    isValid = false;
+  }
+ // Validate Postal Code
+  if (!values.zip) {
+    errorMessage = 'Postal code is required.';
+    isValid = false;
+  } else if (!canadaPostalCodePattern.test(values.zip)) {
+    errorMessage = 'Postal code is invalid';
+    isValid = false;
+  }
+  // Validate first name
+  if (!values.firstName) {
+    errorMessage = 'First name is required.';
+    isValid = false;
+  } else if (!namePattern.test(values.firstName)) {
+    errorMessage = 'First name must contain only alphabets.';
+    isValid = false;
+  }
+  // Validate last name
+  if (!values.lastName) {
+    errorMessage = 'Last name is required.';
+    isValid = false;
+  } else if (!namePattern.test(values.lastName)) {
+    errorMessage = 'Last name must contain only alphabets.';
+    isValid = false;
+  }
+   // Validate city
+  if (!values.city) {
+    errorMessage = 'City name is required.';
+    isValid = false;
+  } else if (!namePattern.test(values.city)) {
+    errorMessage = 'City name must contain only alphabets.';
+    isValid = false;
+  }
+
+  // Validate province
+  if (!values.province) {
+    errorMessage = 'Province name is required.';
+    isValid = false;
+  } else if (!namePattern.test(values.province)) {
+    errorMessage = 'Province name must contain only alphabets.';
+    isValid = false;
+  }
+
+  // Validate phone number
+  if (!phonePattern.test(values.phone)) {
+    errorMessage = 'Please enter a valid phone number. It must be exactly 10 digits.';
+    isValid = false;
+  }
+  // Validate Email ID
+  if (!values.email) {
+    errorMessage = 'Email ID is required.';
+    isValid = false;
+  } else if (!emailPattern.test(values.email)) {
+    errorMessage = 'Email ID is invalid';
+    isValid = false;
+  }
+  if (isValid) {
+    Signup(values.firstName, values.lastName, values.email, values.password, values.street, values.city,
+           values.province, values.zip, values.country, values.phone)
+      .then(result => {
+        console.log("return0");
+        console.log(result.data);
+        console.log("return1");
+        if (result.data.newUser) {
+          navigate('/login');
+          toast({
+            title: 'Welcome to FashionForge!',
+            description: 'You have successfully registered.',
+            status: 'success',
+            duration: 2000,
+            isClosable: true
+          });
+        } else {
+          resetForm();
+          toast({
+            title: 'Error!',
+            description: 'This email is already registered.',
+            status: 'error',
+            duration: 2000,
+            isClosable: true
+          });
+        }
+       }) .catch(error => {
+            toast({
+              title: 'Error!',
+              description: 'An error occurred during registration.',
+              status: 'error',
+              duration: 2000,
+              isClosable: true
+            });
           });
       } else {
         toast({
           title: 'Error!',
-          description: 'Please enter a valid phone number.',
+          /*description: errorMessage,*/
+          description: 'This email is already registered.',
           status: 'error',
           duration: 2000,
           isClosable: true
         });
       }
+    },});
+  
 
-    },
-    //validationSchema: RegisterValidations
-  });
-
+  
+ 
   return (
     <Box
       display='flex'
@@ -77,13 +165,15 @@ const Register = () => {
       width='100vw'
       mt={5}
     >
+      <Box border='1px solid #ccc' borderRadius='md' p={4}>
       <Box width={{ base: '100vw', sm: '500px' }} p={2}>
-        <Text textAlign='center' color={'facebook.500'} fontSize={32} fontWeight={600} mb={10} >Register</Text>
+        <Text textAlign='center' color={'facebook.500'} fontSize={32} fontWeight={600} mb={10} >Registration Form </Text>
         <Box display='flex' flexDirection={{ base: 'column', sm: 'row' }}>
-          <FormControl mt={3} width={{ base: '100%', sm: '50%' }} me={{ base: 0, sm: 2 }} isInvalid={touched.firstName && errors.firstName} >
+          <FormControl isRequired mt={3} width={{ base: '100%', sm: '50%' }} me={{ base: 0, sm: 2 }} isInvalid={touched.firstName && errors.firstName} >
             <FormLabel fontSize={20} >First Name</FormLabel>
             <Input
               name='firstName'
+              pattern='[A-Za-z]+'
               placeholder='Enter First Name'
               onChange={handleChange}
               onBlur={handleBlur}
@@ -91,7 +181,7 @@ const Register = () => {
             />
             {touched.firstName && <FormErrorMessage>{errors.firstName}</FormErrorMessage>}
           </FormControl>
-          <FormControl mt={3} width={{ base: '100%', sm: '50%' }} isInvalid={touched.lastName && errors.lastName} >
+          <FormControl isRequired mt={3} width={{ base: '100%', sm: '50%' }} isInvalid={touched.lastName && errors.lastName} >
             <FormLabel fontSize={20} >Last Name</FormLabel>
             <Input
               name='lastName'
@@ -103,7 +193,7 @@ const Register = () => {
             {touched.lastName && <FormErrorMessage>{errors.lastName}</FormErrorMessage>}
           </FormControl>
         </Box>
-        <FormControl mt={3} isInvalid={touched.email && errors.email} >
+        <FormControl isRequired mt={3} isInvalid={touched.email && errors.email} >
           <FormLabel fontSize={20} >Email</FormLabel>
           <Input
             name='email'
@@ -114,7 +204,7 @@ const Register = () => {
           />
           {touched.email && <FormErrorMessage>{errors.email}</FormErrorMessage>}
         </FormControl>
-        <FormControl mt={3} isInvalid={touched.phone && errors.phone} >
+        <FormControl isRequired mt={3} isInvalid={touched.phone && errors.phone} >
           <FormLabel fontSize={20} >Phone</FormLabel>
           <Input
             type='tel'
@@ -129,7 +219,7 @@ const Register = () => {
           {touched.phone && <FormErrorMessage>{errors.phone}</FormErrorMessage>}
         </FormControl>
         <FormControl isRequired mt={3} isInvalid={touched.street && errors.street}>
-          <FormLabel>Street Address</FormLabel>
+          <FormLabel fontSize={20} >Street Address</FormLabel>
           <Input
             type='text'
             name='street'
@@ -140,7 +230,7 @@ const Register = () => {
           />
         </FormControl>
         <FormControl isRequired mt={3} isInvalid={touched.city && errors.city}>
-          <FormLabel>City</FormLabel>
+          <FormLabel fontSize={20} >City</FormLabel>
           <Input
             type='text'
             name='city'
@@ -151,7 +241,7 @@ const Register = () => {
           />
         </FormControl>
         <FormControl isRequired mt={3} isInvalid={touched.province && errors.province}>
-          <FormLabel>Province</FormLabel>
+          <FormLabel fontSize={20} >Province</FormLabel>
           <Input
             type='text'
             name='province'
@@ -162,7 +252,7 @@ const Register = () => {
           />
         </FormControl>
         <FormControl isRequired mt={3} isInvalid={touched.zip && errors.zip}>
-          <FormLabel>Postal/ZIP Code</FormLabel>
+          <FormLabel fontSize={20} >Postal/ZIP Code</FormLabel>
           <Input
             type='text'
             name='zip'
@@ -172,16 +262,16 @@ const Register = () => {
             onBlur={handleBlur}
           />
         </FormControl>
-        <FormControl isRequired mt={3} isInvalid={touched.country && errors.country}>
-          <FormLabel>Country</FormLabel>
+       {/* <FormControl isRequired mt={3} isInvalid={touched.country && errors.country}>
+          <FormLabel fontSize={20} >Country</FormLabel>
           <Select name='country' placeholder='Select Country' onChange={handleChange} value={values.country} onBlur={handleBlur}>
             <option value='USA'>United States</option>
             <option value='CAN'>Canada</option>
             <option value='GBR'>United Kingdom</option>
             <option value='In'>India</option>
           </Select>
-        </FormControl>
-        <FormControl mt={3} isInvalid={touched.password && errors.password} >
+        </FormControl>*/}
+        <FormControl isRequired mt={3} isInvalid={touched.password && errors.password} >
           <FormLabel fontSize={20} >Password</FormLabel>
           <InputGroup size='md'>
             <Input
@@ -207,7 +297,7 @@ const Register = () => {
         <Text my={3} width='100%' textAlign='center' >or</Text>
         <Button width='100%' variant='outline' colorScheme='facebook' onClick={() => navigate('/login')} >Login</Button>
       </Box>
-    </Box>
+    </Box></Box>
   )
 }
 
