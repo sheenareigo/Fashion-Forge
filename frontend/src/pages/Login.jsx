@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { Box, FormControl, FormLabel, InputGroup, Input, Text, InputRightElement, Button, Checkbox, useToast } from '@chakra-ui/react';
+import { Box, FormControl, FormLabel, InputGroup, Input, Text, InputRightElement, Button, Checkbox,Link, useToast } from '@chakra-ui/react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useFormik } from 'formik';
 
@@ -121,6 +121,11 @@ const Login = () => {
         <Checkbox value={remember} onChange={() => setRemember(!remember)} mt={5} >Remember me</Checkbox>
         <Button mt={5} width='100%' variant='solid' colorScheme='facebook' disabled={!isValid} onClick={handleSubmit} >Login</Button>
         <br />
+        <Box textAlign='center' mt={2}>
+          <Link color='blue.500' onClick={() => navigate('/forgot-password')}>
+            Forgot Password?
+          </Link>
+        </Box>
         <Text my={3} width='100%' textAlign='center' >or</Text>
         <Button width='100%' variant='outline' colorScheme='facebook' onClick={() => navigate('/register')} >Register</Button>
       </Box>
