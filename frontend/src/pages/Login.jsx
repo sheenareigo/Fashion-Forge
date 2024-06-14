@@ -26,7 +26,8 @@ const Login = () => {
     onSubmit: values => {
       LogIn(values.email, values.password)
         .then((result) => {
-            if (result.data.currentUser) {
+            console.log(result.status);
+            if (result.data.currentUser && result.status === 200) {
               setCurrentUser(result.data.currentUser._id);
               toast({
                 title: 'Logged in.',
@@ -41,16 +42,39 @@ const Login = () => {
                 } else {
                   removeCookie('currentUser', { path: '/' });
                 };
-            } else {
+            }
+        }).catch((error) => {
+          if (error.response) {
+            const { status } = error.response;
+            if (status === 401) {
               resetForm();
               toast({
                 title: 'Error!',
                 description: 'Wrong email or password.',
                 status: 'error',
                 duration: 2000,
-                isClosable: true
+                isClosable: true,
               });
-            }
+          } else if (status === 400) {
+              resetForm();
+              toast({
+                title: 'Error!',
+                description: 'Email and password are required.',
+                status: 'error',
+                duration: 2000,
+                isClosable: true,
+              });
+          } else {
+            resetForm();
+            toast({
+              title: 'Error!',
+              description: 'Internal server error.',
+              status: 'error',
+              duration: 2000,
+              isClosable: true
+            });
+          }
+        }
         });
     },
     //validationSchema: LoginValidations
@@ -64,6 +88,7 @@ const Login = () => {
       width='100vw'
       height='75vh'
     >
+	      <Box border='1px solid #ccc' borderRadius='md' p={4}>
       <Box width={{ base: '100vw', sm: '500px' }} p={2}>
         <Text textAlign='center' color={'facebook.500'} fontSize={32} fontWeight={600} mb={10} >Login</Text>
         <FormControl mt={3} >
@@ -99,7 +124,7 @@ const Login = () => {
         <Text my={3} width='100%' textAlign='center' >or</Text>
         <Button width='100%' variant='outline' colorScheme='facebook' onClick={() => navigate('/register')} >Register</Button>
       </Box>
-    </Box>
+    </Box></Box>
   )
 }
 
