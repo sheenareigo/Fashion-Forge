@@ -26,3 +26,10 @@ export const Login = async (email, password)=>{
         password
     });
 };
+
+export const VerifyEmail = async (email) =>{
+    console.log(process.env.REACT_APP_API_BASE_URL+" from verify email auth services");
+    return await axios.post(`${process.env.REACT_APP_API_BASE_URL}/users/forgot-password`,{
+        email  
+    });
+};
