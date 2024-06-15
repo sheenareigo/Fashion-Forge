@@ -145,8 +145,8 @@ const Register = () => {
       } else {
         toast({
           title: 'Error!',
-          /*description: errorMessage,*/
-          description: 'This email is already registered.',
+          description: errorMessage,
+        //  description: 'This email is already registered.',
           status: 'error',
           duration: 2000,
           isClosable: true

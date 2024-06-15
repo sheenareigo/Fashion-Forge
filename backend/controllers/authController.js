@@ -18,25 +18,52 @@ exports.Register = async (req, res) => {
 
 exports.Login = async (req, res) => {
     try {
-        const { email, password } = req.body;
-        if (!email || !password) {
-            return res.status(400).json({ status: 'failed', error: 'Email and password are required' });
+    const { email, password } = req.body;
+    if (!email || !password) {
+    return res.status(400).json({ status: 'failed', error: 'Email and password are required' });
+    }
+    // Find user by email
+    const user = await User.findOne({ email }).exec();
+    if (!user) {
+    return res.status(401).json({ status: 'failed', error: 'Wrong email or password' });
+    }
+    // Compare passwords
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+    return res.status(401).json({ status: 'failed', error: 'Wrong email or password' });
+    }
+    // Successful login
+    res.status(200).json({ currentUser: user });
+    
+    } catch (error) {
+    console.error('Login error:', error);
+    res.status(500).json({ status: 'failed', error: 'Internal server error' });
+    }
+    };
+
+    exports.VerifyEmail = async (req, res) => {
+        console.log('auth controller');
+        try {
+        const { email } = req.body;
+        if (!email) {
+        return res.status(400).json({ status: 'failed', error: 'Email is required' });
         }
         // Find user by email
         const user = await User.findOne({ email }).exec();
         if (!user) {
-            return res.status(401).json({ status: 'failed', error: 'Wrong email or password' });
+            console.log('Print no user');
+        return res.status(401).json({ status: 'failed', error: 'Email is not registered' });
         }
-        // Compare passwords
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ status: 'failed', error: 'Wrong email or password' });
-        }
+        // // Compare passwords
+        // const isMatch = await bcrypt.compare(password, user.password);
+        // if (!isMatch) {
+        // return res.status(401).json({ status: 'failed', error: 'Wrong email or password' });
+        // }
         // Successful login
         res.status(200).json({ currentUser: user });
-
-    } catch (error) {
-        console.error('Login error:', error);
+        
+        } catch (error) {
+        console.error('Verify email error:', error);
         res.status(500).json({ status: 'failed', error: 'Internal server error' });
-    }
-};
+        }
+        };

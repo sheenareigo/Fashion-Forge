@@ -76,6 +76,7 @@ const Navbar = () => {
             cursor='pointer'
             onClick={() => navigate('/')}
           >FashionForge</Text>
+         
           {/* <Hamburger base='flex' sm='none' md='none' /> */}
         </Box>
         {/* <Searchbar /> */}
@@ -94,17 +95,18 @@ const Navbar = () => {
           >
             {
               currentUser &&
+              
                 <Menu isOpen={open}>
                   <Icon fontSize={30} color='inherit' as={Person} />
                   <Text color='inherit' fontWeight={500} >Account</Text>
                   <MenuButton />
                   <MenuList >
                     <MenuGroup title='Account' >
-                      <MenuItem onClick={() => navigate('/')} ><Person sx={{ marginRight: 2 }} /> My Informations</MenuItem>
+                    <MenuItem onClick={() => navigate('/infos')} ><Person sx={{ marginRight: 2 }} /> Manage my profile</MenuItem>
                       <MenuItem onClick={() => navigate('/')} ><ShoppingBag sx={{ marginRight: 2 }} /> Orders</MenuItem>
                     </MenuGroup>
                     <Divider />
-                    <MenuItem onClick={Logout} ><ExitToApp sx={{ marginRight: 2 }} /> Log out</MenuItem>
+                    <MenuItem onClick={Logout} ><ExitToApp sx={{ marginRight: 2 }} /> Logout</MenuItem>
                   </MenuList>
                 </Menu>
             }
@@ -115,7 +117,7 @@ const Navbar = () => {
                  <Text color='inherit' fontWeight={500} >Login</Text>
                </>
             }
-            {
+            {/* {
               currentUser &&
               <Menu isOpen={open}>
                   <Icon fontSize={30} color='inherit' as={Person} />
@@ -126,7 +128,7 @@ const Navbar = () => {
                     <MenuItem onClick={Logout} ><ExitToApp sx={{ marginRight: 2 }} /> Log out</MenuItem>
                   </MenuList>
                 </Menu>
-            }
+            } */}
           </Box>
           <Box
             color='facebook.500'
