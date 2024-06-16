@@ -111,9 +111,6 @@ const Register = () => {
     Signup(values.firstName, values.lastName, values.email, values.password, values.street, values.city,
            values.province, values.zip, values.country, values.phone)
       .then(result => {
-        console.log("return0");
-        console.log(result.data);
-        console.log("return1");
         if (result.data.newUser) {
           navigate('/login');
           toast({
@@ -123,20 +120,11 @@ const Register = () => {
             duration: 2000,
             isClosable: true
           });
-        } else {
-          resetForm();
-          toast({
-            title: 'Error!',
-            description: 'This email is already registered.',
-            status: 'error',
-            duration: 2000,
-            isClosable: true
-          });
-        }
+        } 
        }) .catch(error => {
             toast({
               title: 'Error!',
-              description: 'An error occurred during registration.',
+              description: 'This email is already registered.',
               status: 'error',
               duration: 2000,
               isClosable: true
@@ -145,8 +133,8 @@ const Register = () => {
       } else {
         toast({
           title: 'Error!',
-          /*description: errorMessage,*/
-          description: 'This email is already registered.',
+          description: errorMessage,
+          
           status: 'error',
           duration: 2000,
           isClosable: true
@@ -262,15 +250,7 @@ const Register = () => {
             onBlur={handleBlur}
           />
         </FormControl>
-       {/* <FormControl isRequired mt={3} isInvalid={touched.country && errors.country}>
-          <FormLabel fontSize={20} >Country</FormLabel>
-          <Select name='country' placeholder='Select Country' onChange={handleChange} value={values.country} onBlur={handleBlur}>
-            <option value='USA'>United States</option>
-            <option value='CAN'>Canada</option>
-            <option value='GBR'>United Kingdom</option>
-            <option value='In'>India</option>
-          </Select>
-        </FormControl>*/}
+       {}
         <FormControl isRequired mt={3} isInvalid={touched.password && errors.password} >
           <FormLabel fontSize={20} >Password</FormLabel>
           <InputGroup size='md'>

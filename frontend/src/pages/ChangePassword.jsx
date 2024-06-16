@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Box, FormControl, FormLabel, FormErrorMessage, InputGroup, Input, Text, InputRightElement, Button, useToast } from '@chakra-ui/react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useFormik } from 'formik';
-
-import { updateUser } from '../services/UserServices'; 
+import axios from 'axios';
+import { resetPassword } from '../services/AuthServices'; 
 
 const ChangePassword = () => {
+  const { token } = useParams();
   const [show, setShow] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const toast = useToast();
@@ -26,38 +27,38 @@ const ChangePassword = () => {
       password: '',
       confirmpassword: ''
     },
-
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       if (validatePasswords()) {
-        updateUser(values.password) // integrate with the backend code
-          .then((result) => {
-            if (result.status === 'failed') {
-              toast({
-                title: 'Error!',
-                description: 'Something went wrong.',
-                status: 'error',
-                duration: 2000,
-                isClosable: true
-              });
-            } else {
-              navigate('/login');
-              toast({
-                title: 'Password updated successfully!',
-                description: 'Login to continue',
-                status: 'success',
-                duration: 2000,
-                isClosable: true
-              });
-            }
-          }).catch(error => {
+        try {
+          console.log(token);
+          const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/users/reset-password/${token}`, { newPassword: values.password });
+          if (response.data.status === 'success') {
+            navigate('/login');
+            toast({
+              title: 'Password updated successfully!',
+              description: 'Login to continue',
+              status: 'success',
+              duration: 2000,
+              isClosable: true
+            });
+          } else {
             toast({
               title: 'Error!',
-              description: error.response?.data?.message || 'Failed to save changes.',
+              description: 'Failed to update password.',
               status: 'error',
               duration: 2000,
               isClosable: true
             });
+          }
+        } catch (error) {
+          toast({
+            title: 'Error!',
+            description: error.response?.data?.message || 'Failed to update password.',
+            status: 'error',
+            duration: 2000,
+            isClosable: true
           });
+        }
       } else {
         toast({
           title: 'Error!',
@@ -69,7 +70,7 @@ const ChangePassword = () => {
       }
     }
   });
-
+  
   return (
     <Box
       display='flex'

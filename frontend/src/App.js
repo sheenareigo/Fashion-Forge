@@ -25,7 +25,7 @@ const App = () => {
         <Route path='/login' element={<Login />} />
         <Route path='/register' element={<Register />} />
         <Route path='/forgot-password' element={<ForgotPassword />} />
-        <Route path='/change-password' element={<ChangePassword />} />
+        <Route path='/reset-password/:token' element={<ChangePassword />} />
         <Route path='/infos' element={currentUser ? <Infos /> : <Navigate to='/' />} />
         <Route path='*' element={<Navigate to='/' />} />
       </Routes>
