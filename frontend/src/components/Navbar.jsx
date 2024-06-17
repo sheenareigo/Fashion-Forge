@@ -4,13 +4,9 @@ import { useCookies } from 'react-cookie';
 import { Box, Text, Icon, Menu, MenuList, MenuItem, MenuButton, MenuGroup, Divider } from '@chakra-ui/react';
 import { Person, Favorite, ShoppingCart, ExitToApp, ShoppingBag, Report, MapsHomeWork, Inventory, Edit } from '@mui/icons-material';
 
-//import { getAllGenres } from '../services/GenreServices';
+
 import { useUserContext } from '../contexts/UserContext';
-//import { useCartContext } from '../contexts/CartContext';
-//import Hamburger from './Hamburger';
-//import Dropdown from './Dropdown';
-//import Searchbar from './Searchbar';
-//import useGetUserRole from '../hooks/useGetUserRole';
+
 
 
 const Navbar = () => {
@@ -25,21 +21,10 @@ const Navbar = () => {
   //const [admin]=useGetUserRole(currentUser);
 
   useEffect(() => {
-    /*getAllGenres()
-      .then(result => {
-        setGenres(result.allGenres);
-      });*/
+    
     var count = 0;
-    /*if(cart.length){
-      cart.forEach((item) => {
-        if(item.amount){
-          count += item.amount;
-        }   
-      });
-    }
-    //setItemCount(count);*/
-  },[]); //,[refresh,cart,cookies.cart,admin]);
-
+    
+  },[]); 
   const Logout = () => {
     removeCookie('currentUser', { path: '/' });
     setCurrentUser('');
@@ -77,7 +62,7 @@ const Navbar = () => {
             onClick={() => navigate('/')}
           >FashionForge</Text>
          
-          {/* <Hamburger base='flex' sm='none' md='none' /> */}
+          {}
         </Box>
         {/* <Searchbar /> */}
         <Box display={{ base: 'none', md: 'flex' }} alignItems='center' px={2} >
@@ -117,18 +102,7 @@ const Navbar = () => {
                  <Text color='inherit' fontWeight={500} >Login</Text>
                </>
             }
-            {/* {
-              currentUser &&
-              <Menu isOpen={open}>
-                  <Icon fontSize={30} color='inherit' as={Person} />
-                  <Text color='inherit' fontWeight={500} >Admin</Text>
-                  <MenuButton />
-                  <MenuList >
-                    <Divider />
-                    <MenuItem onClick={Logout} ><ExitToApp sx={{ marginRight: 2 }} /> Log out</MenuItem>
-                  </MenuList>
-                </Menu>
-            } */}
+            {}
           </Box>
           <Box
             color='facebook.500'
@@ -155,10 +129,10 @@ const Navbar = () => {
             onClick={() => navigate('/')} //cart
           >
             <Icon fontSize={30} color='inherit' as={ShoppingCart} />
-            {/* <Text color='inherit' fontWeight={500} >{itemCount > 0 ? `Cart (${itemCount})` : 'Cart'}</Text> */}
+            {}
           </Box>
         </Box>
-        {/* <Hamburger base='none' sm='flex' md='none' /> */}
+        {}
       </Box>
       <Box
         display={{ base: 'none', md: 'flex' }}
@@ -166,9 +140,7 @@ const Navbar = () => {
         ps={5}
         width='100%'>
         {
-          /*genres.map((genre) => {
-            return genre.status && <Dropdown key={genre.name} title={genre.name} genreId={genre._id} />
-          })*/
+          
         }
       </Box>
     </Box>

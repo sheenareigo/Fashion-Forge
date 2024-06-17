@@ -1,27 +1,26 @@
-import React, { useState } from 'react';
+ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
-import { Box, FormControl, FormLabel, InputGroup, Input, Text, InputRightElement, Button, Checkbox, useToast,Link, Center } from '@chakra-ui/react';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { useFormik } from 'formik';
+ import { useCookies } from 'react-cookie';
+ import { Box, FormControl, FormLabel, InputGroup, Input, Text, InputRightElement, Button, Checkbox, useToast,Link, Center } from '@chakra-ui/react';
+ import { Visibility, VisibilityOff } from '@mui/icons-material';
+ import { useFormik } from 'formik';
+import axios from 'axios'
 
-import { useUserContext } from '../contexts/UserContext';
+ import { useUserContext } from '../contexts/UserContext';
 import { VerifyEmail as VerifyEmail } from '../services/AuthServices';
+import { requestPasswordReset as requestPasswordReset } from '../services/AuthServices';
 
 const ForgotPassword = () => {
-
   const [show, setShow] = useState(false);
   const [remember, setRemember] = useState(false);
-//   const { setCurrentUser } = useUserContext();
-//   const [cookies, setCookie, removeCookie] = useCookies(['currentUser']);
   const navigate = useNavigate();
   const toast = useToast();
 
   const { values, handleSubmit, handleChange, isValid, resetForm } = useFormik({
     initialValues: {
       email: ''
-    //   password: ''
     },
+<<<<<<< HEAD
     onSubmit: values => {
       console.log(values.email);
         VerifyEmail(values.email)
@@ -77,7 +76,61 @@ const ForgotPassword = () => {
     
     //validationSchema: LoginValidations
   });
+=======
+    onSubmit: async (values) => {
+      try {
+        // Directly request password reset
+        const resetResponse = await requestPasswordReset(values.email);
+        console.log("resetResponse", resetResponse);
+>>>>>>> 538d1442c967de5e318052d383f5a4283a546096
 
+        if (resetResponse.status === 'success') {
+          toast({
+            title: 'Email sent!',
+            description: 'Check your email for the password reset link.',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+          });
+          navigate('/login');
+        } else {
+          throw new Error(resetResponse.message || 'Email is not registered.');
+        }
+      } catch (error) {
+        console.error('Error during verification or reset:', error);
+
+        if (error.response) {
+          const { status } = error.response;
+          if (status === 400) {
+            toast({
+              title: 'Error!',
+              description: 'Email is not registered.',
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+            });
+          } else {
+            toast({
+              title: 'Error!',
+              description: 'Internal server error.',
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+            });
+          }
+        } else {
+          toast({
+            title: 'Error!',
+            description: 'Failed to process the request. Please try again later.',
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
+      }
+    },
+  });
+  
   return (
     <Box
       display='flex'
@@ -99,33 +152,7 @@ const ForgotPassword = () => {
         </FormControl>
         <Text textAlign='center' color={'facebook.500'} fontSize={15} fontWeight={600} mb={10} >Please verify your registered email address</Text>
         <Button width='100%' variant='solid' colorScheme='facebook' onClick={handleSubmit}>Verify</Button>
-        {/* <FormControl mt={3}>
-          <FormLabel fontSize={20} >Password</FormLabel>
-          <InputGroup size='md'>
-            <Input
-              name='password'
-              pr='4.5rem'
-              type={show ? 'text' : 'password'}
-              placeholder='Enter password'
-              onChange={handleChange}
-              value={values.password}
-            />
-            <InputRightElement width='4.5rem'>
-              <Button h='1.75rem' size='sm' variant='ghost' onClick={() => setShow(!show)}>
-                {show ? <VisibilityOff /> : <Visibility />}
-              </Button>
-            </InputRightElement>
-          </InputGroup>
-        </FormControl> */}
-        {/* <Button mt={5} width='100%' variant='solid' colorScheme='facebook' disabled={!isValid} onClick={handleSubmit} >Login</Button>
-        <br />
-        <Box textAlign='center' mt={2}>
-          <Link color='blue.500' onClick={() => navigate('/forgot-password')}>
-            Forgot Password?
-          </Link>
-        </Box>
-        <Text my={3} width='100%' textAlign='center' >or</Text>
-        <Button width='100%' variant='outline' colorScheme='facebook' onClick={() => navigate('/register')} >Register</Button> */}
+        {}
       </Box>
     </Box>
   )

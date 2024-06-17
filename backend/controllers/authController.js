@@ -1,9 +1,43 @@
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 const User = require('../models/User');
+const PasswordResetToken = require('../models/PasswordResetToken'); 
+
+//configure the nodemailer
+const transporter = nodemailer.createTransport({
+    host: process.env.BREVO_SMTP_SERVER,
+    port: process.env.BREVO_SMTP_PORT,
+    secure: false, // true for 465, false for other ports
+    auth: {
+        user: process.env.BREVO_SMTP_USER,
+        pass: process.env.BREVO_SMTP_PASSWORD
+    }
+});
+
+
 
 exports.Register = async (req, res) => {
     try {
         const newUser = await User.create(req.body);
+
+        const mailOptions = {
+            from: 'fashionforgeservices@gmail.com',
+            to: newUser.email, // Assuming newUser contains the registered user's email
+            subject: 'Welcome to Fashion Forge Services!',
+            text: 'Thank you for registering with us.\n\nUse the coupon code "FF20" to get 20% discount on all products.\n\nCoupon is valid for only seven days from the date of registration.'
+        };
+
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+                console.error('Email sending error:', error);
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
+        console.log('SMTP Server:', process.env.BREVO_SMTP_SERVER);
+        console.log('SMTP Port:', process.env.BREVO_SMTP_PORT);
+        console.log('SMTP User:', process.env.BREVO_SMTP_USER);
 
         res.status(201).json({
             newUser
@@ -54,12 +88,10 @@ exports.Login = async (req, res) => {
             console.log('Print no user');
         return res.status(401).json({ status: 'failed', error: 'Email is not registered' });
         }
-        // // Compare passwords
-        // const isMatch = await bcrypt.compare(password, user.password);
-        // if (!isMatch) {
-        // return res.status(401).json({ status: 'failed', error: 'Wrong email or password' });
-        // }
-        // Successful login
+        if (user) {
+            console.log(' user exits');
+        return res.status(200).json({ status: 'success', error: 'Email is  registered' });
+        }
         res.status(200).json({ currentUser: user });
         
         } catch (error) {
@@ -67,3 +99,69 @@ exports.Login = async (req, res) => {
         res.status(500).json({ status: 'failed', error: 'Internal server error' });
         }
         };
+
+exports.requestPasswordReset = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({ status: 'failed', error: 'Email is required' });
+            }
+        const user = await User.findOne({ email });
+        console.log(user);
+        if (!user) {
+            console.log("in if");
+            return res.status(401).json({ status: 'failed', message: 'Email not registered' });
+        }
+
+        const token = crypto.randomBytes(20).toString('hex');
+        await PasswordResetToken.create({
+            userId: user._id,
+            token: token
+        });
+
+        const resetUrl = `${process.env.FRONTEND_BASE_URL}/reset-password/${token}`;
+        const mailOptions = {
+            from: 'fashionforgeservices@gmail.com',
+            to: user.email,
+            subject: 'Password Reset Request',
+            text: `You requested a password reset. Please click the following link to reset your password:\n\n${resetUrl}`
+        };
+        
+        
+
+        await transporter.sendMail(mailOptions);
+        
+    
+        res.status(200).json({ status: 'success', message: 'Password reset email sent' });
+    } catch (error) {
+        console.log("in catch");
+        return res.status(400).json({ status: 'failed', message: 'Email not registered' });
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+try {
+    const { token } = req.params;
+    const { newPassword } = req.body;
+
+    const passwordResetToken = await PasswordResetToken.findOne({ token });
+    if (!passwordResetToken) {
+        return res.status(400).json({ status: 'failed', message: 'Invalid or expired token' });
+    }
+
+    const user = await User.findById(passwordResetToken.userId);
+    if (!user) {
+        return res.status(400).json({ status: 'failed', message: 'Invalid or expired token' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    await user.save();
+
+    await PasswordResetToken.findByIdAndDelete(passwordResetToken._id);
+
+    res.status(200).json({ status: 'success', message: 'Password reset successfully' });
+} catch (error) {
+    res.status(500).json({ status: 'failed', error: error.message });
+}
+};
