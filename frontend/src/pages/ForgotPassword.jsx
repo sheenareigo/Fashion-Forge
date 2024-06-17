@@ -37,18 +37,44 @@ const ForgotPassword = () => {
               });
               navigate('/forgot-password');
               
-            } else {
+            } 
+        })
+        .catch((error) => {
+          if (error.response) {
+            const { status } = error.response;
+            if (status === 401) {
               resetForm();
               toast({
                 title: 'Error!',
-                description: 'Wrong email or password.',
+                description: 'Email is not registered.',
                 status: 'error',
                 duration: 2000,
-                isClosable: true
+                isClosable: true,
               });
-            }
+          } else if (status === 400) {
+              resetForm();
+              toast({
+                title: 'Error!',
+                description: 'Email is required.',
+                status: 'error',
+                duration: 2000,
+                isClosable: true,
+              });
+          } else {
+            resetForm();
+            toast({
+              title: 'Error!',
+              description: 'Internal server error.',
+              status: 'error',
+              duration: 2000,
+              isClosable: true
+            });
+          }
+        }
         });
     },
+    //validationSchema: LoginValidations
+    
     //validationSchema: LoginValidations
   });
 
