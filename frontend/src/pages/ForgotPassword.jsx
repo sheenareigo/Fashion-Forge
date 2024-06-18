@@ -20,69 +20,11 @@ const ForgotPassword = () => {
     initialValues: {
       email: ''
     },
-<<<<<<< HEAD
-    onSubmit: values => {
-      console.log(values.email);
-        VerifyEmail(values.email)
-        .then((result) => {
-            if (result.data) {
-            //   setCurrentUser(result.data.currentUser._id);
-              toast({
-                title: 'Check your email for link to change password.',
-                description: 'Email sent',
-                status: 'success',
-             
-                isClosable: false
-              });
-              navigate('/forgot-password');
-              
-            } 
-        })
-        .catch((error) => {
-          if (error.response) {
-            const { status } = error.response;
-            if (status === 401) {
-              resetForm();
-              toast({
-                title: 'Error!',
-                description: 'Email is not registered.',
-                status: 'error',
-                duration: 2000,
-                isClosable: true,
-              });
-          } else if (status === 400) {
-              resetForm();
-              toast({
-                title: 'Error!',
-                description: 'Email is required.',
-                status: 'error',
-                duration: 2000,
-                isClosable: true,
-              });
-          } else {
-            resetForm();
-            toast({
-              title: 'Error!',
-              description: 'Internal server error.',
-              status: 'error',
-              duration: 2000,
-              isClosable: true
-            });
-          }
-        }
-        });
-    },
-    //validationSchema: LoginValidations
-    
-    //validationSchema: LoginValidations
-  });
-=======
     onSubmit: async (values) => {
       try {
         // Directly request password reset
         const resetResponse = await requestPasswordReset(values.email);
         console.log("resetResponse", resetResponse);
->>>>>>> 538d1442c967de5e318052d383f5a4283a546096
 
         if (resetResponse.status === 'success') {
           toast({
@@ -97,7 +39,7 @@ const ForgotPassword = () => {
           throw new Error(resetResponse.message || 'Email is not registered.');
         }
       } catch (error) {
-        console.error('Error during verification or reset:', error);
+        console.log('Error during verification or reset:', error);
 
         if (error.response) {
           const { status } = error.response;
@@ -109,7 +51,16 @@ const ForgotPassword = () => {
               duration: 5000,
               isClosable: true,
             });
-          } else {
+          } else if (status === 401) {
+            resetForm();
+            toast({
+              title: 'Error!',
+              description: 'Email is not registered.',
+              status: 'error',
+              duration: 2000,
+              isClosable: true,
+            });}
+          else {
             toast({
               title: 'Error!',
               description: 'Internal server error.',
