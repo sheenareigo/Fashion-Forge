@@ -39,7 +39,7 @@ const ForgotPassword = () => {
           throw new Error(resetResponse.message || 'Email is not registered.');
         }
       } catch (error) {
-        console.error('Error during verification or reset:', error);
+        console.log('Error during verification or reset:', error);
 
         if (error.response) {
           const { status } = error.response;
@@ -51,7 +51,16 @@ const ForgotPassword = () => {
               duration: 5000,
               isClosable: true,
             });
-          } else {
+          } else if (status === 401) {
+            resetForm();
+            toast({
+              title: 'Error!',
+              description: 'Email is not registered.',
+              status: 'error',
+              duration: 2000,
+              isClosable: true,
+            });}
+          else {
             toast({
               title: 'Error!',
               description: 'Internal server error.',
