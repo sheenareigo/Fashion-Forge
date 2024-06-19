@@ -46,7 +46,7 @@ export const requestPasswordReset = async (email) => {
   };
 
   
-export const resetUserPassword = async (token, newPassword) => {
+export const resetPassword = async (token, newPassword) => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/users/reset-password/${token}`, {
         newPassword: newPassword

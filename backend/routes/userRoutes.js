@@ -14,5 +14,4 @@ router.route('/verifyemail').post(VerifyEmail);
 router.post('/request-password-reset', requestPasswordReset);
 router.post('/reset-password/:token', resetPassword);
 
-
 module.exports = router;
