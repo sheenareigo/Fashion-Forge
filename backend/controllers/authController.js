@@ -35,9 +35,6 @@ exports.Register = async (req, res) => {
                 console.log('Email sent: ' + info.response);
             }
         });
-        console.log('SMTP Server:', process.env.BREVO_SMTP_SERVER);
-        console.log('SMTP Port:', process.env.BREVO_SMTP_PORT);
-        console.log('SMTP User:', process.env.BREVO_SMTP_USER);
 
         res.status(201).json({
             newUser
@@ -71,13 +68,11 @@ exports.Login = async (req, res) => {
     res.status(200).json({ currentUser: user });
     
     } catch (error) {
-    console.error('Login error:', error);
     res.status(500).json({ status: 'failed', error: 'Internal server error' });
     }
     };
 
     exports.VerifyEmail = async (req, res) => {
-        console.log('auth controller');
         try {
         const { email } = req.body;
         if (!email) {
@@ -86,11 +81,9 @@ exports.Login = async (req, res) => {
         // Find user by email
         const user = await User.findOne({ email }).exec();
         if (!user) {
-            console.log('Print no user');
         return res.status(401).json({ status: 'failed', error: 'Email is not registered' });
         }
         if (user) {
-            console.log(' user exits');
         return res.status(200).json({ status: 'success', error: 'Email is  registered' });
         }
         res.status(200).json({ currentUser: user });
@@ -108,9 +101,9 @@ exports.requestPasswordReset = async (req, res) => {
             return res.status(400).json({ status: 'failed', error: 'Email is required' });
             }
         const user = await User.findOne({ email });
-       
+        console.log(user);
         if (!user) {
-            
+            console.log("in if");
             return res.status(401).json({ status: 'failed', message: 'Email not registered' });
         }
 
@@ -127,15 +120,9 @@ exports.requestPasswordReset = async (req, res) => {
             subject: 'Password Reset Request',
             text: `You requested a password reset. Please click the following link to reset your password:\n\n${resetUrl}`
         };
-        
-        
-
         await transporter.sendMail(mailOptions);
-        
-    
         res.status(200).json({ status: 'success', message: 'Password reset email sent' });
     } catch (error) {
-        console.log("in catch");
         return res.status(400).json({ status: 'failed', message: 'Email not registered' });
     }
 };
@@ -158,7 +145,6 @@ try {
 
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(newPassword, salt);
-    user.password=newPassword;
     await user.save();
 
     await PasswordResetToken.findByIdAndDelete(passwordResetToken._id);
