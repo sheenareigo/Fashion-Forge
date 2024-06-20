@@ -60,6 +60,7 @@ exports.Login = async (req, res) => {
     }
     // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
+   // const isMatch = password === user.password;
     if (!isMatch) {
     return res.status(401).json({ status: 'failed', error: 'Wrong email or password' });
     }
@@ -105,11 +106,11 @@ exports.requestPasswordReset = async (req, res) => {
         }
 
         const token = crypto.randomBytes(20).toString('hex');
-        await PasswordResetToken.create({
+        const PToken=await PasswordResetToken.create({
             userId: user._id,
             token: token
         });
-
+        console.log(PToken);
         const resetUrl = `${process.env.FRONTEND_BASE_URL}/reset-password/${token}`;
         const mailOptions = {
             from: 'fashionforgeservices@gmail.com',
@@ -128,13 +129,14 @@ exports.resetPassword = async (req, res) => {
 try {
     const { token } = req.params;
     const { newPassword } = req.body;
-
+    console.log(newPassword);
     const passwordResetToken = await PasswordResetToken.findOne({ token });
     if (!passwordResetToken) {
         return res.status(400).json({ status: 'failed', message: 'Invalid or expired token' });
     }
 
     const user = await User.findById(passwordResetToken.userId);
+    console.log(user);
     if (!user) {
         return res.status(400).json({ status: 'failed', message: 'Invalid or expired token' });
     }
