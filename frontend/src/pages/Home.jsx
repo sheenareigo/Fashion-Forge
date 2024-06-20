@@ -3,26 +3,32 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Text, Container, SimpleGrid, Image, CircularProgress } from '@chakra-ui/react';
 import { AccountBalanceWallet, AssignmentReturn, WorkspacePremium } from '@mui/icons-material';
 
-
+import Carousel from '../components/Carousel';
+import { getAllMiniImages } from '../services/ImageServices';
+//import { useSearchContext } from '../contexts/SearchContext';
 
 const Home = () => {
 
   const navigate = useNavigate();
- 
+  //const { setSearch } = useSearchContext();
   const [miniImages, setMiniImages] = useState([]);
-
+  
   useEffect(() => {
-    
+    getAllMiniImages()
+      .then((result) => {
+        setMiniImages(result.miniImages);
+      });
   }, []);
 
   const onClickImage = () => {
-    
+    //setSearch('a');
+    //navigate('/search');
   }
 
   return (
     <Box>
       <Box display='flex' justifyContent='center' >
-        {/* <Carousel /> */}
+         <Carousel />
       </Box>
       <Box bg='facebook.500' mt={{ base: 5, md: 0 }} >
         <Container maxWidth={1200} display='flex' justifyContent='space-between' alignItems='center' flexDirection={{ base: 'column', md: 'row' }} py={7}>

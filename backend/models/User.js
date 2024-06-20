@@ -1,6 +1,20 @@
 const mongoose = require('mongoose');
 const bcrypt=require('bcryptjs');
 
+const cartSchema = new mongoose.Schema({
+  products: [{
+    product_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Product',  // Reference to the Product schema/model
+      required: true
+    },
+    quantity: {
+      type: Number,
+      default: 1
+    }
+  }]
+});
+
 const UserSchema = new mongoose.Schema({
     firstName: {
         type: String,
@@ -45,7 +59,8 @@ const UserSchema = new mongoose.Schema({
     register_data_time: {
         type: Date,
         default: Date.now
-    }
+    },
+    cart: cartSchema
 },{versionKey:false});
 
 UserSchema.pre("save", function (next) {
