@@ -33,6 +33,7 @@ const Register = () => {
   
   const phonePattern = /^\+1[0-9]{10}$/;
   const namePattern = /^[A-Za-z]+$/;
+  const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#_])[A-Za-z\d@#_]{8,}$/;
   const canadaPostalCodePattern = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   
