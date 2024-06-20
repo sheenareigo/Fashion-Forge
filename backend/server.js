@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv').config();
 const userRoutes = require('./routes/userRoutes');
+const imageRoutes = require('./routes/imageRoutes');
+const miniImageRoutes = require('./routes/miniImageRoutes');
 
 
 const app = express();
@@ -15,10 +17,17 @@ app.use(express.json());
 
 // ROUTES
 app.use('/users', userRoutes);
+app.use('/images', imageRoutes);
+app.use('/minis', miniImageRoutes);
 
-mongoose.connect(process.env.MONGODB_URL)
+const insertSampleData = require('./controllers/imageInsertion');
+mongoose.connect(process.env.MONGODB_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
   .then(() => {
     console.log('Successfully connected to database.');
+    return insertSampleData();  // Call the function to insert sample data
   })
   .catch((error) => {
     console.error('Error connecting to database:', error);
