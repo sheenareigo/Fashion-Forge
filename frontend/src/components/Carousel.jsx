@@ -30,7 +30,7 @@ const Carousel = () => {
   const [images, setImages] = useState([]);
   const [slider, setSlider] = useState("");
 
-  const top = useBreakpointValue({ base: '90%', sm: '50%' });
+  const top = useBreakpointValue({ base: '80%', sm: '40%' });
   const side = useBreakpointValue({ base: '30%', sm: '10px' });
 
   useEffect(() => {

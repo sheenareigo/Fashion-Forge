@@ -4,6 +4,7 @@ import { Box, Text, Container, SimpleGrid, Image, CircularProgress } from '@chak
 import { AccountBalanceWallet, AssignmentReturn, WorkspacePremium } from '@mui/icons-material';
 
 import Carousel from '../components/Carousel';
+import Categories from '../components/Categories';
 import { getAllMiniImages } from '../services/ImageServices';
 //import { useSearchContext } from '../contexts/SearchContext';
 
@@ -27,9 +28,7 @@ const Home = () => {
 
   return (
     <Box>
-      <Box display='flex' justifyContent='center' >
-         <Carousel />
-      </Box>
+
       <Box bg='facebook.500' mt={{ base: 5, md: 0 }} >
         <Container maxWidth={1200} display='flex' justifyContent='space-between' alignItems='center' flexDirection={{ base: 'column', md: 'row' }} py={7}>
           <Box color='#fff' alignItems='center' display='flex' flexDirection='column' >
@@ -42,11 +41,18 @@ const Home = () => {
           </Box>
           <Box color='#fff' alignItems='center' display='flex' flexDirection='column' mt={{ base: 5, md: 0 }} >
             <WorkspacePremium sx={{ fontSize: 50 }} color='inherit' />
-            <Text mt={3} fontSize={20} fontWeight={600} color='inherit' >Clothify Quality Assurance</Text>
+            <Text mt={3} fontSize={20} fontWeight={600} color='inherit' >Fashion Forge Quality Assurance</Text>
           </Box>
         </Container>
       </Box>
-      <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={{ base: 3, md: 5 }} px={{ base: 3, md: 0 }} py={{ base: 3, md: 5 }} mt={5} maxWidth={1200} mx='auto' >
+      <br/>
+      <Box display='flex' justifyContent='center' >
+         <Carousel />
+      </Box>
+      <Box display='flex' justifyContent='center' >
+         <Categories />
+      </Box>
+      {/* <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={{ base: 3, md: 5 }} px={{ base: 3, md: 0 }} py={{ base: 3, md: 5 }} mt={5} maxWidth={1200} mx='auto' >
         {
           miniImages && miniImages.map((image, index) => {
             return <Image key={index} cursor='pointer' onClick={(onClickImage)} src={image.url} />
@@ -63,7 +69,7 @@ const Home = () => {
             </Box>
           </>
         }
-      </SimpleGrid>
+      </SimpleGrid> */}
     </Box>
   )
 }
