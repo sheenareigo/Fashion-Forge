@@ -5,7 +5,7 @@ const dotenv = require('dotenv').config();
 const userRoutes = require('./routes/userRoutes');
 const imageRoutes = require('./routes/imageRoutes');
 const miniImageRoutes = require('./routes/miniImageRoutes');
-
+const productRoutes = require('./routes/productRoutes');
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -19,6 +19,7 @@ app.use(express.json());
 app.use('/users', userRoutes);
 app.use('/images', imageRoutes);
 app.use('/minis', miniImageRoutes);
+app.use('/products', productRoutes);
 
 const insertSampleData = require('./controllers/imageInsertion');
 mongoose.connect(process.env.MONGODB_URL, {

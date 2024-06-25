@@ -121,15 +121,15 @@ const products = [
 
 const insertSampleData = async () => {
   try {
-    console.log('Inserting images...');
-    await Image.insertMany(images);
-    console.log('Images inserted');
+    // console.log('Inserting images...');
+    // await Image.insertMany(images);
+    // console.log('Images inserted');
 
-    console.log('Inserting products...');
-    await Product.insertMany(products);
-    console.log('Products inserted');
-    await MiniImage.insertMany(miniimages);
-    console.log('mini-images inserted');
+    // console.log('Inserting products...');
+    // await Product.insertMany(products);
+    // console.log('Products inserted');
+    // await MiniImage.insertMany(miniimages);
+    // console.log('mini-images inserted');
     
   } catch (error) {
     console.error('Error inserting sample data:', error);
