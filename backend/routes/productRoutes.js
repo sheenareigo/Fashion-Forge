@@ -4,7 +4,7 @@ const {
     getAllProducts,
     getProductById,
     getProductsByStatus,
-    getProductsByCategoryId,
+    getProductByCategoryName,
     getProductsByColor,
     getProductsByGender,
     getProductsByPrice,
@@ -18,7 +18,7 @@ const {
 router.route('/').get(getAllProducts);
 router.route('/query/price').post(getProductsByPrice);
 router.route('/:id').get(getProductById);
-router.route('/category/:id').get(getProductsByCategoryId);
+router.route('/category/name/:name').get(getProductByCategoryName);
 router.route('/color/:color').post(getProductsByColor);
 router.route('/gender/:gender').post(getProductsByGender);
 router.route('/status/:status').get(getProductsByStatus);
