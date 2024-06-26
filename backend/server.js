@@ -7,8 +7,6 @@ const imageRoutes = require('./routes/imageRoutes');
 const miniImageRoutes = require('./routes/miniImageRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes=require('./routes/productRoutes');
-
-
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -31,7 +29,6 @@ mongoose.connect(process.env.MONGODB_URL, {
 })
   .then(() => {
     console.log('Successfully connected to database.');
-   // return insertSampleData();  // Call the function to insert sample data
   })
   .catch((error) => {
     console.error('Error connecting to database:', error);

@@ -35,10 +35,9 @@ const Product = () => {
   const [inCart, setInCart] = useState(false);
   const [amount, setAmount] = useState(0);
   const [cookies, setCookies, removeCookie] = useCookies(['cart']);
-  // const [have] = useGetUserHaveThis(currentUser, location.state.productId);
+ 
 
   useEffect(() => {
-    // setIsFavorite(status);
 
     getProductById(location.state.productId)
       .then((result) => {
@@ -46,40 +45,9 @@ const Product = () => {
         setSizes(result.product.sizes);
       });
 
-    // getRatingByProductId(location.state.productId)
-    //   .then((result) => {
-    //     var star = 0;
-    //     result.ratings.forEach((r) => {
-    //       star += r.rating
-    //     });
-    //     setRatings(star / result.ratings.length || 0);
-    //     setRatingCount(result.ratings.length);
-    //   });
-
-    // getCommentByProductId(location.state.productId)
-    //   .then((result) => {
-    //     setComments(result.comment);
-    //   });
-
-    // cart.forEach((item) => {
-    //   if (item.id === location.state.productId) {
-    //     setInCart(true);
-    //     setAmount(item.amount);
-    //   }
-    // });
-  }, [location.state.productId, status, 
+      }, [location.state.productId, status, 
     //cart
     ]);
-
-  // const onClickFavorite = () => {
-  //   if (isFavorite) {
-  //     deleteFavorite(currentUser, location.state.productId);
-  //     setIsFavorite(false);
-  //   } else {
-  //     addFavorite(currentUser, location.state.productId);
-  //     setIsFavorite(true);
-  //   }
-  // };
 
   const onClickAddCart = () => {
     if (selectedSize !== "") {
@@ -135,19 +103,6 @@ const Product = () => {
     setRefresh(!refresh);
   };
 
-  // const onClickWrite = () => {
-  //   if (have) {
-  //     onOpen(true);
-  //   } else {
-  //     toast({
-  //       title: 'Error!',
-  //       description: 'You must have this to write a review.',
-  //       status: 'error',
-  //       duration: 2000,
-  //       isClosable: true
-  //     });
-  //   }
-  // };
 
   return (
     <>
@@ -162,13 +117,6 @@ const Product = () => {
                 display='flex'
                 alignItems='center'
                 mt={2}>
-                {/* <StarRatings
-                  starDimension={'20'}
-                  starSpacing={'2'}
-                  rating={ratings}
-                  starRatedColor="#FFD700"
-                  numberOfStars={5}
-                  name='rating' /> */}
                 <Text fontSize={16} fontWeight={500} > | {ratingCount} reviews</Text>
               </Box>
               <Text mt={5} mb={3} fontSize={28} fontWeight={400} color='facebook.500' >Price : <b> {product.price}$ </b> </Text>
@@ -274,14 +222,8 @@ const Product = () => {
               Write a Review
             </Button>
           </Box>
-          {/* {
-            comments.map((comment) => {
-              return <Comment key={comment._id} authorId={comment.author} commentText={comment.comment} createdAt={comment.createdAt} />
-            })
-          } */}
         </Box>
       </Box>
-      {/* <ReviewModal isOpen={isOpen} onClose={onClose} productId={location.state.productId} /> */}
     </>
   )
 }
