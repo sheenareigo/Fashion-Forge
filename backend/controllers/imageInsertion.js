@@ -72,11 +72,11 @@ const products = [
   {
     product_id: new mongoose.Types.ObjectId(),
     product_name: "Formal White Shirt",
-    image_id: images[0]._id, // Reference to an Image document
+    image_id: images[0]._id,
     color: "White",
     size: ["S", "M", "L"],
     description: "A formal shirt.",
-    category_name: new mongoose.Types.ObjectId(), // Reference to a Category document
+    category_name: new mongoose.Types.ObjectId(), 
     gender: "Unisex",
     price: 19.99,
     status: true
@@ -84,11 +84,11 @@ const products = [
   {
     product_id: new mongoose.Types.ObjectId(),
     product_name: "Mens slim fit jeans",
-    image_id: images[1]._id, // Reference to an Image document
+    image_id: images[1]._id, 
     color: "Blue",
     size: ["M", "L", "XL"],
     description: "A pair of slim-fit blue jeans.",
-    category_name: new mongoose.Types.ObjectId(), // Reference to a Category document
+    category_name: new mongoose.Types.ObjectId(), 
     gender: "Male",
     price: 49.99,
     status: true
@@ -96,11 +96,11 @@ const products = [
   {
     product_id: new mongoose.Types.ObjectId(),
     product_name: "Women Dress",
-    image_id: images[2]._id, // Reference to an Image document
+    image_id: images[2]._id, 
     color: "Floral Blue",
     size: ["8", "9", "10", "11"],
     description: "A blue floral mini dress.",
-    category_name: new mongoose.Types.ObjectId(), // Reference to a Category document
+    category_name: new mongoose.Types.ObjectId(), 
     gender: "Female",
     price: 69.99,
     status: true
@@ -108,11 +108,11 @@ const products = [
   {
     product_id: new mongoose.Types.ObjectId(),
     product_name: "Women Casual Suite",
-    image_id: images[3]._id, // Reference to an Image document
+    image_id: images[3]._id, 
     color: "Beige",
     size: ["8", "9", "10", "11"],
     description: "A plain sandy dress.",
-    category_name: new mongoose.Types.ObjectId(), // Reference to a Category document
+    category_name: new mongoose.Types.ObjectId(), 
     gender: "Female",
     price: 59.99,
     status: true

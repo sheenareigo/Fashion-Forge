@@ -14,3 +14,28 @@ exports.getAllImages = async (req, res) => {
         });
     }
 };
+
+exports.getImageUrlById = async (req, res) => {
+    const id  = req.params.id; 
+    try {
+        const actualId = id.id || id;
+        const image = await Image.findById(actualId);
+        console.log(image.image_url);
+        if (!image) {
+            return res.status(404).json({
+                status: 'failed',
+                error: 'Image not found'
+            });
+        }
+        
+        res.status(200).json({
+            imageUrl: image.image_url
+            
+        });
+    } catch (error) {
+        res.status(500).json({
+            status: 'failed',
+            error: error.message
+        });
+    }
+};

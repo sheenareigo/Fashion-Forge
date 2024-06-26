@@ -104,7 +104,7 @@ const Navbar = () => {
             }
             {}
           </Box>
-          <Box
+          {/* <Box
             color='facebook.500'
             display='flex'
             flexDirection='column'
@@ -117,7 +117,7 @@ const Navbar = () => {
           >
             <Icon fontSize={30} color='inherit' as={Favorite} />
             <Text color='inherit' fontWeight={500} >Favorites</Text>
-          </Box>
+          </Box> */}
           <Box
             color='facebook.500'
             display='flex'

@@ -8,18 +8,18 @@ const orderSchema = new mongoose.Schema({
   },
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',  // Assuming 'User' is another schema/model for users
+    ref: 'User', 
     required: true
   },
   products: [{
     product_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product',  // Reference to the Product schema/model
+      ref: 'Product', 
       required: true
     },
     quantity: {
       type: Number,
-      default: 1  // Default quantity, adjust as per your requirement
+      default: 1
     }
   }],
   address: {
@@ -32,7 +32,7 @@ const orderSchema = new mongoose.Schema({
   },
   order_date: {
     type: Date,
-    default: Date.now  // Default to current date/time when order is created
+    default: Date.now  
   },
   total_amount: {
     type: Number,
