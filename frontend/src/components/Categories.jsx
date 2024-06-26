@@ -4,13 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 const Categories = () => {
   const navigate = useNavigate();
-  const imageSize = useBreakpointValue({ base: '200', md: '350px', lg: '400px' }); // Adjust image size based on breakpoints
-  const boxHeight = useBreakpointValue({ base: '350px', md: '400px', lg: '450px' }); // Adjust box height based on breakpoints
-
-//   const handleCategoryClick = (category) => {
-//     navigate(`/search/${category}`); // Navigate to the respective category's product browsing page
-//   };
-
+  const imageSize = useBreakpointValue({ base: '200', md: '350px', lg: '400px' }); 
+  const boxHeight = useBreakpointValue({ base: '350px', md: '400px', lg: '450px' }); 
   const handleCategoryClick=(category)=>{
     navigate('/search',{state:{category_name:category}});
     console.log("navigate to search")
@@ -32,10 +27,10 @@ const Categories = () => {
           onClick={() => handleCategoryClick('Men')}
           cursor="pointer"
           height={boxHeight}
-          position="relative" // Ensure relative positioning for overlay effect
+          position="relative" 
           _hover={{
-            transform: 'scale(1.05)', // Scale up on hover
-            transition: 'transform 0.3s ease', // Smooth transition
+            transform: 'scale(1.05)', 
+            transition: 'transform 0.3s ease', 
           }}
         >
           <Image

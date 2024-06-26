@@ -55,7 +55,7 @@ exports.getProductsByColor = async (req, res) => {
 exports.getProductByCategoryName = async (req, res) => {
     try {
         console.log("from product controller");
-        const categoryName = req.params.name; // Assuming 'name' is passed in URL params
+        const categoryName = req.params.name; 
         console.log("Fetching category by name:", categoryName);
         const category = await Category.findOne({ category_name: categoryName });
         if (!category) {
@@ -65,11 +65,7 @@ exports.getProductByCategoryName = async (req, res) => {
             });
         }
         console.log("Category found",category._id);
-    
-        // Query products where category matches the ObjectId of the found category
         const products = await Product.find({ category: category._id });
-       // const products = await Product.find({ category_name: categoryname });
-
         res.status(200).json({
             products
         });

@@ -14,14 +14,14 @@ const productSchema = new mongoose.Schema({
   },
   image_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Image'  // refer to 'Image' is schema
+    ref: 'Image'  
   },
   color: {
-    type: String, // Array of colors
+    type: String, 
     required: true
   },
   size: {
-    type: [String],  // Array of sizes
+    type: [String],  
     required: true
   },
   description: {
@@ -30,11 +30,11 @@ const productSchema = new mongoose.Schema({
   },
   category: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Category' //refer to category schema
+    ref: 'Category'
   },
   gender: {
     type: String,
-    enum: ['Male', 'Female', 'Unisex'],  // Adjust enum values based on your requirements
+    enum: ['Male', 'Female', 'Unisex'],  
     required: true
   },
   price: {
@@ -43,7 +43,7 @@ const productSchema = new mongoose.Schema({
   },
   status: {
     type: Boolean,
-    default: true  // Default availability status
+    default: true
   }
 }, {versionKey:false});
 

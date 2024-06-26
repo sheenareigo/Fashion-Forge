@@ -34,7 +34,7 @@ exports.getCategoryById = async (req, res) => {
 exports.getCategoryByName = async (req, res) => {
     try {
         console.log("category controller");
-        const categoryName = req.params.name; // Assuming 'name' is passed in URL params
+        const categoryName = req.params.name;
 
         console.log("Fetching category by name:", categoryName);
 

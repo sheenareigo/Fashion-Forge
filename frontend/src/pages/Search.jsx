@@ -26,7 +26,6 @@ const Search = () => {
         })
         .catch((error) => {
           console.error('Error fetching products by category:', error);
-          // Optionally handle errors or set a fallback state for products
         });
     }
     // if (search !== "" && search !== " " && search !== null && search !== undefined && canSearch) {
