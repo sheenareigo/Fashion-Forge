@@ -15,7 +15,6 @@ const ClothesCard = ({ productId, isDelivered }) => {
   const [cookies, setCookies, removeCookie] = useCookies(['cart']);
   const { cart, setCart, refresh, setRefresh } = useCartContext();
   const { currentUser } = useUserContext();
-  const [status] = useGetFavoriteStatus(currentUser, productId);
   const navigate = useNavigate();
 
   const [product, setProduct] = useState("");
@@ -154,7 +153,7 @@ const ClothesCard = ({ productId, isDelivered }) => {
                 isDelivered &&
                 <Icon
                   onClick={onOpen}
-                  as={RateReview}
+                  //as={RateReview}
                   fontSize={36}
                   transition={.5}
                   color='blackAlpha.400'
