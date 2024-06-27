@@ -5,13 +5,9 @@ const dotenv = require('dotenv').config();
 const userRoutes = require('./routes/userRoutes');
 const imageRoutes = require('./routes/imageRoutes');
 const miniImageRoutes = require('./routes/miniImageRoutes');
-<<<<<<< HEAD
 const productRoutes = require('./routes/productRoutes');
-
-=======
 const categoryRoutes = require('./routes/categoryRoutes');
 const productRoutes=require('./routes/productRoutes');
->>>>>>> 874d4f96f670bd8cac74d11637030e5386e5dd20
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -25,11 +21,7 @@ app.use('/users', userRoutes);
 app.use('/images', imageRoutes);
 app.use('/minis', miniImageRoutes);
 app.use('/products', productRoutes);
-<<<<<<< HEAD
-=======
 app.use('/categories', categoryRoutes);
->>>>>>> 874d4f96f670bd8cac74d11637030e5386e5dd20
-
 const insertSampleData = require('./controllers/imageInsertion');
 mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
