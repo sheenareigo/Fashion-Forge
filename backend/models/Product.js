@@ -37,6 +37,11 @@ const productSchema = new mongoose.Schema({
     enum: ['Male', 'Female', 'Unisex'],  
     required: true
   },
+  genre: {
+    type: String,
+    enum: ['winter', 'summer'],
+    required: true
+  },
   price: {
     type: Number,
     required: true
