@@ -3,8 +3,10 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv').config();
 const userRoutes = require('./routes/userRoutes');
-
-
+const imageRoutes = require('./routes/imageRoutes');
+const miniImageRoutes = require('./routes/miniImageRoutes');
+const categoryRoutes = require('./routes/categoryRoutes');
+const productRoutes=require('./routes/productRoutes');
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -15,8 +17,16 @@ app.use(express.json());
 
 // ROUTES
 app.use('/users', userRoutes);
+app.use('/images', imageRoutes);
+app.use('/minis', miniImageRoutes);
+app.use('/products', productRoutes);
+app.use('/categories', categoryRoutes);
 
-mongoose.connect(process.env.MONGODB_URL)
+const insertSampleData = require('./controllers/imageInsertion');
+mongoose.connect(process.env.MONGODB_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
   .then(() => {
     console.log('Successfully connected to database.');
   })

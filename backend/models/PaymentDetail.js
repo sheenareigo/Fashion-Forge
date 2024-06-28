@@ -4,7 +4,7 @@ const paymentDetailSchema = new mongoose.Schema({
   card_number: {
     type: Number,
     required: true,
-    unique: true  // Assuming card numbers should be unique
+    unique: true 
   },
   expiry: {
     type: Number,

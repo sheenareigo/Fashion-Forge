@@ -31,6 +31,33 @@ exports.getCategoryById = async (req, res) => {
     }
 };
 
+exports.getCategoryByName = async (req, res) => {
+    try {
+        console.log("category controller");
+        const categoryName = req.params.name;
+
+        console.log("Fetching category by name:", categoryName);
+
+        const category = await Category.findOne({ category_name: categoryName });
+
+        if (!category) {
+            return res.status(404).json({
+                status: 'failed',
+                error: `Category '${categoryName}' not found`
+            });
+        }
+
+        res.status(200).json({ category });
+    } catch (error) {
+        console.error('Error fetching category by name:', error.message);
+        res.status(400).json({
+            status: 'failed',
+            error: error.message
+        });
+    }
+};
+
+
 exports.getCategoryByGenre = async (req, res) => {
     try {
         const category = await Category.find({ genre: req.params.id  });

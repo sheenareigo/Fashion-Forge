@@ -10,13 +10,13 @@ import ForgotPassword from './pages/ForgotPassword';
 import ChangePassword from './pages/ChangePassword'
 import Infos from './pages/Infos';
 import { useUserContext } from './contexts/UserContext';
-//import useGetUserRole from './hooks/useGetUserRole';
-
+import { useSearchContext } from './contexts/SearchContext';
+import Search from './pages/Search';
+import Product from './pages/Product';
 const App = () => {
 
   const { currentUser } = useUserContext();
   const Navigate = useNavigate();
-  //const [admin] = useGetUserRole(currentUser);
   return (
     <>
       <Navbar />
@@ -27,7 +27,11 @@ const App = () => {
         <Route path='/forgot-password' element={<ForgotPassword />} />
         <Route path='/reset-password/:token' element={<ChangePassword />} />
         <Route path='/infos' element={currentUser ? <Infos /> : <Navigate to='/' />} />
+        <Route path='/product' element={<Product />} />
+        <Route path='/product/:id' element={<Product />} />
+        <Route path='/search' element={<Search />} />
         <Route path='*' element={<Navigate to='/' />} />
+   
       </Routes>
       <Footer />
     </>
