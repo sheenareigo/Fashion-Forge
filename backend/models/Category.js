@@ -4,11 +4,8 @@ const categorySchema = new mongoose.Schema({
   category_name: {
     type: String,
     required: true,
+    enum: ['Men', 'Women', 'Kids'],
     unique: true
-  },
-  genre_name: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Genre'  // Reference to the Genre schema/model
   },
   status: {
     type: Boolean,
