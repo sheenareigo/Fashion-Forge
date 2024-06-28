@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Box, Text, Input, InputGroup, InputLeftElement, Button, useToast, IconButton } from '@chakra-ui/react';
 import { Phone, Email, Edit, Close, House } from '@mui/icons-material';
@@ -17,6 +16,10 @@ const Infos = () => {
   const [isEditingPhone, setIsEditingPhone] = useState(false);
   const [isEditingEmail, setIsEditingEmail] = useState(false);
 
+  const phonePattern = /^[0-9]{10}$/;
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const streetPattern = /^[A-Za-z0-9\s,.-]+$/;
+
   useEffect(() => {
     if (currentUser) {
       getUserById(currentUser)
@@ -34,15 +37,56 @@ const Infos = () => {
     }
   }, [currentUser]);
 
+  const validateInput = () => {
+    let errorMessage = '';
+    let isValid = true;
+
+    // Validate Address
+    if (!address) {
+      errorMessage = 'Address is required.';
+      isValid = false;
+    } else if (!streetPattern.test(address)) {
+      errorMessage = 'Address contains invalid characters.';
+      isValid = false;
+    }
+
+    // Validate Phone Number
+    if (!phonePattern.test(phone)) {
+      errorMessage = 'Please enter a valid phone number. It must be exactly 10 digits.';
+      isValid = false;
+    }
+
+    // Validate Email
+    if (!email) {
+      errorMessage = 'Email ID is required.';
+      isValid = false;
+    } else if (!emailPattern.test(email)) {
+      errorMessage = 'Email ID is invalid.';
+      isValid = false;
+    }
+
+    if (!isValid) {
+      toast({
+        title: 'Validation Error!',
+        description: errorMessage,
+        status: 'error',
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+
+    return isValid;
+  };
+
   const onInputPhone = (e) => setPhone(e.target.value);
   const onInputEmail = (e) => setEmail(e.target.value);
   const onInputAddress = (e) => setAddress(e.target.value);
 
   const onClickSave = () => {
-    const updatedData = { address, phone, email };
-    console.log('Updated Data:', updatedData);
+    if (validateInput()) {
+      const updatedData = { address, phone, email };
+      console.log('Updated Data:', updatedData);
 
-    if (phone.length === 10) {
       updateUser(currentUser, address, phone, email)
         .then((result) => {
           if (result.status === 'failed') {
@@ -75,14 +119,6 @@ const Infos = () => {
             isClosable: true,
           });
         });
-    } else {
-      toast({
-        title: 'Error!',
-        description: 'Please enter valid data.',
-        status: 'error',
-        duration: 2000,
-        isClosable: true,
-      });
     }
   };
 
@@ -122,7 +158,7 @@ const Infos = () => {
             <Box display='flex' alignItems='center' gap={3}>
               <InputGroup maxWidth={300} marginX='auto'>
                 <InputLeftElement pointerEvents='none' children={<Phone color='gray.300' />} />
-                <Input maxLength={11} type='tel' placeholder='Phone number' value={phone} onChange={onInputPhone} />
+                <Input maxLength={10} type='tel' placeholder='Phone number' value={phone} onChange={onInputPhone} />
               </InputGroup>
               <Button colorScheme='facebook' onClick={onClickSave}>Save</Button>
               <IconButton aria-label="Cancel Edit" icon={<Close />} onClick={toggleEditPhone} />
@@ -130,7 +166,7 @@ const Infos = () => {
           )}
         </Box>
         <Box width='30%' display='flex' flexDirection='column' alignItems='center'>
-          <Text p={5} textAlign='center' fontSize={22} fontWeight={500} color='facebook.500'>Email</Text>
+          <Text p={5} textAlign='center' fontSize={22} fontWeight={500} color='facebook.500'>Email ID</Text>
           {!isEditingEmail ? (
             <Box display='flex' alignItems='center' gap={3}>
               <Text>{email}</Text>

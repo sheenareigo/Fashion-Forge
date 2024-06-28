@@ -20,7 +20,7 @@ const Register = () => {
       lastName: '',
       email: '',
       password: '',
-      phone: '+1',
+      phone: '',
       street: '',
       city: '',
       province: '',
@@ -31,36 +31,16 @@ const Register = () => {
     
    onSubmit: values => {
   
-  const phonePattern = /^\+1[0-9]{10}$/;
+  const phonePattern = /^[0-9]{10}$/;
   const namePattern = /^[A-Za-z]+$/;
-  const passwordPattern = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#_])[A-Za-z\d@#_]{8,}$/;
   const canadaPostalCodePattern = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  
+  const streetPattern = /^[A-Za-z0-9\s,.-]+$/;
   // Validation flags
   let isValid = true;
   let errorMessage = '';
-
-  // Validate Password
-  if (!values.password) {
-    errorMessage = 'Password is required.';
-    isValid = false;
-  } else if (values.password.length < 8) {
-    errorMessage = 'Password must be at least 8 characters long.';
-    isValid = false;
-  } else if (!/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#_])[A-Za-z\d@#_]{8,}$/.test(values.password)) {
-    errorMessage = 'Password must contain at least one letter, one number, and one of the following: #, _, @';
-    isValid = false;
-  }
- // Validate Postal Code
-  if (!values.zip) {
-    errorMessage = 'Postal code is required.';
-    isValid = false;
-  } else if (!canadaPostalCodePattern.test(values.zip)) {
-    errorMessage = 'Postal code is invalid';
-    isValid = false;
-  }
-  // Validate first name
+  
+ // Validate first name
   if (!values.firstName) {
     errorMessage = 'First name is required.';
     isValid = false;
@@ -76,6 +56,25 @@ const Register = () => {
     errorMessage = 'Last name must contain only alphabets.';
     isValid = false;
   }
+
+
+  // Validate Address
+  if (!values.street) {
+    errorMessage = 'Address is required.';
+    isValid = false;
+  } else if (!streetPattern.test(values.street)) {
+    errorMessage = 'Address contains invalid characters.';
+    isValid = false;
+  }
+ // Validate Postal Code
+  if (!values.zip) {
+    errorMessage = 'Postal code is required.';
+    isValid = false;
+  } else if (!canadaPostalCodePattern.test(values.zip)) {
+    errorMessage = 'Postal code is invalid';
+    isValid = false;
+  }
+ 
    // Validate city
   if (!values.city) {
     errorMessage = 'City name is required.';
@@ -107,6 +106,20 @@ const Register = () => {
     errorMessage = 'Email ID is invalid';
     isValid = false;
   }
+
+   // Validate Password
+   if (!values.password) {
+    errorMessage = 'Password is required.';
+    isValid = false;
+  } else if (values.password.length < 8) {
+    errorMessage = 'Password must be at least 8 characters long.';
+    isValid = false;
+  } else if (!/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@#_])[A-Za-z\d@#_]{8,}$/.test(values.password)) {
+    errorMessage = 'Password must contain at least one letter, one number, and one of the following: #, _, @';
+    isValid = false;
+  }
+
+
   if (isValid) {
     Signup(values.firstName, values.lastName, values.email, values.password, values.street, values.city,
            values.province, values.zip, values.country, values.phone)
@@ -133,17 +146,13 @@ const Register = () => {
       } else {
         toast({
           title: 'Error!',
-          description: errorMessage,
-          
+          description: errorMessage,          
           status: 'error',
           duration: 2000,
           isClosable: true
         });
       }
-    },});
-  
-
-  
+    },}); 
  
   return (
     <Box
@@ -182,10 +191,10 @@ const Register = () => {
           </FormControl>
         </Box>
         <FormControl isRequired mt={3} isInvalid={touched.email && errors.email} >
-          <FormLabel fontSize={20} >Email</FormLabel>
+          <FormLabel fontSize={20} >Email ID</FormLabel>
           <Input
             name='email'
-            placeholder='Enter Email'
+            placeholder='Enter Email ID'
             onChange={handleChange}
             value={values.email}
             onBlur={handleBlur}
