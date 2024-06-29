@@ -20,7 +20,7 @@ exports.getImageUrlById = async (req, res) => {
     try {
         const actualId = id.id || id;
         const image = await Image.findById(actualId);
-        console.log(image.image_url);
+     
         if (!image) {
             return res.status(404).json({
                 status: 'failed',
