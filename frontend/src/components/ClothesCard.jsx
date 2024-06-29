@@ -30,7 +30,6 @@ const ClothesCard = ({ productId, isDelivered }) => {
           setProduct(result.product);
           getImageUrlById(result.product.image_id)
                     .then(img_url => {
-                        console.log(img_url); // Check the retrieved image URL
                         setImageUrl(img_url);
                     })
         });
@@ -113,8 +112,8 @@ const ClothesCard = ({ productId, isDelivered }) => {
           onClick={() => navigate(`/product/${product._id}`, { state: { "productId": product._id } })}
         />
         <Box px={3} py={5} bg='#fff' position='relative' width='100%' height={230} maxWidth={500} >
-          <Text onClick={() => navigate(`/product/${product._id}`, { state: { "productId": product._id } })} fontWeight={500} fontSize={26} >{product.name}</Text>
-          <Text onClick={() => navigate(`/product/${product._id}`, { state: { "productId": product._id } })} mb={10} fontSize={18} >{product.description}</Text>
+          <Text onClick={() => navigate(`/product/${product._id}`, { state: { "productId": product._id } })} fontWeight={500} fontSize={26} >{product.product_name}</Text>
+        
           <Box
             mt={5}
             py={3}
