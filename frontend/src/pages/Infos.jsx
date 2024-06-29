@@ -24,6 +24,10 @@ const Infos = () => {
     email: false
   });
 
+  const phonePattern = /^[0-9]{10}$/;
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const streetPattern = /^[A-Za-z0-9\s,.-]+$/;
+
   useEffect(() => {
     if (currentUser) {
       getUserById(currentUser)
@@ -44,6 +48,47 @@ const Infos = () => {
     }
   }, [currentUser]);
 
+  const validateInput = () => {
+    let errorMessage = '';
+    let isValid = true;
+
+    // Validate Address
+    if (!address) {
+      errorMessage = 'Address is required.';
+      isValid = false;
+    } else if (!streetPattern.test(address)) {
+      errorMessage = 'Address contains invalid characters.';
+      isValid = false;
+    }
+
+    // Validate Phone Number
+    if (!phonePattern.test(phone)) {
+      errorMessage = 'Please enter a valid phone number. It must be exactly 10 digits.';
+      isValid = false;
+    }
+
+    // Validate Email
+    if (!email) {
+      errorMessage = 'Email ID is required.';
+      isValid = false;
+    } else if (!emailPattern.test(email)) {
+      errorMessage = 'Email ID is invalid.';
+      isValid = false;
+    }
+
+    if (!isValid) {
+      toast({
+        title: 'Validation Error!',
+        description: errorMessage,
+        status: 'error',
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+
+    return isValid;
+  };
+
   const handleInputChange = (e, field) => {
     const value = e.target.value;
     if (field === 'phone') setPhone(value);
@@ -60,8 +105,10 @@ const Infos = () => {
 
   const onClickSave = () => {
     const updatedData = { address, city, province, zip, phone, email };
+    if (validateInput()) {
+      
+      console.log('Updated Data:', updatedData);
 
-    if (phone.length === 10) {
       updateUser(currentUser, updatedData)
         .then((result) => {
           if (result.status === 'failed') {
@@ -99,14 +146,6 @@ const Infos = () => {
             isClosable: true,
           });
         });
-    } else {
-      toast({
-        title: 'Error!',
-        description: 'Please enter valid data.',
-        status: 'error',
-        duration: 2000,
-        isClosable: true,
-      });
     }
   };
 
