@@ -1,13 +1,13 @@
  import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
- import { useCookies } from 'react-cookie';
- import { Box, FormControl, FormLabel, InputGroup, Input, Text, InputRightElement, Button, Checkbox, useToast,Link, Center } from '@chakra-ui/react';
- import { Visibility, VisibilityOff } from '@mui/icons-material';
- import { useFormik } from 'formik';
-import axios from 'axios'
+ //import { useCookies } from 'react-cookie';
+ import { Box, FormControl, FormLabel, Input, Text, Button, useToast } from '@chakra-ui/react';
 
- import { useUserContext } from '../contexts/UserContext';
-import { VerifyEmail as VerifyEmail } from '../services/AuthServices';
+ import { useFormik } from 'formik';
+
+
+ 
+
 import { requestPasswordReset as requestPasswordReset } from '../services/AuthServices';
 
 const ForgotPassword = () => {
@@ -22,7 +22,6 @@ const ForgotPassword = () => {
     },
     onSubmit: async (values) => {
       try {
-        // Directly request password reset
         const resetResponse = await requestPasswordReset(values.email);
         console.log("resetResponse", resetResponse);
 

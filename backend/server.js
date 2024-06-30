@@ -5,8 +5,9 @@ const dotenv = require('dotenv').config();
 const userRoutes = require('./routes/userRoutes');
 const imageRoutes = require('./routes/imageRoutes');
 const miniImageRoutes = require('./routes/miniImageRoutes');
+const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
-const productRoutes=require('./routes/productRoutes');
+
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -22,7 +23,8 @@ app.use('/minis', miniImageRoutes);
 app.use('/products', productRoutes);
 app.use('/categories', categoryRoutes);
 
-//const {populateDB} = require('./controllers/imageInsertion');
+const insertSampleData = require('./controllers/imageInsertion');
+
 mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
