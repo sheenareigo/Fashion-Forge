@@ -59,7 +59,6 @@ const images = [
     mini_image_url: "/Images/carousel/6.jpg"
   }
 
-
 ];
 
 const miniimages = [
@@ -70,6 +69,9 @@ const miniimages = [
   { url: '/Images/carousel/2.jpg' },
   { url: '/Images/new-arrival-1.jpg' }
 ];
+
+
+
 
 const products = [
   {
@@ -122,6 +124,8 @@ const products = [
   }
 ];
 
+
+
 const insertSampleData = async () => {
   try {
     console.log('Inserting images...');
@@ -134,9 +138,9 @@ const insertSampleData = async () => {
     await MiniImage.insertMany(miniimages);
     console.log('mini-images inserted');
     
-//   } catch (error) {
-//     console.error('Error inserting sample data:', error);
-//   }
-// };
+  } catch (error) {
+    console.error('Error inserting sample data:', error);
+  }
+};
 
-// module.exports = insertSampleData;
+module.exports = insertSampleData;

@@ -24,6 +24,7 @@ app.use('/products', productRoutes);
 app.use('/categories', categoryRoutes);
 
 const insertSampleData = require('./controllers/imageInsertion');
+
 mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
