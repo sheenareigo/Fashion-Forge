@@ -22,6 +22,7 @@ app.use('/images', imageRoutes);
 app.use('/minis', miniImageRoutes);
 app.use('/products', productRoutes);
 app.use('/categories', categoryRoutes);
+
 const insertSampleData = require('./controllers/imageInsertion');
 mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
@@ -29,6 +30,7 @@ mongoose.connect(process.env.MONGODB_URL, {
 })
   .then(() => {
     console.log('Successfully connected to database.');
+    //populateDB();
   })
   .catch((error) => {
     console.error('Error connecting to database:', error);

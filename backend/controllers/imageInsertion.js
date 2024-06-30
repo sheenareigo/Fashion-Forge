@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 
+const Genre = require('../models/Genre');
+const Category = require('../models/Category');
 const Image = require('../models/Image');
+//const miniImage = require('../models/MiniImage')
 const Product = require('../models/Product');
 const MiniImage = require('../models/MiniImage');
 
@@ -121,19 +124,19 @@ const products = [
 
 const insertSampleData = async () => {
   try {
-    // console.log('Inserting images...');
-    // await Image.insertMany(images);
-    // console.log('Images inserted');
+    console.log('Inserting images...');
+    await Image.insertMany(images);
+    console.log('Images inserted');
 
-    // console.log('Inserting products...');
-    // await Product.insertMany(products);
-    // console.log('Products inserted');
-    // await MiniImage.insertMany(miniimages);
-    // console.log('mini-images inserted');
+    console.log('Inserting products...');
+    await Product.insertMany(products);
+    console.log('Products inserted');
+    await MiniImage.insertMany(miniimages);
+    console.log('mini-images inserted');
     
-  } catch (error) {
-    console.error('Error inserting sample data:', error);
-  }
-};
+//   } catch (error) {
+//     console.error('Error inserting sample data:', error);
+//   }
+// };
 
-module.exports = insertSampleData;
+// module.exports = insertSampleData;
