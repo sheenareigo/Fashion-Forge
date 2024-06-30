@@ -19,7 +19,7 @@ export const getProductByPrice = async (lowest, uppest) => {
 };
 
 export const getProductByCategoryName = async (category_name) => {
-    console.log("from services");
+    
     const { data } = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/products/category/name/${category_name}`);
     return data;
 };

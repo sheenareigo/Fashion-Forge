@@ -54,9 +54,9 @@ exports.getProductsByColor = async (req, res) => {
 
 exports.getProductByCategoryName = async (req, res) => {
     try {
-        console.log("from product controller");
+       
         const categoryName = req.params.name; 
-        console.log("Fetching category by name:", categoryName);
+       
         const category = await Category.findOne({ category_name: categoryName });
         if (!category) {
             return res.status(404).json({
@@ -64,7 +64,7 @@ exports.getProductByCategoryName = async (req, res) => {
                 error: `Category '${categoryName}' not found`
             });
         }
-        console.log("Category found",category._id);
+        
         const products = await Product.find({ category: category._id });
         res.status(200).json({
             products

@@ -87,7 +87,7 @@ const Navbar = () => {
                   <MenuButton />
                   <MenuList >
                     <MenuGroup title='Account' >
-                    <MenuItem onClick={() => navigate('/infos')} ><Person sx={{ marginRight: 2 }} /> Manage my profile</MenuItem>
+                    <MenuItem onClick={() => navigate('/infos')} ><Person sx={{ marginRight: 2 }} /> Manage My Profile</MenuItem>
                       <MenuItem onClick={() => navigate('/')} ><ShoppingBag sx={{ marginRight: 2 }} /> Orders</MenuItem>
                     </MenuGroup>
                     <Divider />

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // import React, { useEffect, useState } from 'react';
 // import { Box, Text, Input, InputGroup, InputLeftElement, Divider, Center, Button, useToast, IconButton } from '@chakra-ui/react';
 // import { Phone, Email, Edit, Check, Close, House } from '@mui/icons-material';
@@ -161,9 +162,11 @@
 
 // export default Infos;
 
+=======
+>>>>>>> 986cbcf3bd2f819693f9049ed4e86ff167f2dab0
 import React, { useEffect, useState } from 'react';
-import { Box, Text, Input, InputGroup, InputLeftElement, Button, useToast, IconButton } from '@chakra-ui/react';
-import { Phone, Email, Edit, Close, House } from '@mui/icons-material';
+import { Box, Text, Input, InputGroup, InputLeftElement, Button, useToast, IconButton, Stack, FormControl, FormLabel, Heading, VStack } from '@chakra-ui/react';
+import { Phone, Email, Edit, Close, LocationCity, Map, MarkunreadMailbox, Home } from '@mui/icons-material';
 import { useUserContext } from '../contexts/UserContext';
 import { getUserById, updateUser } from '../services/UserServices';
 
@@ -171,20 +174,35 @@ const Infos = () => {
   const toast = useToast();
   const { currentUser } = useUserContext();
   const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [province, setProvince] = useState("");
+  const [zip, setZip] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [isEditingAddress, setIsEditingAddress] = useState(false);
-  const [isEditingPhone, setIsEditingPhone] = useState(false);
-  const [isEditingEmail, setIsEditingEmail] = useState(false);
+  const [isEditing, setIsEditing] = useState({
+    address: false,
+    city: false,
+    province: false,
+    zip: false,
+    phone: false,
+    email: false
+  });
+
+  const phonePattern = /^[0-9]{10}$/;
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const streetPattern = /^[A-Za-z0-9\s,.-]+$/;
 
   useEffect(() => {
     if (currentUser) {
       getUserById(currentUser)
         .then((result) => {
-          const { address, phone, email, firstName, lastName } = result.user;
+          const { address, city, province, zip, phone, email, firstName, lastName } = result.user;
           setAddress(address);
+          setCity(city);
+          setProvince(province);
+          setZip(zip);
           setPhone(phone);
           setEmail(email);
           setFirstName(firstName);
@@ -196,16 +214,68 @@ const Infos = () => {
     }
   }, [currentUser]);
 
-  const onInputPhone = (e) => setPhone(e.target.value);
-  const onInputEmail = (e) => setEmail(e.target.value);
-  const onInputAddress = (e) => setAddress(e.target.value);
+  const validateInput = () => {
+    let errorMessage = '';
+    let isValid = true;
+
+    // Validate Address
+    if (!address) {
+      errorMessage = 'Address is required.';
+      isValid = false;
+    } else if (!streetPattern.test(address)) {
+      errorMessage = 'Address contains invalid characters.';
+      isValid = false;
+    }
+
+    // Validate Phone Number
+    if (!phonePattern.test(phone)) {
+      errorMessage = 'Please enter a valid phone number. It must be exactly 10 digits.';
+      isValid = false;
+    }
+
+    // Validate Email
+    if (!email) {
+      errorMessage = 'Email ID is required.';
+      isValid = false;
+    } else if (!emailPattern.test(email)) {
+      errorMessage = 'Email ID is invalid.';
+      isValid = false;
+    }
+
+    if (!isValid) {
+      toast({
+        title: 'Validation Error!',
+        description: errorMessage,
+        status: 'error',
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+
+    return isValid;
+  };
+
+  const handleInputChange = (e, field) => {
+    const value = e.target.value;
+    if (field === 'phone') setPhone(value);
+    else if (field === 'email') setEmail(value);
+    else if (field === 'address') setAddress(value);
+    else if (field === 'city') setCity(value);
+    else if (field === 'province') setProvince(value);
+    else if (field === 'zip') setZip(value);
+  };
+
+  const handleEditToggle = (field) => {
+    setIsEditing((prev) => ({ ...prev, [field]: !prev[field] }));
+  };
 
   const onClickSave = () => {
-    const updatedData = { address, phone, email };
-    console.log('Updated Data:', updatedData);
+    const updatedData = { address, city, province, zip, phone, email };
+    if (validateInput()) {
+      
+      console.log('Updated Data:', updatedData);
 
-    if (phone.length === 10) {
-      updateUser(currentUser, address, phone, email)
+      updateUser(currentUser, updatedData)
         .then((result) => {
           if (result.status === 'failed') {
             toast({
@@ -223,9 +293,14 @@ const Infos = () => {
               duration: 2000,
               isClosable: true,
             });
-            setIsEditingAddress(false);
-            setIsEditingPhone(false);
-            setIsEditingEmail(false);
+            setIsEditing({
+              address: false,
+              city: false,
+              province: false,
+              zip: false,
+              phone: false,
+              email: false
+            });
           }
         })
         .catch(error => {
@@ -237,79 +312,130 @@ const Infos = () => {
             isClosable: true,
           });
         });
-    } else {
-      toast({
-        title: 'Error!',
-        description: 'Please enter valid data.',
-        status: 'error',
-        duration: 2000,
-        isClosable: true,
-      });
     }
   };
 
-  const toggleEditAddress = () => setIsEditingAddress(!isEditingAddress);
-  const toggleEditPhone = () => setIsEditingPhone(!isEditingPhone);
-  const toggleEditEmail = () => setIsEditingEmail(!isEditingEmail);
-
   return (
-    <Box mt={10} p={4}>
-      <Text p={5} textAlign='center' fontSize={30} fontWeight={500} color='facebook.500'>
+    <Box mt={10} p={4} maxW="container.md" mx="auto">
+      <Heading mb={6} textAlign="center" fontSize={30} fontWeight={500} color="facebook.500">
         {firstName} {lastName} - Account Information
-      </Text>
-      <Box display='flex' flexDirection='row' justifyContent='space-around' alignItems='center'>
-        <Box width='30%' display='flex' flexDirection='column' alignItems='center'>
-          <Text p={5} textAlign='center' fontSize={22} fontWeight={500} color='facebook.500'>Address</Text>
-          {!isEditingAddress ? (
-            <Box display='flex' alignItems='center' gap={3}>
-              <Text>{address}</Text>
-              <IconButton aria-label="Edit Address" icon={<Edit />} onClick={toggleEditAddress} />
-            </Box>
-          ) : (
-            <Box display='flex' alignItems='center' gap={3}>
-              <Input type='text' placeholder='Enter address' value={address} onChange={onInputAddress} />
-              <Button colorScheme='facebook' onClick={onClickSave}>Save</Button>
-              <IconButton aria-label="Cancel Edit" icon={<Close />} onClick={toggleEditAddress} />
-            </Box>
-          )}
-        </Box>
-        <Box width='30%' display='flex' flexDirection='column' alignItems='center'>
-          <Text p={5} textAlign='center' fontSize={22} fontWeight={500} color='facebook.500'>Phone</Text>
-          {!isEditingPhone ? (
-            <Box display='flex' alignItems='center' gap={3}>
-              <Text>{phone}</Text>
-              <IconButton aria-label="Edit Phone" icon={<Edit />} onClick={toggleEditPhone} />
-            </Box>
-          ) : (
-            <Box display='flex' alignItems='center' gap={3}>
-              <InputGroup maxWidth={300} marginX='auto'>
-                <InputLeftElement pointerEvents='none' children={<Phone color='gray.300' />} />
-                <Input maxLength={11} type='tel' placeholder='Phone number' value={phone} onChange={onInputPhone} />
+      </Heading>
+      <VStack spacing={6} align="stretch">
+
+      <FormControl>
+          <FormLabel fontSize={20} fontWeight={500} color="facebook.500">Email</FormLabel>
+            <Box display="flex" alignItems="center" gap={3}>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none" children={<Email color="gray.300" />} />
+                <Input type="email" placeholder="Email address" value={email} isReadOnly={true} />
               </InputGroup>
-              <Button colorScheme='facebook' onClick={onClickSave}>Save</Button>
-              <IconButton aria-label="Cancel Edit" icon={<Close />} onClick={toggleEditPhone} />
             </Box>
-          )}
-        </Box>
-        <Box width='30%' display='flex' flexDirection='column' alignItems='center'>
-          <Text p={5} textAlign='center' fontSize={22} fontWeight={500} color='facebook.500'>Email</Text>
-          {!isEditingEmail ? (
-            <Box display='flex' alignItems='center' gap={3}>
-              <Text>{email}</Text>
-              <IconButton aria-label="Edit Email" icon={<Edit />} onClick={toggleEditEmail} />
+     
+        </FormControl>
+
+        <FormControl>
+          <FormLabel fontSize={20} fontWeight={500} color="facebook.500">Address</FormLabel>
+          {!isEditing.address ? (
+            <Box display="flex" alignItems="center" gap={3}>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none" children={<Home color="gray.300" />} />
+                <Input type="text" placeholder="Enter address" value={address} isReadOnly={true} />
+                <IconButton ml={2} aria-label="Edit Address" icon={<Edit />} onClick={() => handleEditToggle('address')} />
+              </InputGroup>
             </Box>
           ) : (
-            <Box display='flex' alignItems='center' gap={3}>
-              <InputGroup maxWidth={300} marginX='auto'>
-                <InputLeftElement pointerEvents='none' children={<Email color='gray.300' />} />
-                <Input type='email' placeholder='Email address' value={email} onChange={onInputEmail} />
-              </InputGroup>
-              <Button colorScheme='facebook' onClick={onClickSave}>Save</Button>
-              <IconButton aria-label="Cancel Edit" icon={<Close />} onClick={toggleEditEmail} />
-            </Box>
+            <InputGroup>
+              <InputLeftElement pointerEvents="none" children={<Home color="gray.300" />} />
+              <Input type="text" placeholder="Enter address" value={address} onChange={(e) => handleInputChange(e, 'address')} />
+              <Button ml={2} colorScheme="facebook" onClick={onClickSave}>Save</Button>
+              <IconButton ml={2} aria-label="Cancel Edit" icon={<Close />} onClick={() => handleEditToggle('address')} />
+            </InputGroup>
           )}
-        </Box>
-      </Box>
+        </FormControl>
+
+        <FormControl>
+          <FormLabel fontSize={20} fontWeight={500} color="facebook.500">City</FormLabel>
+          {!isEditing.city ? (
+            <Box display="flex" alignItems="center" gap={3}>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none" children={<LocationCity color="gray.300" />} />
+                <Input type="text" placeholder="Enter city" value={city} isReadOnly={true} />
+                <IconButton ml={2} aria-label="Edit City" icon={<Edit />} onClick={() => handleEditToggle('city')} />
+              </InputGroup>
+            </Box>
+          ) : (
+            <InputGroup>
+              <InputLeftElement pointerEvents="none" children={<LocationCity color="gray.300" />} />
+              <Input type="text" placeholder="Enter city" value={city} onChange={(e) => handleInputChange(e, 'city')} />
+              <Button ml={2} colorScheme="facebook" onClick={onClickSave}>Save</Button>
+              <IconButton ml={2} aria-label="Cancel Edit" icon={<Close />} onClick={() => handleEditToggle('city')} />
+            </InputGroup>
+          )}
+        </FormControl>
+
+        <FormControl>
+          <FormLabel fontSize={20} fontWeight={500} color="facebook.500"l>Province</FormLabel>
+          {!isEditing.province ? (
+            <Box display="flex" alignItems="center" gap={3}>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none" children={<Map color="gray.300" />} />
+                <Input type="text" placeholder="Enter province" value={province} isReadOnly={true} />
+                <IconButton ml={2} aria-label="Edit Province" icon={<Edit />} onClick={() => handleEditToggle('province')} />
+              </InputGroup>
+            </Box>
+          ) : (
+            <InputGroup>
+              <InputLeftElement pointerEvents="none" children={<Map color="gray.300" />} />
+              <Input type="text" placeholder="Enter province" value={province} onChange={(e) => handleInputChange(e, 'province')} />
+              <Button ml={2} colorScheme="facebook" onClick={onClickSave}>Save</Button>
+              <IconButton ml={2} aria-label="Cancel Edit" icon={<Close />} onClick={() => handleEditToggle('province')} />
+            </InputGroup>
+          )}
+        </FormControl>
+
+        <FormControl>
+          <FormLabel fontSize={20} fontWeight={500} color="facebook.500">ZIP Code</FormLabel>
+          {!isEditing.zip ? (
+            <Box display="flex" alignItems="center" gap={3}>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none" children={<MarkunreadMailbox color="gray.300" />} />
+                <Input type="text" placeholder="Enter ZIP code" value={zip} isReadOnly={true} />
+                <IconButton ml={2} aria-label="Edit ZIP Code" icon={<Edit />} onClick={() => handleEditToggle('zip')} />
+              </InputGroup>
+            </Box>
+          ) : (
+            <InputGroup>
+              <InputLeftElement pointerEvents="none" children={<MarkunreadMailbox color="gray.300" />} />
+              <Input type="text" placeholder="Enter ZIP code" value={zip} onChange={(e) => handleInputChange(e, 'zip')} />
+              <Button ml={2} colorScheme="facebook" onClick={onClickSave}>Save</Button>
+              <IconButton ml={2} aria-label="Cancel Edit" icon={<Close />} onClick={() => handleEditToggle('zip')} />
+            </InputGroup>
+          )}
+        </FormControl>
+
+        <FormControl>
+          <FormLabel fontSize={20} fontWeight={500} color="facebook.500">Phone</FormLabel>
+          {!isEditing.phone ? (
+            <Box display="flex" alignItems="center" gap={3}>
+              <InputGroup>
+                <InputLeftElement pointerEvents="none" children={<Phone color="gray.300" />} />
+                <Input type="tel" placeholder="Phone number" value={phone} isReadOnly={true} />
+                <IconButton ml={2} aria-label="Edit Phone" icon={<Edit />} onClick={() => handleEditToggle('phone')} />
+              </InputGroup>
+            </Box>
+          ) : (
+            <InputGroup>
+              <InputLeftElement pointerEvents="none" children={<Phone color="gray.300" />} />
+              <Input type="tel" placeholder="Phone number" value={phone} onChange={(e) => handleInputChange(e, 'phone')} />
+              <Button ml={2} colorScheme="facebook" onClick={onClickSave}>Save</Button>
+              <IconButton ml={2} aria-label="Cancel Edit" icon={<Close />} onClick={() => handleEditToggle('phone')} />
+            </InputGroup>
+          )}
+        </FormControl>
+
+     
+        
+      </VStack>
     </Box>
   );
 };
