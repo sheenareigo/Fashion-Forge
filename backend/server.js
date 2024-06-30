@@ -22,13 +22,14 @@ app.use('/minis', miniImageRoutes);
 app.use('/products', productRoutes);
 app.use('/categories', categoryRoutes);
 
-const insertSampleData = require('./controllers/imageInsertion');
+//const {populateDB} = require('./controllers/imageInsertion');
 mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
   .then(() => {
     console.log('Successfully connected to database.');
+    //populateDB();
   })
   .catch((error) => {
     console.error('Error connecting to database:', error);
