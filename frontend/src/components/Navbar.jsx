@@ -35,7 +35,7 @@ const Navbar = () => {
 
   const Logout = () => {
     removeCookie('currentUser', { path: '/' });
-    setCurrentUser('');
+    setCurrentUser(null);
   };
 
   return (

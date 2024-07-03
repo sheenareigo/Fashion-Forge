@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Text, Container, SimpleGrid, Image, CircularProgress } from '@chakra-ui/react';
 import { AccountBalanceWallet, AssignmentReturn, WorkspacePremium } from '@mui/icons-material';
+import { useUserContext } from '../contexts/UserContext';
 
 import Carousel from '../components/Carousel';
 import Categories from '../components/Categories';
@@ -11,9 +12,9 @@ import { useSearchContext } from '../contexts/SearchContext';
 const Home = () => {
 
   const navigate = useNavigate();
+  const { currentUser } = useUserContext();
   const { setSearch } = useSearchContext();
   const [miniImages, setMiniImages] = useState([]);
-  
   useEffect(() => {
     getAllMiniImages()
       .then((result) => {

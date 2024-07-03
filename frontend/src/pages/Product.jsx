@@ -27,6 +27,7 @@ const Product = () => {
       getProductById(location.state.productId)
         .then((result) => {
           if (result && result.product) {
+            console.log('Current User:', currentUser);
             setProduct(result.product);
             setSizes(result.product.size || []);
             getImageUrlById(result.product.image_id)

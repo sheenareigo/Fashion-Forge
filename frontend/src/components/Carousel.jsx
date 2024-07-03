@@ -36,7 +36,6 @@ const Carousel = () => {
   useEffect(() => {
     getAllImages()
       .then((result) => {
-        console.log(result.imageUrls);
         setImages(result.imageUrls);
       });
   }, []);
