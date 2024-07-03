@@ -7,6 +7,7 @@ import ClothesCard from '../components/ClothesCard';
 import FilterMenu from '../components/FilterMenu';
 import { getProductByCategoryName, getProductBySearch } from '../services/ProductServices';
 import { SearchOff } from '@mui/icons-material';
+import { useUserContext } from '../contexts/UserContext';
 
 const Search = () => {
   const navigate = useNavigate();
@@ -16,12 +17,15 @@ const Search = () => {
   const [sortBy, setSortBy] = useState("recommended");
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(11);
+  const { currentUser } = useUserContext();
+
 
   useEffect(() => {
     if (state !== null && state.category_name) {
       getProductByCategoryName(state.category_name)
         .then((result) => {
           setProducts(result.products);
+          
         })
         .catch((error) => {
           console.error('Error fetching products by category:', error);
