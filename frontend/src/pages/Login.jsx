@@ -26,6 +26,7 @@ const Login = () => {
     onSubmit: values => {
       LogIn(values.email, values.password)
         .then((result) => {
+
           console.log(result.status);
           if (result.data.currentUser && result.status === 200) {
             setCurrentUser(result.data.currentUser._id);
@@ -36,6 +37,7 @@ const Login = () => {
               duration: 2000,
               isClosable: true
             });
+            navigate('/', { state: { userId: result.data.currentUser._id } });
             if (remember) {
               setCookie('currentUser', result.data.currentUser._id, { path: '/', maxAge: 30 * 24 * 60 * 60 }); // 30 days
             } else {

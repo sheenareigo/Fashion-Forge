@@ -1,19 +1,18 @@
 const mongoose = require('mongoose');
 const bcrypt=require('bcryptjs');
 
+
+// Using _id
+const productSubSchema = new mongoose.Schema({
+  product_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },  // Change to ObjectId
+  quantity: { type: Number, default: 1 },
+  size:{type:String,require:true}
+}, { _id: false });
+
+
 const cartSchema = new mongoose.Schema({
-  products: [{
-    product_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product',  
-      required: true
-    },
-    quantity: {
-      type: Number,
-      default: 1
-    }
-  }]
-});
+  products: { type: [productSubSchema], default: [] }
+}, { _id: false });
 
 const UserSchema = new mongoose.Schema({
     firstName: {
@@ -60,7 +59,8 @@ const UserSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    cart: cartSchema
+  //  cart: cartSchema
+  cart: { type: cartSchema, default: () => ({ products: [] }) },
 },{versionKey:false});
 
 UserSchema.pre("save", function (next) {

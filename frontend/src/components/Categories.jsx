@@ -1,11 +1,24 @@
 import React from 'react';
 import { Box, Grid, Heading, Image, useBreakpointValue } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const Categories = () => {
   const navigate = useNavigate();
-  const imageSize = useBreakpointValue({ base: '200', md: '350px', lg: '400px' }); 
-  const boxHeight = useBreakpointValue({ base: '350px', md: '400px', lg: '450px' }); 
+
+  const location = useLocation(); // Use the useLocation hook to get the location object
+  const imageSize = useBreakpointValue({ base: '200px', md: '350px', lg: '400px' });
+  const boxHeight = useBreakpointValue({ base: '350px', md: '400px', lg: '450px' });
+
+  const handleCategoryClick = (category) => {
+    const userId = location.state?.userId; // Get the userId from the location state
+    /*if (!userId) {
+      console.error('User ID is missing!');
+      return;
+    }*/
+    navigate('/search', { state: { userId, category_name: category } });
+    console.log("navigate to search");
+  };
+ 
   const handleCategoryClick=(category)=>{
     navigate('/search',{state:{category_name:category}});
    
@@ -27,10 +40,10 @@ const Categories = () => {
           onClick={() => handleCategoryClick('Men')}
           cursor="pointer"
           height={boxHeight}
-          position="relative" 
+          position="relative"
           _hover={{
-            transform: 'scale(1.05)', 
-            transition: 'transform 0.3s ease', 
+            transform: 'scale(1.05)',
+            transition: 'transform 0.3s ease',
           }}
         >
           <Image
