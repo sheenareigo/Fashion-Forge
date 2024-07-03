@@ -6,12 +6,12 @@ import { AccountBalanceWallet, AssignmentReturn, WorkspacePremium } from '@mui/i
 import Carousel from '../components/Carousel';
 import Categories from '../components/Categories';
 import { getAllMiniImages } from '../services/ImageServices';
-//import { useSearchContext } from '../contexts/SearchContext';
+import { useSearchContext } from '../contexts/SearchContext';
 
 const Home = () => {
 
   const navigate = useNavigate();
-  //const { setSearch } = useSearchContext();
+  const { setSearch } = useSearchContext();
   const [miniImages, setMiniImages] = useState([]);
   
   useEffect(() => {
