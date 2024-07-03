@@ -34,8 +34,10 @@ const Navbar = () => {
   // };
 
   const Logout = () => {
+    
     removeCookie('currentUser', { path: '/' });
     setCurrentUser(null);
+    navigate('/');
   };
 
   return (
