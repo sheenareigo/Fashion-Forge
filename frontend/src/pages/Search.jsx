@@ -6,11 +6,13 @@ import Pagination from '../components/Pagination'; // Import the Pagination comp
 import ClothesCard from '../components/ClothesCard';
 import FilterMenu from '../components/FilterMenu';
 import { getProductByCategoryName, getProductBySearch } from '../services/ProductServices';
+import { useSearchContext } from '../contexts/SearchContext';
 import { SearchOff } from '@mui/icons-material';
 
 const Search = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
+  const { search, canSearch } = useSearchContext();
   const [openFilter, setOpenFilter] = useState(false);
   const [products, setProducts] = useState([]);
   const [sortBy, setSortBy] = useState("recommended");
@@ -27,7 +29,15 @@ const Search = () => {
           console.error('Error fetching products by category:', error);
         });
     }
-  }, [state]);
+
+    if (search !== "" && search !== " " && search !== null && search !== undefined && canSearch) {
+      getProductBySearch(search)
+        .then((result) => {
+          setProducts(result.products);
+        });
+      setSortBy("recommended");
+    }
+  }, [state, search, canSearch]);
 
   const handleChange = (e) => {
     setSortBy(e.target.value);
