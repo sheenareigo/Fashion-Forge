@@ -13,6 +13,7 @@ import { useUserContext } from './contexts/UserContext';
 import { useSearchContext } from './contexts/SearchContext';
 import Search from './pages/Search';
 import Product from './pages/Product';
+import CartPage from './pages/CartPage';
 const App = () => {
 
   const { currentUser } = useUserContext();
@@ -30,6 +31,7 @@ const App = () => {
         <Route path='/product' element={<Product />} />
         <Route path='/product/:id' element={<Product />} />
         <Route path='/search' element={<Search />} />
+        <Route path='/cart' element={< CartPage/>} />
         <Route path='*' element={<Navigate to='/' />} />
    
       </Routes>

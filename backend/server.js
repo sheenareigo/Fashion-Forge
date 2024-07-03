@@ -7,6 +7,7 @@ const imageRoutes = require('./routes/imageRoutes');
 const miniImageRoutes = require('./routes/miniImageRoutes');
 const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
+const cartRoutes = require('./routes/cartRoutes'); 
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -22,7 +23,8 @@ app.use('/images', imageRoutes);
 app.use('/minis', miniImageRoutes);
 app.use('/products', productRoutes);
 app.use('/categories', categoryRoutes);
-
+app.use('/cart', cartRoutes); // Use cart routes
+app.use('/product', productRoutes);
 const insertSampleData = require('./controllers/imageInsertion');
 
 mongoose.connect(process.env.MONGODB_URL, {
