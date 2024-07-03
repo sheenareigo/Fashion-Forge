@@ -1,19 +1,28 @@
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useCookies } from 'react-cookie';
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [cookies, setCookie, removeCookie] = useCookies(['currentUser']);
 
-    const [cookies] = useCookies(['currentUser']);
-    const [currentUser, setCurrentUser] = useState(cookies.currentUser || null);
-
-    const values = {
-        currentUser,
-        setCurrentUser
+  useEffect(() => {
+    if (cookies.currentUser && !currentUser) {
+      setCurrentUser(cookies.currentUser);
     }
+  }, [cookies.currentUser, currentUser]);
 
-    return <UserContext.Provider value={values}>{children}</UserContext.Provider>
+  const logout = () => {
+    setCurrentUser(null);
+    removeCookie('currentUser', { path: '/' });
+  };
+
+  return (
+    <UserContext.Provider value={{ currentUser, setCurrentUser, logout }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 export const useUserContext = () => useContext(UserContext);

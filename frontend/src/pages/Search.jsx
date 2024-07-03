@@ -3,41 +3,43 @@ import { Box, SimpleGrid, Button, Select, Text, Icon, Heading } from '@chakra-ui
 import Pagination from '../components/Pagination';
 import ClothesCard from '../components/ClothesCard';
 import FilterMenu from '../components/FilterMenu';
-import { getProductByCategoryName } from '../services/ProductServices';
+import { getProductByCategoryName, getProductBySearch } from '../services/ProductServices';
+import { useSearchContext } from '../contexts/SearchContext';
 import { SearchOff } from '@mui/icons-material';
+import { useUserContext } from '../contexts/UserContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const Search = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { state } = useLocation();
+  const { search, canSearch } = useSearchContext();
   const [openFilter, setOpenFilter] = useState(false);
   const [products, setProducts] = useState([]);
   const [sortBy, setSortBy] = useState("recommended");
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(11);
-  const userId = location.state?.userId || null;
-
-  useEffect(() => {
-    if (!userId) {
-      console.log('User ID not found, redirecting to login.');
-      // Uncomment the line below to redirect to login if userId is not found
-      // navigate('/login');
-    } else {
-      console.log(`User ID: ${userId}`);
-    }
-  }, [userId, navigate]);
+  const { currentUser } = useUserContext();
 
   useEffect(() => {
     if (location.state?.category_name) {
       getProductByCategoryName(location.state.category_name)
         .then((result) => {
           setProducts(result.products);
+          
         })
         .catch((error) => {
           console.error('Error fetching products by category:', error);
         });
     }
-  }, [location.state]);
+
+    if (search !== "" && search !== " " && search !== null && search !== undefined && canSearch) {
+      getProductBySearch(search)
+        .then((result) => {
+          setProducts(result.products);
+        });
+      setSortBy("recommended");
+    }
+  }, [state, search, canSearch]);
 
   const handleChange = (e) => {
     setSortBy(e.target.value);

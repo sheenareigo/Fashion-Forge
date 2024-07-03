@@ -19,7 +19,7 @@ const settings = {
   autoplay: true,
   speed: 500,
   autoplaySpeed: 5000,
-  slidesToShow: 2,
+  slidesToShow: 1,
   slidesToScroll: 1,
 };
 
@@ -36,7 +36,6 @@ const Carousel = () => {
   useEffect(() => {
     getAllImages()
       .then((result) => {
-        console.log(result.imageUrls);
         setImages(result.imageUrls);
       });
   }, []);

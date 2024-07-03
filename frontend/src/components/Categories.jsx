@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 const Categories = () => {
   const navigate = useNavigate();
+
   const location = useLocation(); // Use the useLocation hook to get the location object
   const imageSize = useBreakpointValue({ base: '200px', md: '350px', lg: '400px' });
   const boxHeight = useBreakpointValue({ base: '350px', md: '400px', lg: '450px' });
@@ -17,6 +18,11 @@ const Categories = () => {
     navigate('/search', { state: { userId, category_name: category } });
     console.log("navigate to search");
   };
+ 
+  const handleCategoryClick=(category)=>{
+    navigate('/search',{state:{category_name:category}});
+   
+};
 
   return (
     <Box mt={8}>
