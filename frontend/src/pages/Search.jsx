@@ -18,7 +18,7 @@ const Search = () => {
   const [products, setProducts] = useState([]);
   const [sortBy, setSortBy] = useState("recommended");
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(11);
+  const [productsPerPage] = useState(10);
   const { currentUser } = useUserContext();
   const userId = location.state?.userId || null;
 
@@ -70,6 +70,10 @@ const Search = () => {
     setProducts(prevProducts => [...prevProducts].sort((a, b) => b.price - a.price));
   };
 
+  // Get current products
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
@@ -103,20 +107,37 @@ const Search = () => {
       </Box>
 
       <SimpleGrid minChildWidth={280} gap={3} spacingX={5}>
-        <FilterMenu
-          openFilter={openFilter}
-          columns={{ base: 1, sm: 2, md: 2, lg: 3, xl: 4 }}
-          setProducts={setProducts}
-          setSortBy={setSortBy}
-        />
-        {products.map((product, index) => (
-          <ClothesCard
-            key={index}
-            productId={product._id}
-            onClick={() => navigate(`/product/${product._id}`, { state: { userId, productId: product._id } })}
-          />
+      <FilterMenu openFilter={openFilter} columns={{ base: 1, sm: 2, md: 2, lg: 3, xl: 4 }} setProducts={setProducts} setSortBy={setSortBy} />
+        {currentProducts.map((product, index) => (
+          <ClothesCard key={index} productId={product._id} />
         ))}
+        {products.length === 0 && (
+          <Box display='flex' justifyContent='start'>
+            <Box
+              display='flex'
+              justifyContent='center'
+              alignItems='center'
+              flexDirection='column'
+              mt={10}
+              p={3}>
+              <Icon color='#314E89' fontSize={100} as={SearchOff} />
+              <Heading textAlign='center' fontSize={30} mt={8}>Sorry, we couldn't find what you are looking for.</Heading>
+              <Text textAlign='center' fontSize={24} mt={2} fontWeight={300}>But don’t give up! Check out our bestsellers and find something for you!</Text>
+              <Button
+                variant='solid'
+                fontSize={20}
+                px={10} mt={10}
+                colorScheme='facebook'
+                onClick={() => navigate('/')}>
+                Start Shopping
+              </Button>
+            </Box>
+          </Box>
+        )}
       </SimpleGrid>
+
+
+
       <Pagination
         productsPerPage={productsPerPage}
         totalProducts={products.length}
