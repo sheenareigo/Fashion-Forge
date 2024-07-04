@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { Box, Text, Icon, Menu, MenuList, MenuItem, MenuButton, MenuGroup, Divider } from '@chakra-ui/react';
-import { Person, Favorite, ShoppingCart, ExitToApp, ShoppingBag, Report, MapsHomeWork, Inventory, Edit } from '@mui/icons-material';
+import { Person, ShoppingCart, ExitToApp, ShoppingBag} from '@mui/icons-material';
 
 import Hamburger from './Hamburger';
 import Searchbar from './Searchbar';
@@ -142,15 +142,13 @@ const Navbar = () => {
         </Box>
         <Hamburger base='none' sm='flex' md='none' />
       </Box>
-      <Box
+      <Box 
         display={{ base: 'none', md: 'flex' }}
         py={{ base: 1, md: 2 }}
         ps={5}
         width='100%'>
         {                     
-          category.map((categories) => {
-            return categories.status && <Dropdown key={categories.category_name} title={categories.category_name} />
-          })
+          <Dropdown/>
         }
       </Box>
     </Box>
