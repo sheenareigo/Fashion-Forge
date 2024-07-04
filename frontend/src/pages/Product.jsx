@@ -20,7 +20,7 @@ const Product = () => {
 
   const userIdFromState = location.state?.userId;
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (!userIdFromState) {
       console.log('User ID not found, redirecting to login.');
       // Uncomment the line below to redirect to login if userId is not found
@@ -28,14 +28,14 @@ const Product = () => {
     } else {
       console.log(`User ID: ${userIdFromState}`);
     }
-  }, [userIdFromState]);
+  }, [userIdFromState]);*/
 
   useEffect(() => {
     if (location.state?.productId) {
       getProductById(location.state.productId)
         .then((result) => {
           if (result && result.product) {
-            console.log('Current User:', currentUser);
+            //console.log('Current User:', currentUser);
             setProduct(result.product);
             setSizes(result.product.size || []);
             getImageUrlById(result.product.image_id)
