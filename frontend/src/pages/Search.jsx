@@ -12,6 +12,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const Search = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
+  const location = useLocation();
   const { search, canSearch } = useSearchContext();
   const [openFilter, setOpenFilter] = useState(false);
   const [products, setProducts] = useState([]);
@@ -19,8 +20,19 @@ const Search = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(11);
   const { currentUser } = useUserContext();
+  const userId = location.state?.userId || null;
 
+  // useEffect(() => {
+  //   if (!userId) {
+  //     console.log('User ID not found, redirecting to login.');
+  //     // Uncomment the line below to redirect to login if userId is not found
+  //     // navigate('/login');
+  //   } else {
+  //     console.log(`User ID: ${userId}`);
+  //   }
+  // }, [userId, navigate]);
   useEffect(() => {
+   
     if (location.state?.category_name) {
       getProductByCategoryName(location.state.category_name)
         .then((result) => {

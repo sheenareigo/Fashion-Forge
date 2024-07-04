@@ -9,15 +9,15 @@ const Categories = () => {
   const imageSize = useBreakpointValue({ base: '200px', md: '350px', lg: '400px' });
   const boxHeight = useBreakpointValue({ base: '350px', md: '400px', lg: '450px' });
 
-  const handleCategoryClick = (category) => {
+ /* const handleCategoryClick = (category) => {
     const userId = location.state?.userId; // Get the userId from the location state
-    /*if (!userId) {
-      console.error('User ID is missing!');
-      return;
-    }*/
+    // if (!userId) {
+    //   console.error('User ID is missing!');
+    //   return;
+    // }
     navigate('/search', { state: { userId, category_name: category } });
     console.log("navigate to search");
-  };
+  };*/
  
   const handleCategoryClick=(category)=>{
     navigate('/search',{state:{category_name:category}});
