@@ -138,8 +138,7 @@ exports.getProductsByStatus = async (req, res) => {
 
 exports.getProductsBySearch = async (req, res) => {
     try {
-        const products = await Product.find({ name: { $regex: '.*' + req.params.search + '.*', "$options": "i" } });
-
+        const products = await Product.find({ product_name: { $regex: '.*' + req.params.search + '.*', "$options": "i" } });
         res.status(200).json({
             products
         });

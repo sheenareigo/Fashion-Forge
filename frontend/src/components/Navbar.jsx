@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { Box, Text, Icon, Menu, MenuList, MenuItem, MenuButton, MenuGroup, Divider } from '@chakra-ui/react';
-import { Person, Favorite, ShoppingCart, ExitToApp, ShoppingBag, Report, MapsHomeWork, Inventory, Edit } from '@mui/icons-material';
+import { Person, ShoppingCart, ExitToApp, ShoppingBag} from '@mui/icons-material';
 
-
+import Hamburger from './Hamburger';
+import Searchbar from './Searchbar';
+import Dropdown from './Dropdown';
 import { useUserContext } from '../contexts/UserContext';
-
-
+import { getAllCategories } from '../services/CategoryServices';
 
 const Navbar = () => {
 
@@ -18,16 +19,25 @@ const Navbar = () => {
   const { currentUser, setCurrentUser } = useUserContext();
   //const { cart, refresh } = useCartContext();
   const [cookies, setCookie, removeCookie] = useCookies(['currentUser']);
+  const [category, setCategory] = useState([]);
   //const [admin]=useGetUserRole(currentUser);
 
   useEffect(() => {
-    
-    var count = 0;
-    
+    getAllCategories()
+    .then((result) => {
+       setCategory(result.allCategories);
+    });
   },[]); 
+
+  // const handleClick = (name) => {
+  //   navigate('/search', { state: { category_name: name } });
+  // };
+
   const Logout = () => {
+    
     removeCookie('currentUser', { path: '/' });
-    setCurrentUser('');
+    setCurrentUser(null);
+    navigate('/');
   };
 
   return (
@@ -61,10 +71,9 @@ const Navbar = () => {
             cursor='pointer'
             onClick={() => navigate('/')}
           >FashionForge</Text>
-         
-          {}
+          <Hamburger base='flex' sm='none' md='none' />
         </Box>
-        {/* <Searchbar /> */}
+        <Searchbar />
         <Box display={{ base: 'none', md: 'flex' }} alignItems='center' px={2} >
           <Box
             color='facebook.500'
@@ -129,18 +138,17 @@ const Navbar = () => {
             onClick={() => navigate('/')} //cart
           >
             <Icon fontSize={30} color='inherit' as={ShoppingCart} />
-            {}
           </Box>
         </Box>
-        {}
+        <Hamburger base='none' sm='flex' md='none' />
       </Box>
-      <Box
+      <Box 
         display={{ base: 'none', md: 'flex' }}
         py={{ base: 1, md: 2 }}
         ps={5}
         width='100%'>
-        {
-          
+        {                     
+          <Dropdown/>
         }
       </Box>
     </Box>
