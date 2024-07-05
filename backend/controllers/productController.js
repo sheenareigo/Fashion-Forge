@@ -32,12 +32,14 @@ exports.getProductById = async (req, res) => {
 };
 
 exports.getProductsByColor = async (req, res) => {
-    try {
+       try {
+        const { lowest, uppest, color,gender } = req.body;
         const products = await Product.find({ 
             $and: [
                 { price: { $gte: req.body.lowest } },
                 { price: { $lte: req.body.uppest } },
-                { color: req.params.color }
+                { color: req.body.color },
+                {gender:req.body.gender}
             ]
          });
 
@@ -77,16 +79,16 @@ exports.getProductByCategoryName = async (req, res) => {
     }
 };
 
-exports.getProductsByGender = async (req, res) => {
+exports.getProductsBySize = async (req, res) => {
     try {
         const products = await Product.find({
             $and: [
                 { price: { $gte: req.body.lowest } },
                 { price: { $lte: req.body.uppest } },
-                { gender: req.params.gender }
+                { size: { $in: [req.body.size] } } ,
+                {gender:req.body.gender} 
             ]
         });
-
 
         res.status(200).json({
             products
@@ -101,7 +103,12 @@ exports.getProductsByGender = async (req, res) => {
 
 exports.getProductsByPrice = async (req, res) => {
     try {
-        const products = await Product.find({ $and: [{ price: { $gte: req.body.lowest } }, { price: { $lte: req.body.uppest } }] });
+        const products = await Product.find({ $and: [
+            { price: { $gte: req.body.lowest } }, 
+            { price: { $lte: req.body.uppest } },
+            {gender: req.body.gender}
+            
+        ] });
 
         res.status(200).json({
             products
@@ -144,15 +151,19 @@ exports.getProductsBySearch = async (req, res) => {
     }
 };
 
+
+
+
 exports.getProductsByQueries = async (req, res) => {
     try {
+        const { lowest, uppest, color, gender, size,genre } = req.body;
+        
         const products = await Product.find({
-            $and:
-                [
-                    { price: { $gte: req.body.lowest } }, { price: { $lte: req.body.uppest } },
-                    { color: req.body.color },
-                    { gender: req.body.gender }
-                ]
+            price: { $gte: lowest, $lte: uppest },
+            color: color,
+            gender: gender,
+            genre:genre,
+            size: { $in: size },
         });
 
         res.status(200).json({
@@ -165,7 +176,27 @@ exports.getProductsByQueries = async (req, res) => {
         });
     }
 };
+exports.getProductsByGenre = async (req, res) => {
+    try {
+        const products = await Product.find({
+            $and: [
+                { price: { $gte: req.body.lowest } },
+                { price: { $lte: req.body.uppest } },
+                { genre: req.body.genre },
+                {gender:req.body.gender}
+            ]
+        });
 
+        res.status(200).json({
+            products
+        });
+    } catch (error) {
+        res.status(400).json({
+            status: 'failed',
+            error
+        });
+    }
+};
 exports.addProduct = async (req, res) => {
     try {
         const newProduct = await Product.create(req.body);
@@ -210,3 +241,77 @@ exports.deleteProduct = async (req, res) => {
         });
     }
 };
+
+exports.getProductBySizeAndGenre = async (req, res) => {
+    try {
+        const { lowest, uppest, size, genre, gender } = req.body;
+
+        const products = await Product.find({
+            $and: [
+                { price: { $gte: lowest } },
+                { price: { $lte: uppest } },
+                { size: size },
+                { genre: genre },
+                { gender: gender }
+            ]
+        });
+
+        res.status(200).json({
+            products
+        });
+    } catch (error) {
+        res.status(400).json({
+            status: 'failed',
+            error
+        });
+    }
+};
+
+exports.getProductsBySizeAndColor = async (req, res) => {
+    try {
+        const { lowest, uppest, size, color,gender } = req.body;
+        const products = await Product.find({
+            $and: [
+                { price: { $gte: lowest } },
+                { price: { $lte: uppest } },
+                { size: size },
+                { color: color },
+                {gender:gender}
+            ]
+        });
+
+        res.status(200).json({
+            products
+        });
+    } catch (error) {
+        res.status(400).json({
+            status: 'failed',
+            error
+        });
+    }
+};
+
+exports.getProductByColorAndGenre = async (req, res) => {
+    try {
+        const { lowest, uppest, color, genre,gender } = req.body;
+        const products = await Product.find({
+            $and: [
+                { price: { $gte: lowest } },
+                { price: { $lte: uppest } },
+                { color: color },
+                { genre: genre },
+                {gender:gender}
+            ]
+        });
+
+        res.status(200).json({
+            products
+        });
+    } catch (error) {
+        res.status(400).json({
+            status: 'failed',
+            error
+        });
+    }
+};
+
