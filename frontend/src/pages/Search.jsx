@@ -32,9 +32,8 @@ const Search = () => {
   //   }
   // }, [userId, navigate]);
   useEffect(() => {
-   
-    if (location.state?.category_name) {
-      getProductByCategoryName(location.state.category_name)
+    if (state !== null && state.category_name) {
+      getProductByCategoryName(state.category_name)
         .then((result) => {
           setProducts(result.products);
           
@@ -107,7 +106,11 @@ const Search = () => {
       </Box>
 
       <SimpleGrid minChildWidth={280} gap={3} spacingX={5}>
-      <FilterMenu openFilter={openFilter} columns={{ base: 1, sm: 2, md: 2, lg: 3, xl: 4 }} setProducts={setProducts} setSortBy={setSortBy} />
+        {openFilter && (
+          <Box gridColumn={{ base: "span 4", md: "span 2", lg: "span 1" }}> {/* Adjust the span value as needed */}
+            <FilterMenu openFilter={openFilter} setProducts={setProducts} setSortBy={setSortBy} />
+          </Box>
+        )}
         {currentProducts.map((product, index) => (
           <ClothesCard key={index} productId={product._id} />
         ))}
