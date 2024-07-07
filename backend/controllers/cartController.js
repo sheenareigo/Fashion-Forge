@@ -6,8 +6,9 @@ const Product = require('../models/Product'); // Adjust path as necessary
 // Controller function to add a product in the user's cart
 exports.addToCart = async (req, res) => {
   try {
-    const { userId, productId, quantity , size } = req.body;
+    const { userId, productId, productName, quantity , size, image, price} = req.body;
 
+    console.log("from cart controller price",price);
     // Validate the input
     if (!userId || !productId || !quantity  || !size === undefined) {
       console.error('Missing required fields:', { userId, productId, quantity,size });
@@ -42,7 +43,7 @@ exports.addToCart = async (req, res) => {
       existingProduct.quantity += quantity;
     } else {
       // If the product is not in the cart, add it
-      user.cart.products.push({ product_id: productId, quantity , size});
+      user.cart.products.push({ product_id: productId, productName, quantity ,size, image, price});
     }
 
     // Save the updated user document
@@ -71,11 +72,13 @@ exports.removeFromCart = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
+    console.log("Before Updated cart products:", user.cart.products);
 
     // Remove the product from the cart
     user.cart.products = user.cart.products.filter(item =>
       !(item.product_id.equals(productId) && item.size === size)
     );
+    console.log("After Updated cart products:", user.cart.products);
     //console.log("product_id.........",item.product_id)
     console.log("productId.........",productId)
 
@@ -140,7 +143,8 @@ exports.getCart = async (req, res) => {
     }
 
     // Find the user by ID and populate the cart with product details
-    const user = await User.findById(userId).populate('cart.products.product_id', 'name price');
+    const user = await User.findById(userId);
+    console.log("User",user.cart);
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });

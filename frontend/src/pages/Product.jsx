@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getProductById } from '../services/ProductServices';
 import { getImageUrlById } from '../services/ImageServices';
+import { useUserContext } from '../contexts/UserContext';
 
 const Product = () => {
   const navigate = useNavigate();
@@ -17,25 +18,17 @@ const Product = () => {
   const [amount, setAmount] = useState(0);
   const [imageUrl, setImageUrl] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { currentUser} = useUserContext();
 
   const userIdFromState = location.state?.userId;
 
-  /*useEffect(() => {
-    if (!userIdFromState) {
-      console.log('User ID not found, redirecting to login.');
-      // Uncomment the line below to redirect to login if userId is not found
-      // navigate('/login');
-    } else {
-      console.log(`User ID: ${userIdFromState}`);
-    }
-  }, [userIdFromState]);*/
 
   useEffect(() => {
     if (location.state?.productId) {
       getProductById(location.state.productId)
         .then((result) => {
           if (result && result.product) {
-            //console.log('Current User:', currentUser);
+            console.log('Current User:', currentUser);
             setProduct(result.product);
             setSizes(result.product.size || []);
             getImageUrlById(result.product.image_id)
@@ -69,7 +62,7 @@ const Product = () => {
     if (selectedSize !== "") {
       console.log("Size",selectedSize);
       try {
-          /*if (!currentUser) {
+          if (!currentUser) {
               toast({
                   title: 'User not logged in.',
                   description: 'Please log in to add products to the cart.',
@@ -78,17 +71,21 @@ const Product = () => {
                   isClosable: true,
               });
               return;
-          }*/
+          }
           console.log("Product ID", String(location.state.productId));
-          console.log("User ID:",String('6685765a3b0cfb5e756e78fe'));
+          console.log("User ID:",currentUser);
+          console.log("Product Name:",product.product_name);
+          console.log("Product Price:",product.price);
           const response = await axios.post(
               'http://localhost:4000/cart/add',
               {
-               //userId: userIdFromState,
-                userId:String('6685765a3b0cfb5e756e78fe'),
+                userId:currentUser,
                 productId: String(location.state.productId),
+                productName: String(product.product_name,),
                 quantity: 1, // Default quantity when adding to cart
                 size:selectedSize,
+                image:imageUrl,
+                price:(product.price)
               }
           );
        
@@ -124,7 +121,7 @@ const Product = () => {
   };
   const handleViewCart = () => {
     navigate('/cart');
-    /*if (currentUser) {
+    if (currentUser) {
         navigate('/cart', { state: { userId: currentUser } });
        
     } else {
@@ -135,7 +132,7 @@ const Product = () => {
             duration: 2000,
             isClosable: true,
         });
-    }*/
+    }
 };
 
   return (

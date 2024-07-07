@@ -1,67 +1,50 @@
 import React, { useEffect, useState } from 'react';
-//import { Box, Text, SimpleGrid, Image,Spinner, CircularProgress, Button, useToast } from '@chakra-ui/react';
-import { Box, Button, Flex,SimpleGrid, Heading, Image as ChakraImage, Stack, Text, useToast, Spinner } from '@chakra-ui/react';
-
+import { Box, Button, SimpleGrid, Image, Text, useToast, Spinner } from '@chakra-ui/react';
 import axios from 'axios';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useUserContext } from '../contexts/UserContext';
 
 const CartPage = () => {
     const toast = useToast();
-    //const [cart, setCart] = useState([]); // Ensure cart is initialized as an array
-    const [loading, setLoading] = useState(true);
+    const { currentUser } = useUserContext();
     const navigate = useNavigate();
-    const [allProducts, setAllProducts] = useState([]); // Products list
-    const [cart, setCart] = useState({ products: [] }); // Cart items
-    //  const [products, setProducts] = useState([]);
-    
-    // Retrieve user ID from navigation state or local storage
-    const location = useLocation();
-    const userIdFromState = location.state?.userId || localStorage.getItem('userId');
+    const [loading, setLoading] = useState(true);
+    const [cart, setCart] = useState({ products: [] });
+    const [cartTotal, setCartTotal] = useState(0);
 
     useEffect(() => {
-        /*if (!userIdFromState) {
-            toast({
-                title: 'User not logged in.',
-                description: 'Please log in to view your cart.',
-                status: 'warning',
-                duration: 2000,
-                isClosable: true,
-            });
-            navigate('/login');  // Redirect to login if user is not logged in
-            return;
-        }*/
+        
+        // if (!currentUser) {
+        //     toast({
+        //         title: 'User not logged in.',
+        //         description: 'Please log in to view your cart.',
+        //         status: 'warning',
+        //         duration: 2000,
+        //         isClosable: true,
+        //     });
+        //     //navigate('/login');
+        //     return;
+        // }
 
-        const fetchProductsAndCart = async () => {
+        const fetchCart = async () => {
             setLoading(true);
             try {
-                // Fetch products
-              
-                const productsResponse = await axios.get('http://localhost:4000/products');
-                console.log('Products response:', productsResponse.data);
+                const response = await axios.get(`http://localhost:4000/cart/${currentUser}`);
+                console.log('Cart response:', response.data);
 
-                if (Array.isArray(productsResponse.data.allProducts)) {
-                    setAllProducts(productsResponse.data.allProducts);
+                if (response.data && Array.isArray(response.data.cart.products)) {
+                    setCart(response.data.cart);
+                    const total = response.data.cart.products.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+                    setCartTotal(total);
                 } else {
-                    console.error('Unexpected format for products:', productsResponse.data);
-                    setAllProducts([]);
-                }
-                //userId:String('667f14e9afc065e8aaa30f83'),
-                // Fetch cart items
-                //const cartResponse = await axios.get(`http://localhost:4000/cart/${userIdFromState}`);
-                const cartResponse = await axios.get('http://localhost:4000/cart/6685765a3b0cfb5e756e78fe');
-                console.log('Cart response:', cartResponse.data);
-
-                if (cartResponse.data && Array.isArray(cartResponse.data.cart.products)) {
-                    setCart(cartResponse.data.cart);
-                } else {
-                    console.error('Unexpected format for cart:', cartResponse.data);
                     setCart({ products: [] });
+                    setCartTotal(0);
                 }
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error('Error fetching cart:', error);
                 toast({
                     title: 'Error fetching data.',
-                    description: 'There was an error fetching product or cart data.',
+                    description: 'There was an error fetching your cart data.',
                     status: 'error',
                     duration: 3000,
                     isClosable: true,
@@ -71,52 +54,41 @@ const CartPage = () => {
             }
         };
 
-        fetchProductsAndCart();
-    }, [toast, userIdFromState]);
+        fetchCart();
+    }, [currentUser, navigate, toast]);
 
-    const handleRemoveFromCart = async (productId,size) => {
+    const handleRemoveFromCart = async (productId, size) => {
         try {
-            console.log("Product Id to be removed :",productId)
             const response = await axios({
                 method: 'delete',
-                url: 'http://localhost:4000/cart/remove',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                url: `http://localhost:4000/cart/remove`,
                 data: {
-                   // userId: userIdFromState,
-                    userId:String('6685765a3b0cfb5e756e78fe'),
-                    //productId: String(productId),
-                    productId: String(productId),
-                    size:size,
+                    userId: currentUser,
+                    productId: productId,
+                    size: size,
                 }
             });
 
+            console.log('Cart response after removal:', response.data.cart);
             if (response.data.cart && Array.isArray(response.data.cart.products)) {
                 setCart(response.data.cart);
-                // Display success toast message
+                const updatedTotal = response.data.cart.products.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+                setCartTotal(updatedTotal);
                 toast({
-                    title: 'Removed from Cart',
-                    description: 'Product removed successfully from your cart.',
+                    title: 'Product Removed',
+                    description: 'The product has been removed from your cart.',
                     status: 'success',
                     duration: 3000,
                     isClosable: true,
                 });
             } else {
-                console.error('Unexpected cart format:', response.data.cart);
-                toast({
-                    title: 'Error',
-                    description: 'Unexpected data format for cart.',
-                    status: 'error',
-                    duration: 3000,
-                    isClosable: true,
-                });
+                throw new Error('Unexpected cart format');
             }
         } catch (error) {
             console.error('Error removing from cart:', error);
             toast({
                 title: 'Error removing from cart.',
-                description: 'There was an error removing the product from your cart.',
+                description: `There was an error removing the product from your cart: ${error.message}`,
                 status: 'error',
                 duration: 3000,
                 isClosable: true,
@@ -124,27 +96,29 @@ const CartPage = () => {
         }
     };
 
-   
-
-
     if (loading) {
         return <Spinner size="xl" />;
     }
 
     return (
         <Box padding="4">
-            <Text fontSize="2xl" mb="4">Your Cart</Text>
+            <Text fontSize="2xl" mb="4">Your Cart - Total: ${cartTotal.toFixed(2)}</Text>
             <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing={4}>
                 {cart.products.map((cartItem, index) => {
-                    const productId = cartItem.product_id && cartItem.product_id._id ? cartItem.product_id._id.toString() : 'Unknown ID';
-                    const price = cartItem.product_id && cartItem.product_id.price ? cartItem.product_id.price.toFixed(2) : 'N/A';
+                    const productId = cartItem.product_id || 'Unknown ID';
+                    const productName = cartItem.productName;
+                    const price = cartItem.price;
+                    const quantity = cartItem.quantity;
+                    const size = cartItem.size;
                     return (
                         <Box key={index} borderWidth="1px" borderRadius="lg" overflow="hidden" p="4">
-                            <Text fontWeight="bold">Product ID: {productId}</Text>
-                            <Text>Price: ${price}</Text>
-                            <Text>Quantity: {cartItem.quantity}</Text>
-                            <Text>Size: {cartItem.size}</Text>
-                            <Button mt="2" colorScheme="red" onClick={() => handleRemoveFromCart(productId,cartItem.size)}>
+                            <Image src={cartItem.image} alt={`Image of ${productName}`} boxSize="150px" />
+                            {/* <Text fontWeight="bold">Product ID: {productId}</Text> */}
+                            <Text fontWeight="bold">Product Name: {productName}</Text>
+                            <Text>Price: ${price.toFixed(2)}</Text>
+                            <Text>Quantity: {quantity}</Text>
+                            <Text>Size: {size}</Text>
+                            <Button mt="2" colorScheme="red" onClick={() => handleRemoveFromCart(productId, size)}>
                                 Remove
                             </Button>
                         </Box>
@@ -153,39 +127,6 @@ const CartPage = () => {
             </SimpleGrid>
         </Box>
     );
-
-    // if (loading) {
-    //     return <Spinner size="xl" />;
-    // }
-
-    // return (
-    //     <Box padding="4">
-    //         <Text fontSize="2xl" mb="4">Your Cart</Text>
-    //         <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing={4}>
-    //             {cart.products.map((cartItem, index) => {
-    //                 const product = cartItem.product_id;
-    //                 const productId = product ? product._id : 'Unknown ID';
-    //                 const price = product ? product.price.toFixed(2) : 'N/A';
-    //                 const productName = product ? product.name : 'Unknown Name';
-    //                 const productImage = product ? product.image : '';
-
-    //                 return (
-    //                     <Box key={index} borderWidth="1px" borderRadius="lg" overflow="hidden" p="4">
-    //                         <ChakraImage src={productImage} alt={productName} boxSize="150px" objectFit="cover" />
-    //                         <Text fontWeight="bold">Product Name:{productName}</Text>
-    //                         <Text>Price: ${price}</Text>
-    //                         <Text>Quantity: {cartItem.quantity}</Text>
-    //                         <Text>Size: {cartItem.size}</Text>
-    //                         <Button mt="2" colorScheme="red" onClick={() => handleRemoveFromCart(productId, cartItem.size)}>
-    //                             Remove
-    //                         </Button>
-    //                     </Box>
-    //                 );
-    //             })}
-    //         </SimpleGrid>
-    //     </Box>
-    // );
-   
 };
 
 export default CartPage;
