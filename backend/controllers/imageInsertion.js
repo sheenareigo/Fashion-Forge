@@ -13,6 +13,7 @@ const images = [
     image_url: "/Images/formal-white-shirt-front.jpg",
     mini_image_url: "/Images/formal-white-shirt-front.jpg"
   },
+  
   {
     _id: new mongoose.Types.ObjectId(),
     image_url: "/Images/mens-slim-fit.jpg",
