@@ -5,8 +5,13 @@ const bcrypt=require('bcryptjs');
 // Using _id
 const productSubSchema = new mongoose.Schema({
   product_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },  // Change to ObjectId
+  productName: {type:String,require:true},
   quantity: { type: Number, default: 1 },
-  size:{type:String,require:true}
+  size:{type:String,require:true},
+  image: {type:String,require:true},
+  price: {
+    type: Number
+  }
 }, { _id: false });
 
 
