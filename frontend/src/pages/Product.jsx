@@ -28,7 +28,7 @@ const Product = () => {
       getProductById(location.state.productId)
         .then((result) => {
           if (result && result.product) {
-            console.log('Current User:', currentUser);
+            //console.log('Current User:', currentUser);
             setProduct(result.product);
             setSizes(result.product.size || []);
             getImageUrlById(result.product.image_id)
@@ -40,7 +40,7 @@ const Product = () => {
               title: 'Error!',
               description: 'Product not found.',
               status: 'error',
-              duration: 2000,
+              duration: 3000,
               isClosable: true,
             });
           }
@@ -51,7 +51,7 @@ const Product = () => {
             title: 'Error!',
             description: 'Failed to fetch product.',
             status: 'error',
-            duration: 2000,
+            duration: 3000,
             isClosable: true,
           });
         });
@@ -60,22 +60,23 @@ const Product = () => {
 
   const onClickAddCart = async () => {
     if (selectedSize !== "") {
-      console.log("Size",selectedSize);
+      //console.log("Size",selectedSize);
       try {
           if (!currentUser) {
               toast({
                   title: 'User not logged in.',
                   description: 'Please log in to add products to the cart.',
                   status: 'warning',
-                  duration: 2000,
+                  duration: 4000,
                   isClosable: true,
               });
+              navigate('/login');
               return;
           }
-          console.log("Product ID", String(location.state.productId));
-          console.log("User ID:",currentUser);
-          console.log("Product Name:",product.product_name);
-          console.log("Product Price:",product.price);
+          // console.log("Product ID", String(location.state.productId));
+          // console.log("User ID:",currentUser);
+          // console.log("Product Name:",product.product_name);
+          // console.log("Product Price:",product.price);
           const response = await axios.post(
               'http://localhost:4000/cart/add',
               {
@@ -90,12 +91,12 @@ const Product = () => {
           );
        
           if (response.status === 200) {
-              console.log('Product added to cart:', response.data.cart);
+              //console.log('Product added to cart:', response.data.cart);
               toast({
                   title: 'Product added to cart.',
                   description: 'The product has been successfully added to your cart.',
                   status: 'success',
-                  duration: 2000,
+                  duration: 3000,
                   isClosable: true,
               });
           }
@@ -105,7 +106,7 @@ const Product = () => {
               title: 'Error adding to cart.',
               description: 'There was an error adding the product to your cart.',
               status: 'error',
-              duration: 2000,
+              duration: 3000,
               isClosable: true,
           });
       }
@@ -114,7 +115,7 @@ const Product = () => {
         title: 'Error!',
         description: 'You must choose a size.',
         status: 'error',
-        duration: 2000,
+        duration: 3000,
         isClosable: true,
       });
     }
@@ -129,9 +130,10 @@ const Product = () => {
             title: 'User not logged in.',
             description: 'Please log in to view your cart.',
             status: 'warning',
-            duration: 2000,
+            duration: 4000,
             isClosable: true,
         });
+        navigate('/login');
     }
 };
 
