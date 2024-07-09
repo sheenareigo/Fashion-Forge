@@ -135,7 +135,7 @@ const Navbar = () => {
             alignItems='center'
             transition={.5}
             _hover={{ color: 'facebook.700' }}
-            onClick={() => navigate('/')} //cart
+            onClick={() => navigate('/cart')} //cart
           >
             <Icon fontSize={30} color='inherit' as={ShoppingCart} />
           </Box>

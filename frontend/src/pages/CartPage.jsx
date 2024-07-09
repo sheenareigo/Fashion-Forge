@@ -18,17 +18,17 @@ const CartPage = () => {
     
     useEffect(() => {
         
-        // if (!currentUser) {
-        //     toast({
-        //         title: 'User not logged in.',
-        //         description: 'Please log in to view your cart.',
-        //         status: 'warning',
-        //         duration: 2000,
-        //         isClosable: true,
-        //     });
-        //     //navigate('/login');
-        //     return;
-        // }
+        if (!currentUser) {
+            toast({
+                title: 'User not logged in.',
+                description: 'Please log in to view your cart.',
+                status: 'warning',
+                duration: 2000,
+                isClosable: true,
+            });
+            navigate('/login');
+            return;
+        }
 
         const fetchCart = async () => {
             setLoading(true);
@@ -39,7 +39,8 @@ const CartPage = () => {
 
                 if (response.data && Array.isArray(response.data.cart.products)) {
                     setCart(response.data.cart);
-                    const total = response.data.cart.products.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+                    //const total = response.data.cart.products.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+                    const total = response.data.cart.products.reduce((acc, item) => acc + (item.price), 0);
                     setCartTotal(total);
                 } else {
                     setCart({ products: [] });
@@ -193,7 +194,26 @@ const CartPage = () => {
         }
     };
 
-
+    // const handleCheckout = async () => {
+    //     const orderDetails = {
+    //       user_id: currentUser,  // Assuming currentUser is obtained from context or state
+    //       products: cart.products.map(item => ({
+    //         product_id: item.product_id,
+    //         quantity: item.quantity
+    //       })),
+    //       address: userAddress  // Assuming userAddress is obtained from user input
+    //     };
+      
+    //     try {
+    //       const response = await axios.post('/api/orders/place-order', orderDetails);
+    //       const order = response.data.order;
+      
+    //       // Navigate to the order confirmation page
+    //       navigate('/order-confirmation', { state: { order } });
+    //     } catch (error) {
+    //       console.error('Error during checkout:', error);
+    //     }
+    //   };
     if (loading) {
         return <Spinner size="xl" />;
     }
