@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { Box, Text, Icon, Menu, MenuList, MenuItem, MenuButton, MenuGroup, Divider } from '@chakra-ui/react';
-import { Person, ShoppingCart, ExitToApp, ShoppingBag} from '@mui/icons-material';
+import { Person, ShoppingCart, ExitToApp, ShoppingBag } from '@mui/icons-material';
 
 import Hamburger from './Hamburger';
 import Searchbar from './Searchbar';
@@ -11,30 +11,20 @@ import { useUserContext } from '../contexts/UserContext';
 import { getAllCategories } from '../services/CategoryServices';
 
 const Navbar = () => {
-
-  //const [genres, setGenres] = useState([]);
   const [open, setOpen] = useState(false);
-  //const [itemCount, setItemCount] = useState(0);
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useUserContext();
-  //const { cart, refresh } = useCartContext();
   const [cookies, setCookie, removeCookie] = useCookies(['currentUser']);
   const [category, setCategory] = useState([]);
-  //const [admin]=useGetUserRole(currentUser);
 
   useEffect(() => {
     getAllCategories()
-    .then((result) => {
-       setCategory(result.allCategories);
-    });
-  },[]); 
-
-  // const handleClick = (name) => {
-  //   navigate('/search', { state: { category_name: name } });
-  // };
+      .then((result) => {
+        setCategory(result.allCategories);
+      });
+  }, []);
 
   const Logout = () => {
-    
     removeCookie('currentUser', { path: '/' });
     setCurrentUser(null);
     navigate('/');
@@ -48,21 +38,18 @@ const Navbar = () => {
       position='sticky'
       top='0px'
       backgroundColor='#fff'
-      zIndex={500} >
+      zIndex={500}>
       <Box
         display={'flex'}
         flexDirection={{ base: 'column', sm: 'row' }}
         justifyContent='space-between'
         py={{ base: 1, md: 2 }}
         px={{ base: 2, md: 5 }}
-        width='100%'
-      >
+        width='100%'>
         <Box
           display='flex'
           alignItems='center'
-          justifyContent={{ base: 'space-between', sm: 'start' }}
-
-        >
+          justifyContent={{ base: 'space-between', sm: 'start' }}>
           <Text
             fontSize={40}
             fontWeight={700}
@@ -74,7 +61,7 @@ const Navbar = () => {
           <Hamburger base='flex' sm='none' md='none' />
         </Box>
         <Searchbar />
-        <Box display={{ base: 'none', md: 'flex' }} alignItems='center' px={2} >
+        <Box display={{ base: 'none', md: 'flex' }} alignItems='center' px={2}>
           <Box
             color='facebook.500'
             display='flex'
@@ -85,48 +72,35 @@ const Navbar = () => {
             _hover={{ color: 'facebook.700' }}
             onMouseEnter={() => setOpen(true)}
             onMouseLeave={() => setOpen(false)}
-            onClick={() => !currentUser && navigate('/login')}
-          >
-            {
-              currentUser &&
-              
-                <Menu isOpen={open}>
-                  <Icon fontSize={30} color='inherit' as={Person} />
-                  <Text color='inherit' fontWeight={500} >Account</Text>
-                  <MenuButton />
-                  <MenuList >
-                    <MenuGroup title='Account' >
-                    <MenuItem onClick={() => navigate('/infos')} ><Person sx={{ marginRight: 2 }} /> Manage My Profile</MenuItem>
-                      <MenuItem onClick={() => navigate('/')} ><ShoppingBag sx={{ marginRight: 2 }} /> Orders</MenuItem>
-                    </MenuGroup>
-                    <Divider />
-                    <MenuItem onClick={Logout} ><ExitToApp sx={{ marginRight: 2 }} /> Logout</MenuItem>
-                  </MenuList>
-                </Menu>
-            }
-            {
-               !currentUser &&
-               <>
-                 <Icon fontSize={30} color='inherit' as={Person} />
-                 <Text color='inherit' fontWeight={500} >Login</Text>
-               </>
-            }
-            {}
+            onClick={() => !currentUser && navigate('/login')}>
+            {currentUser ? (
+              <Menu isOpen={open}>
+                <MenuButton as={Box} display='flex' alignItems='center'>
+                  <Icon fontSize={30} color='inherit' as={Person} style={{ marginRight: '20px' }} />
+                  <Text color='inherit' fontWeight={500} style={{ marginRight: '20px' }}>Account</Text>
+                </MenuButton>
+                <MenuList>
+                  <MenuGroup title='Account'>
+                    <MenuItem onClick={() => navigate('/infos')}>
+                      <Person sx={{ marginRight: 2 }} /> Manage My Profile
+                    </MenuItem>
+                    <MenuItem onClick={() => navigate('/')}>
+                      <ShoppingBag sx={{ marginRight: 2 }} /> Orders
+                    </MenuItem>
+                  </MenuGroup>
+                  <Divider />
+                  <MenuItem onClick={Logout}>
+                    <ExitToApp sx={{ marginRight: 2 }} /> Logout
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            ) : (
+              <>
+                <Icon fontSize={30} color='inherit' as={Person} style={{ marginRight: '20px' }} />
+                <Text color='inherit' fontWeight={500} style={{ marginRight: '20px' }}>Login</Text>
+              </>
+            )}
           </Box>
-          {/* <Box
-            color='facebook.500'
-            display='flex'
-            flexDirection='column'
-            cursor='pointer'
-            mx='5'
-            alignItems='center'
-            transition={.5}
-            _hover={{ color: 'facebook.700' }}
-            onClick={() => navigate('/favorites')}
-          >
-            <Icon fontSize={30} color='inherit' as={Favorite} />
-            <Text color='inherit' fontWeight={500} >Favorites</Text>
-          </Box> */}
           <Box
             color='facebook.500'
             display='flex'
@@ -135,24 +109,23 @@ const Navbar = () => {
             alignItems='center'
             transition={.5}
             _hover={{ color: 'facebook.700' }}
-            onClick={() => navigate('/cart')} //cart
-          >
+            onClick={() => navigate('/cart')}>       
             <Icon fontSize={30} color='inherit' as={ShoppingCart} />
           </Box>
         </Box>
         <Hamburger base='none' sm='flex' md='none' />
       </Box>
       <Box 
-        display={{ base: 'none', md: 'flex' }}
+        display={{ base: 'flex' ,md: 'flex', sm: 'none' }}
         py={{ base: 1, md: 2 }}
         ps={5}
         width='100%'>
-        {                     
+        {
           <Dropdown/>
         }
       </Box>
     </Box>
-  )
-}
+  );
+};
 
 export default Navbar;
