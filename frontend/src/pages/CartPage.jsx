@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, SimpleGrid, Image, Text, useToast, Spinner, useColorModeValue, Tooltip } from '@chakra-ui/react';
+import { Box, Button, Center, VStack ,SimpleGrid, Image, Text, useToast, Spinner, useColorModeValue, Tooltip } from '@chakra-ui/react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
@@ -16,13 +16,14 @@ const CartPage = () => {
     const cardTextColor = useColorModeValue('black', 'white');
     
     useEffect(() => {
+
         const fetchCart = async () => {
             setLoading(true);
             try {
                 const response = await axios.get(`http://localhost:4000/cart/${currentUser}`);
                 if (response.data && Array.isArray(response.data.cart.products)) {
                     setCart(response.data.cart);
-                    const total = response.data.cart.products.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+                    const total = response.data.cart.products.reduce((acc, item) => acc + (item.price), 0);
                     setCartTotal(total);
                 } else {
                     setCart({ products: [] });
@@ -45,7 +46,7 @@ const CartPage = () => {
     }, [currentUser, navigate, toast]);
 
     useEffect(() => {
-        const total = cart.products.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+        const total = cart.products.reduce((acc, item) => acc + (item.price), 0);
         setCartTotal(total);
     }, [cart]);
 
@@ -137,6 +138,7 @@ const CartPage = () => {
         }
     };
 
+
     if (loading) {
         return <Spinner size="xl" />;
     }
@@ -145,8 +147,23 @@ const CartPage = () => {
         <Box padding="6">
             {cart.products.length === 0 ? (
                 <Box textAlign="center" padding="6">
-                    <Text fontSize="xl" fontWeight="bold">Your cart is empty!</Text>
-                </Box>
+                  
+                <Center height="60vh"> {/* This ensures the content is centered vertically */}
+            <VStack > 
+            <Box>
+                <Image 
+                    src="/Images/Cart/EmptyCart1.jpg" 
+                    alt="Empty Cart" 
+                    boxSize="500px" 
+                    objectFit="cover"
+                    bg="white" 
+                    opacity="0.4" 
+                />   </Box>
+                <Text fontSize="40px" fontWeight="bold" color="gray.700">Oops, your cart is empty!</Text>
+                <Text fontSize="lg" color="gray.500">It looks like you haven't added anything to your cart yet.</Text>
+            </VStack>
+        </Center></Box>
+       
             ) : (
                 <Box borderWidth="1px" borderRadius="lg" padding="4" margin="20px">
                     <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing={6}>
@@ -242,9 +259,7 @@ const CartPage = () => {
                             );
                         })}
                     </SimpleGrid>
-                </Box>
-            )}
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
                 <Text fontSize="2xl" fontWeight="bold" textAlign="center" flex="1">Your Cart Items</Text>
                 <Text fontSize="xl" fontWeight="bold" color="blue.800" marginRight={"25px"}>Total Price: ${cartTotal.toFixed(2)}</Text>
                 <Button
@@ -258,6 +273,9 @@ const CartPage = () => {
                     Checkout
                 </Button>
             </Box>
+                </Box>
+            )}
+          
         </Box>
     );
 };
