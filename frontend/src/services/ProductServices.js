@@ -26,17 +26,19 @@ export const getProductByCategoryName = async (category_name) => {
     return data;
 };
 
-export const getProductByColor = async (color, lowest, uppest, category) => {
+export const getProductByColor = async (color, lowest, uppest, gender) => {
+    console.log("size and gender", gender,lowest,uppest);
     const { data } = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/products/color`, {
         color,
         lowest,
         uppest,
-        category
+        gender
     });
     return data;
 };
 
 export const getProductBySize = async (size, lowest, uppest, gender) => {
+    console.log("size and gender",size, gender,lowest,uppest);
     const { data } = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/products/size`, {
         size,
         lowest,
@@ -104,33 +106,33 @@ export const getProductBySizeAndGenre = async (size, genre, lowest, uppest, gend
     });
     return data;
 };
-export const getProductsBySizeAndColor = async (size, color, lowest, uppest, category) => {
+export const getProductsBySizeAndColor = async (size, color, lowest, uppest,gender ) => {
     const { data } = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/products/size-and-color`, {
         size,
         color,
         lowest,
         uppest,
-        category
+        gender
     });
     return data;
 };
-export const getProductByColorAndGenre = async (color, genre, lowest, uppest, category) => {
+export const getProductByColorAndGenre = async (color, genre, lowest, uppest, gender) => {
     const { data } = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/products/color-and-genre`, {
         color,
         genre,
         lowest,
         uppest,
-        category
+        gender
     });
     return data;
 };
 
-export const getProductByGenre = async (genre, lowest, uppest, category) => {
+export const getProductByGenre = async (genre, lowest, uppest, gender) => {
     const { data } = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/products/genre`, {
         genre,
         lowest,
         uppest,
-        category
+        gender
     });
     return data;
 };

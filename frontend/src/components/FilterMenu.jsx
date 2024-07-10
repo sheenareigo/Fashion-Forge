@@ -9,18 +9,25 @@ const FilterMenu = ({ openFilter, setProducts, setSortBy }) => {
 
     const [canSearch,setCanSearch]=useState(true);
 
-    const [minPrice, setMinPrice] = useState(10);
+    const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(100);
     const [size, setSize] = useState("all");
     const [color, setColor] = useState("all");
     const [genre, setGenre] = useState("all");
     const [gender, setGender] = useState("all");
 
+    const DEFAULT_MIN_PRICE = 0;
+    const DEFAULT_MAX_PRICE = 100;
+    const DEFAULT_GENRE = 'all';
+    const DEFAULT_GENDER = '';
+    const DEFAULT_SIZE = 'all';
+    const DEFAULT_COLOR = 'all';
+
     useEffect(()=>{
         setColor("all");
         setSize("all");
         setGenre("all");
-        setMinPrice(10);
+        setMinPrice(0);
         setMaxPrice(100);
     },[canSearch]);
     
@@ -48,43 +55,52 @@ const FilterMenu = ({ openFilter, setProducts, setSortBy }) => {
         setGenre(e.target.value);
     };
     const onClickSearch = () => {
+        console.log(gender);
         setSortBy("recommended");                     
             if (size !== "all" && color !== "all" && genre !== "all") {
+                console.log("query");
                 getProductsByQueries(minPrice, maxPrice, size, color, genre, gender)
                     .then(result => {
                         setProducts(result.products);
                     });
             } else if (size !== "all" && color === "all" && genre !== "all") {
+                console.log("size and genre");
                 getProductBySizeAndGenre(size, genre, minPrice, maxPrice, gender)
                     .then((result) => {
                         setProducts(result.products);
                     });
             } else if (color !== "all" && size === "all" && genre !== "all") {
+                console.log("color and genre ");
                 getProductByColorAndGenre(color, genre, minPrice, maxPrice, gender)
                     .then((result) => {
                         setProducts(result.products);
                     });
             } else if (size !== "all" && color !== "all" && genre === "all") {
+                console.log("size and color");
                 getProductsBySizeAndColor(size, color, minPrice, maxPrice, gender)
                     .then((result) => {
                         setProducts(result.products);
                     });
             } else if (size !== "all" && color === "all" && genre === "all") {
+                console.log("size only");
                 getProductBySize(size, minPrice, maxPrice, gender)
                     .then((result) => {
                         setProducts(result.products);
                     });
             } else if (color !== "all" && size === "all" && genre === "all") {
+                console.log("color only");
                 getProductByColor(color, minPrice, maxPrice, gender)
                     .then((result) => {
                         setProducts(result.products);
                     });
             } else if (genre !== "all" && size === "all" && color === "all") {
+                console.log("genre only");
                 getProductByGenre(genre, minPrice, maxPrice, gender)
                     .then((result) => {
                         setProducts(result.products);
                     });
             } else {
+                console.log("price only");
                 getProductByPrice(minPrice, maxPrice, gender)
                     .then((result) => {
                         setProducts(result.products);
@@ -92,6 +108,15 @@ const FilterMenu = ({ openFilter, setProducts, setSortBy }) => {
             }
         };
     
+    const onClickReset = () => {
+    setMinPrice(DEFAULT_MIN_PRICE);
+    setMaxPrice(DEFAULT_MAX_PRICE);
+    setGenre(DEFAULT_GENRE);
+    setGender(DEFAULT_GENDER);
+    setSize(DEFAULT_SIZE);
+    setColor(DEFAULT_COLOR);
+     };
+
 
     return (
         <Box
@@ -99,10 +124,14 @@ const FilterMenu = ({ openFilter, setProducts, setSortBy }) => {
             <Box px={2}>
                 <Text fontSize={20} my={3} fontWeight={500} >Price Range</Text>
                 <RangeSlider
-                    onChangeEnd={onChangePriceRange}
-                    defaultValue={[minPrice, maxPrice]}
+                    value={[minPrice, maxPrice]}  // Use value instead of defaultValue
+                    onChange={(val) => {
+                        setMinPrice(val[0]);
+                        setMaxPrice(val[1]);
+                    }}
+                    onChangeEnd={(val) => onChangePriceRange(val)}
                     max={100}
-                    min={10}
+                    min={0}
                 >
                     <RangeSliderTrack>
                         <RangeSliderFilledTrack bg='facebook.500' />
@@ -129,8 +158,8 @@ const FilterMenu = ({ openFilter, setProducts, setSortBy }) => {
                 <Text fontSize={20} mb={3} fontWeight={500} >Gender</Text>
                 <RadioGroup display='flex' justifyContent='space-between' flexDirection={{ base: 'column', md: 'row' }} onChange={setGender} onClick={onChangeGender} value={gender} >
                 
-                    <Radio colorScheme='facebook' value='Men' fontWeight={600} >Man</Radio>
-                    <Radio colorScheme='facebook' value='Women' fontWeight={600} >Woman</Radio>
+                    <Radio colorScheme='facebook' value='Men' fontWeight={600} >Men</Radio>
+                    <Radio colorScheme='facebook' value='Women' fontWeight={600} >Women</Radio>
                     <Radio colorScheme='facebook' value='Unisex' fontWeight={600} >Unisex</Radio>
                     <Radio colorScheme='facebook' value='Kids' fontWeight={600} >Kids</Radio>
                 </RadioGroup>
@@ -159,6 +188,7 @@ const FilterMenu = ({ openFilter, setProducts, setSortBy }) => {
                     <Radio mb={2} colorScheme='red' value='Red' fontWeight={600} >Red</Radio>
                 </RadioGroup>
                 <Button mt={5} colorScheme='facebook' onClick={onClickSearch} >Search</Button>
+                <Button mt={2} colorScheme='red' onClick={onClickReset}>Reset</Button>
             </Box>
         </Box>
     )

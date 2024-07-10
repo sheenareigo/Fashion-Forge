@@ -22,21 +22,11 @@ const Search = () => {
   const { currentUser } = useUserContext();
   const userId = location.state?.userId || null;
 
-  // useEffect(() => {
-  //   if (!userId) {
-  //     console.log('User ID not found, redirecting to login.');
-  //     // Uncomment the line below to redirect to login if userId is not found
-  //     // navigate('/login');
-  //   } else {
-  //     console.log(`User ID: ${userId}`);
-  //   }
-  // }, [userId, navigate]);
   useEffect(() => {
     if (state !== null && state.category_name) {
       getProductByCategoryName(state.category_name)
         .then((result) => {
           setProducts(result.products);
-          
         })
         .catch((error) => {
           console.error('Error fetching products by category:', error);
@@ -105,47 +95,48 @@ const Search = () => {
         </Select>
       </Box>
 
-      <SimpleGrid minChildWidth={280} gap={3} spacingX={5}>
+      <Box display='grid' gridTemplateColumns={{ base: '1fr', md: openFilter ? '1fr 3fr' : '1fr' }} gap={4}>
         {openFilter && (
-          <Box gridColumn={{ base: "span 4", md: "span 2", lg: "span 1" }}> {/* Adjust the span value as needed */}
+          <Box>
             <FilterMenu openFilter={openFilter} setProducts={setProducts} setSortBy={setSortBy} />
           </Box>
         )}
-        {currentProducts.map((product, index) => (
-          <ClothesCard key={index} productId={product._id} />
-        ))}
-        {products.length === 0 && (
-          <Box display='flex' justifyContent='start'>
-            <Box
-              display='flex'
-              justifyContent='center'
-              alignItems='center'
-              flexDirection='column'
-              mt={10}
-              p={3}>
-              <Icon color='#314E89' fontSize={100} as={SearchOff} />
-              <Heading textAlign='center' fontSize={30} mt={8}>Sorry, we couldn't find what you are looking for.</Heading>
-              <Text textAlign='center' fontSize={24} mt={2} fontWeight={300}>But don’t give up! Check out our bestsellers and find something for you!</Text>
-              <Button
-                variant='solid'
-                fontSize={20}
-                px={10} mt={10}
-                colorScheme='facebook'
-                onClick={() => navigate('/')}>
-                Start Shopping
-              </Button>
-            </Box>
-          </Box>
-        )}
-      </SimpleGrid>
-
-
-
-      <Pagination
-        productsPerPage={productsPerPage}
-        totalProducts={products.length}
-        paginate={paginate}
-      />
+        <Box gridColumn={{ base: "span 1", md: openFilter ? "span 1" : "span 2" }}>
+          <SimpleGrid minChildWidth={280} gap={3} spacingX={5}>
+            {currentProducts.map((product, index) => (
+              <ClothesCard key={index} productId={product._id} />
+            ))}
+            {products.length === 0 && (
+              <Box display='flex' justifyContent='start'>
+                <Box
+                  display='flex'
+                  justifyContent='center'
+                  alignItems='center'
+                  flexDirection='column'
+                  mt={10}
+                  p={3}>
+                  <Icon color='#314E89' fontSize={100} as={SearchOff} />
+                  <Heading textAlign='center' fontSize={30} mt={8}>Sorry, we couldn't find what you are looking for.</Heading>
+                  <Text textAlign='center' fontSize={24} mt={2} fontWeight={300}>But don’t give up! Check out our bestsellers and find something for you!</Text>
+                  <Button
+                    variant='solid'
+                    fontSize={20}
+                    px={10} mt={10}
+                    colorScheme='facebook'
+                    onClick={() => navigate('/')}>
+                    Start Shopping
+                  </Button>
+                </Box>
+              </Box>
+            )}
+          </SimpleGrid>
+          <Pagination
+            productsPerPage={productsPerPage}
+            totalProducts={products.length}
+            paginate={paginate}
+          />
+        </Box>
+      </Box>
     </Box>
   );
 }
