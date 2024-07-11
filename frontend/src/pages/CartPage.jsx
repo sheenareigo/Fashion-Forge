@@ -9,11 +9,13 @@ const CartPage = () => {
     const { currentUser } = useUserContext();
     const navigate = useNavigate();
     
-    const [loading, setLoading] = useState(true);
+    //const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [cart, setCart] = useState({ products: [] });
     const [cartTotal, setCartTotal] = useState(0);
     const cardBgColor = useColorModeValue('white', 'gray.800');
     const cardTextColor = useColorModeValue('black', 'white');
+
     
     useEffect(() => {
 
@@ -23,8 +25,8 @@ const CartPage = () => {
                 const response = await axios.get(`http://localhost:4000/cart/${currentUser}`);
                 if (response.data && Array.isArray(response.data.cart.products)) {
                     setCart(response.data.cart);
-                    const total = response.data.cart.products.reduce((acc, item) => acc + (item.price), 0);
-                    setCartTotal(total);
+                    // const total = response.data.cart.products.reduce((acc, item) => acc + (item.price), 0);
+                    // setCartTotal(total);
                 } else {
                     setCart({ products: [] });
                     setCartTotal(0);
@@ -32,7 +34,7 @@ const CartPage = () => {
             } catch (error) {
                 toast({
                     title: 'Error fetching data.',
-                    description: 'There was an error fetching your cart data.',
+                    description: 'There was an error fetching your cart data from cart page.',
                     status: 'error',
                     duration: 3000,
                     isClosable: true,
@@ -40,9 +42,11 @@ const CartPage = () => {
             } finally {
                 setLoading(false);
             }
+           
         };
 
         fetchCart();
+       
     }, [currentUser, navigate, toast]);
 
     useEffect(() => {
@@ -268,11 +272,10 @@ const CartPage = () => {
                     color="white"
                     size="lg"
                     _hover={{ bg: "blue.500" }}
-                    _active={{ bg: "blue.700" }}
-                >
+                    _active={{ bg: "blue.700" }}>
                     Checkout
                 </Button>
-            </Box>
+                </Box>
                 </Box>
             )}
           

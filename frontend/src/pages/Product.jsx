@@ -7,16 +7,7 @@ import { getImageUrlById } from '../services/ImageServices';
 import { useUserContext } from '../contexts/UserContext';
 
 
-// const flyToCart = keyframes`
-//   0% {
-//     opacity: 1;
-//     transform: translate(0, 0);
-//   }
-//   100% {
-//     opacity: 0;
-//     transform: translate(1000px, -1000px); /* Adjust based on the position of the cart icon */
-//   }
-// `;
+
 
 const Product = () => {
   const navigate = useNavigate();
@@ -35,7 +26,7 @@ const Product = () => {
   const userIdFromState = location.state?.userId;
   
  // const [amount, setAmount] = useState(1);
-  const [animate, setAnimate] = useState(false);
+  
 
 
 
@@ -77,7 +68,7 @@ const Product = () => {
   const onClickAddCart = async () => {
    
     if (selectedSize !== "") {
-      //console.log("Size",selectedSize);
+      
       try {
           if (!currentUser) {
               toast({
@@ -90,17 +81,14 @@ const Product = () => {
               navigate('/login');
               return;
           }
-          // console.log("Product ID", String(location.state.productId));
-          // console.log("User ID:",currentUser);
-          // console.log("Product Name:",product.product_name);
-          // console.log("Product Price:",product.price);
+        
           const response = await axios.post(
               'http://localhost:4000/cart/add',
               {
                 userId:currentUser,
                 productId: String(location.state.productId),
                 productName: String(product.product_name,),
-                quantity: 1, // Default quantity when adding to cart
+                quantity: 1, 
                 size:selectedSize,
                 image:imageUrl,
                 price:(product.price)
@@ -108,7 +96,7 @@ const Product = () => {
           );
        
           if (response.status === 200) {
-              //console.log('Product added to cart:', response.data.cart);
+              
               toast({
                   title: 'Product added to cart.',
                   description: 'The product has been successfully added to your cart.',
@@ -116,11 +104,7 @@ const Product = () => {
                   duration: 3000,
                   isClosable: true,
               });
-              // setInCart(true);
-              // setAnimate(true);
-              // setTimeout(() => {
-              //   setAnimate(false);
-              // }, 3000); // Duration of the animation
+              
           }
       } catch (error) {
           console.error('Error adding product to cart:', error);
@@ -143,22 +127,7 @@ const Product = () => {
      
     }
   };
-  const handleViewCart = () => {
-    navigate('/cart');
-    if (currentUser) {
-        navigate('/cart', { state: { userId: currentUser } });
-       
-    } else {
-        toast({
-            title: 'User not logged in.',
-            description: 'Please log in to view your cart.',
-            status: 'warning',
-            duration: 4000,
-            isClosable: true,
-        });
-        navigate('/login');
-    }
-};
+  
 
   return (
     <Box p={{ base: 3, md: 10 }}>
@@ -167,7 +136,7 @@ const Product = () => {
           <Image src={imageUrl} alt={product.product_name} />
           <Box p={3} maxWidth={600}>
             <Text fontSize={30}>{product.product_name}</Text>
-            <Text mt={5} mb={3} fontSize={28} fontWeight={400} color='facebook.500'>Price : <b> {product.price}$ </b></Text>
+            <Text mt={5} mb={3} fontSize={28} fontWeight={400} color='facebook.500'>Price : <b> ${product.price} </b></Text>
             <Divider />
             <Text mt={3} fontSize={20} fontWeight={500}>Sizes</Text>
             <Box mt={3} display='flex'>
@@ -179,8 +148,7 @@ const Product = () => {
                   colorScheme='facebook'
                   variant={selectedSize === size ? 'solid' : 'outline'}
                   width={{ base: '25px', sm: '35px', lg: '50px' }}
-                  height={{ base: '30px', sm: '40px', lg: '50px' }}
-                >
+                  height={{ base: '30px', sm: '40px', lg: '50px' }}>
                   {size}
                 </Button>
               ))}
@@ -202,46 +170,9 @@ const Product = () => {
                   width='100%'
                 >
                   ADD TO CART
-                </Button>
-                
-
-
+                </Button>             
               )}
-            </Box>
-            {/* <Box mt={10} mb={5} display='flex' flexDirection={{ base: 'column', sm: 'row' }}>
-      {animate && (
-        <Box
-          position='absolute'
-          width='50px'
-          height='50px'
-          bg='facebook.500'
-          borderRadius='50%'
-          animation={`${flyToCart} 1s ease`}
-          pointerEvents='none'
-        />
-      )}
-      
-        <Button
-          onClick={onClickAddCart}
-          my={1}
-          me={{ base: 0, md: 2 }}
-          maxWidth={530}
-          colorScheme='facebook'
-          height={10}
-          width='100%'
-        >
-          ADD TO CART
-        </Button>
-     
-    </Box> */}
-            {/* <Box display='flex' justifyContent='space-between' alignItems='center' p={5} maxWidth={1200} mx='auto'>
-               
-                <Button colorScheme='blue' onClick={handleViewCart}>
-                    View Cart
-                </Button>
-            </Box> */}
-
-
+            </Box>         
             <Divider />
             <Box mt={3}>
               <Text fontSize={24} fontWeight={500}>Description</Text>
