@@ -142,7 +142,6 @@ exports.getCart = async (req, res) => {
 
     // Find the user by ID and populate the cart with product details
     const user = await User.findById(userId);
-    console.log("User",user.cart);
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -251,5 +250,76 @@ exports.decrementProductQuantity = async (req, res) => {
   } catch (error) {
       console.error('Error updating cart:', error);
       res.status(500).json({ message: 'Error updating cart.', error });
+  }
+};
+
+
+
+// Apply coupon to cart
+exports.applyCoupon = async (req, res) => {
+  const { userId, couponCode } = req.body;
+  try {
+      // Find the user by ID and check for errors
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found.' });
+      }
+
+      // Get the current date and the user's registration date
+      const currentDate = new Date();
+      const registrationDate = new Date(user.register_data_time);
+
+      // Calculate the difference in days between the current date and the user's registration date
+      const differenceInDays = Math.floor((currentDate - registrationDate) / (1000 * 60 * 60 * 24));
+
+
+      // Check if the coupon code is valid and if the user is eligible to use it
+      if (differenceInDays > 7 || !user.new_user_discount) {
+         // user.new_user_discount = false;
+          await user.save();
+          return res.status(400).json({ success: false, message: 'Coupon is not valid' });
+      } else {
+          if (couponCode === "FF20") {
+          //    user.new_user_discount = false;
+ 
+          user.cart.coupon=couponCode;
+              await user.save();
+      
+              return res.status(200).json({ success: true, user });
+          } else {
+              return res.status(400).json({ success: false, message: 'Invalid coupon code' });
+          }
+      }
+  } catch (error) {
+      console.error('Error applying coupon:', error);
+      return res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// Remove coupon from cart
+exports.removeCoupon = async (req, res) => {
+  const { userId, couponCode } = req.body;
+  try {
+    console.log("remove coupon controller");
+      // Find the user by ID and check for errors
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found.' });
+      }
+      if (couponCode=="FF20"){
+      user.cart.coupon=null;
+         // user.new_user_discount = false;
+          await user.save();
+          return res.status(200).json({ success: true, message: 'Coupon removed successfully' });
+
+      }
+      else {
+        return res.status(400).json({ success: false, message: 'Invalid coupon code' });
+    }
+      
+      }
+   catch (error) {
+      console.error('Error applying coupon:', error);
+      return res.status(500).json({ success: false, message: 'Server error' });
   }
 };

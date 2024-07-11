@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Button, Center, VStack ,SimpleGrid, Image, Text, useToast, Spinner, useColorModeValue, Tooltip } from '@chakra-ui/react';
+import { Box, Button, Center, VStack ,SimpleGrid, Image, Text, useToast, Spinner, useColorModeValue, Tooltip, Input } from '@chakra-ui/react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
+import { applyCoupon,removeCoupon } from '../services/CartService';
 
 const CartPage = () => {
     const toast = useToast();
@@ -13,6 +14,8 @@ const CartPage = () => {
     const [loading, setLoading] = useState(false);
     const [cart, setCart] = useState({ products: [] });
     const [cartTotal, setCartTotal] = useState(0);
+    const [couponCode, setCouponCode] = useState('');
+    const [discountedTotal, setDiscountedTotal] = useState(0);
     const cardBgColor = useColorModeValue('white', 'gray.800');
     const cardTextColor = useColorModeValue('black', 'white');
 
@@ -22,14 +25,29 @@ const CartPage = () => {
         const fetchCart = async () => {
             setLoading(true);
             try {
+                if(!currentUser)
+                    {
+                        toast({
+                            title: 'Log in to view your Cart',
+                            description: 'Log in to view your Cart',
+                            status: 'info',
+                            duration: 3000,
+                            isClosable: true,
+                        });
+                        return;
+
+                    }
                 const response = await axios.get(`http://localhost:4000/cart/${currentUser}`);
                 if (response.data && Array.isArray(response.data.cart.products)) {
                     setCart(response.data.cart);
-                    // const total = response.data.cart.products.reduce((acc, item) => acc + (item.price), 0);
-                    // setCartTotal(total);
+                    const total = calculateTotal(response.data.cart.products);
+                    setCartTotal(total);
+                    setDiscountedTotal(total);
+
                 } else {
                     setCart({ products: [] });
                     setCartTotal(0);
+                    setDiscountedTotal(0);
                 }
             } catch (error) {
                 toast({
@@ -50,9 +68,15 @@ const CartPage = () => {
     }, [currentUser, navigate, toast]);
 
     useEffect(() => {
-        const total = cart.products.reduce((acc, item) => acc + (item.price), 0);
+        const total = calculateTotal(cart.products);
         setCartTotal(total);
-    }, [cart]);
+    
+    }, [cart, couponCode]);
+
+    const calculateTotal = (products) => {
+        const total = products.reduce((acc, item) => acc + (item.price), 0);
+        return total;
+    };
 
     const handleRemoveFromCart = async (productId, size) => {
         try {
@@ -68,6 +92,9 @@ const CartPage = () => {
 
             if (response.data.cart && Array.isArray(response.data.cart.products)) {
                 setCart(response.data.cart);
+                const updatedTotal = calculateTotal(response.data.cart.products);
+                setCartTotal(updatedTotal);
+                applyCouponDiscount(updatedTotal);
             } else {
                 throw new Error('Unexpected cart format');
             }
@@ -92,6 +119,9 @@ const CartPage = () => {
 
             if (response.data.cart && Array.isArray(response.data.cart.products)) {
                 setCart(response.data.cart);
+                const updatedTotal = calculateTotal(response.data.cart.products);
+                setCartTotal(updatedTotal);
+                applyCouponDiscount(updatedTotal);
             } else {
                 toast({
                     title: 'Error',
@@ -122,6 +152,9 @@ const CartPage = () => {
 
             if (response.data.cart && Array.isArray(response.data.cart.products)) {
                 setCart(response.data.cart);
+                const updatedTotal = calculateTotal(response.data.cart.products);
+                setCartTotal(updatedTotal);
+                applyCouponDiscount(updatedTotal);
             } else {
                 toast({
                     title: 'Error',
@@ -142,6 +175,111 @@ const CartPage = () => {
         }
     };
 
+    const handleApplyCoupon = async () => {
+        try {
+            if (!couponCode) {
+                toast({
+                    title: 'No Coupon Code',
+                    description: 'Please enter a valid coupon code.',
+                    status: 'warning',
+                    duration: 3000,
+                    isClosable: true,
+                });
+                return;
+            }
+            const response = await applyCoupon(currentUser, couponCode);
+            if (response.success) {
+                applyCouponDiscount(cartTotal);
+                toast({
+                    title: 'Coupon Applied',
+                    description: `Coupon code ${couponCode} applied successfully!`,
+                    status: 'success',
+                    duration: 3000,
+                    isClosable: true,
+                });
+            } else {
+                toast({
+                    title: 'Invalid Coupon',
+                    description: 'The coupon code you entered is invalid.',
+                    status: 'error',
+                    duration: 3000,
+                    isClosable: true,
+                });
+            }
+        } 
+        catch (error) {
+            if (error.response && error.response.status === 400) {
+                
+                toast({
+                    title: 'Invalid Coupon',
+                    description: error.response.data.message || 'The coupon code you entered is invalid.',
+                    status: 'error',
+                    duration: 3000,
+                    isClosable: true,
+                });
+            } else {
+                toast({
+                    title: 'Error Applying Coupon',
+                    description: 'There was an error applying the coupon code.',
+                    status: 'error',
+                    duration: 3000,
+                    isClosable: true,
+                });
+            }
+        }
+    };
+
+    const handleRemoveCoupon = async () => {
+        try {
+            if (!couponCode) {
+                toast({
+                    title: 'No Coupon Code',
+                    description: 'Please enter a valid coupon code.',
+                    status: 'warning',
+                    duration: 3000,
+                    isClosable: true,
+                });
+                return;
+            }
+            const response = await removeCoupon(currentUser, couponCode);
+            if (response.success) {
+                setCouponCode('');
+                setDiscountedTotal(cartTotal);
+                toast({
+                    title: 'Coupon Removed',
+                    description: 'The coupon has been removed.',
+                    status: 'success',
+                    duration: 3000,
+                    isClosable: true,
+                });
+            }
+        } catch (error) {
+            if (error.response && error.response.status === 400) {
+                toast({
+                    title: 'Invalid Coupon',
+                    description: error.response.data.message || 'The coupon code you entered is invalid.',
+                    status: 'error',
+                    duration: 3000,
+                    isClosable: true,
+                });
+            } else {
+                toast({
+                    title: 'Error Applying Coupon',
+                    description: 'There was an error applying the coupon code.',
+                    status: 'error',
+                    duration: 3000,
+                    isClosable: true,
+                });
+            }
+        }
+    };
+    const applyCouponDiscount = (total) => {
+        if (couponCode === 'FF20') {
+            setDiscountedTotal(total * 0.8);
+        } else {
+            setDiscountedTotal(total);
+        }
+    };
 
     if (loading) {
         return <Spinner size="xl" />;
@@ -263,16 +401,52 @@ const CartPage = () => {
                             );
                         })}
                     </SimpleGrid>
+                    <br/>
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
-                <Text fontSize="2xl" fontWeight="bold" textAlign="center" flex="1">Your Cart Items</Text>
-                <Text fontSize="xl" fontWeight="bold" color="blue.800" marginRight={"25px"}>Total Price: ${cartTotal.toFixed(2)}</Text>
+                    <Text fontSize="2xl" fontWeight="bold" textAlign="center" flex="1">Your Cart Items</Text>
+                <Text fontSize="xl" fontWeight="bold" color="blue.800" marginRight={"25px"}>Total Price: ${discountedTotal.toFixed(2)}</Text>
+                <Input 
+                    placeholder="Enter coupon code" 
+                    value={couponCode} 
+                    onChange={(e) => setCouponCode(e.target.value)} 
+                    width="200px"
+                    marginRight="10px"
+                />
                 <Button
                     colorScheme="blue"
                     bg="blue.600"
                     color="white"
                     size="lg"
                     _hover={{ bg: "blue.500" }}
-                    _active={{ bg: "blue.700" }}>
+                    _active={{ bg: "blue.700" }}
+                    onClick={handleApplyCoupon}
+                >
+                    Apply Coupon
+                </Button>
+                {couponCode && (
+                    <Button
+                        colorScheme="red"
+                        bg="red.600"
+                        color="white"
+                        size="lg"
+                        _hover={{ bg: "red.500" }}
+                        _active={{ bg: "red.700" }}
+                        onClick={handleRemoveCoupon}
+                        marginLeft="10px"
+                    >
+                        Remove Coupon
+                    </Button>
+                )}
+                <Button
+                    colorScheme="blue"
+                    bg="blue.600"
+                    color="white"
+                    size="lg"
+                    _hover={{ bg: "blue.500" }}
+                    _active={{ bg: "blue.700" }}
+                    marginLeft="10px"
+                >
+
                     Checkout
                 </Button>
                 </Box>

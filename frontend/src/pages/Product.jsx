@@ -6,9 +6,6 @@ import { getProductById } from '../services/ProductServices';
 import { getImageUrlById } from '../services/ImageServices';
 import { useUserContext } from '../contexts/UserContext';
 
-
-
-
 const Product = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,12 +17,11 @@ const Product = () => {
   const [inCart, setInCart] = useState(false);
   const [amount, setAmount] = useState(0);
   const [imageUrl, setImageUrl] = useState(null);
-  const [loading, setLoading] = useState(true);
+ 
   const { currentUser} = useUserContext();
 
   const userIdFromState = location.state?.userId;
   
- // const [amount, setAmount] = useState(1);
   
 
 
@@ -35,7 +31,7 @@ const Product = () => {
       getProductById(location.state.productId)
         .then((result) => {
           if (result && result.product) {
-            //console.log('Current User:', currentUser);
+      
             setProduct(result.product);
             setSizes(result.product.size || []);
             getImageUrlById(result.product.image_id)
@@ -68,7 +64,7 @@ const Product = () => {
   const onClickAddCart = async () => {
    
     if (selectedSize !== "") {
-      
+
       try {
           if (!currentUser) {
               toast({
@@ -81,7 +77,7 @@ const Product = () => {
               navigate('/login');
               return;
           }
-        
+
           const response = await axios.post(
               'http://localhost:4000/cart/add',
               {
@@ -96,7 +92,7 @@ const Product = () => {
           );
        
           if (response.status === 200) {
-              
+
               toast({
                   title: 'Product added to cart.',
                   description: 'The product has been successfully added to your cart.',
@@ -104,7 +100,6 @@ const Product = () => {
                   duration: 3000,
                   isClosable: true,
               });
-              
           }
       } catch (error) {
           console.error('Error adding product to cart:', error);
@@ -172,7 +167,12 @@ const Product = () => {
                   ADD TO CART
                 </Button>             
               )}
-            </Box>         
+
+            </Box>
+          
+
+
+
             <Divider />
             <Box mt={3}>
               <Text fontSize={24} fontWeight={500}>Description</Text>

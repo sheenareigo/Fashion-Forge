@@ -6,7 +6,8 @@ const {
     removeFromCart,
     updateCartItem,
     getCart,
-    
+    applyCoupon,
+    removeCoupon,
     incrementProductQuantity,
     decrementProductQuantity
         
@@ -18,7 +19,8 @@ router.post('/add', addToCart);
 router.delete('/remove', removeFromCart); 
 router.put('/update', updateCartItem); 
 router.get('/:userId', getCart); 
-
+router.post('/applyCoupon', applyCoupon); 
+router.post('/removeCoupon', removeCoupon); 
 router.put('/increment', incrementProductQuantity);
 router.put('/decrement', decrementProductQuantity);
 
