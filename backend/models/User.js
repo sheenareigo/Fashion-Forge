@@ -16,7 +16,8 @@ const productSubSchema = new mongoose.Schema({
 
 
 const cartSchema = new mongoose.Schema({
-  products: { type: [productSubSchema], default: [] }
+  products: { type: [productSubSchema], default: [] },
+  coupon: { type: String, default: null } 
 }, { _id: false });
 
 const UserSchema = new mongoose.Schema({
@@ -58,14 +59,15 @@ const UserSchema = new mongoose.Schema({
     },
     new_user_discount:{
         type:Boolean,
-        default:false
+        default:true
     },
     register_data_time: {
         type: Date,
         default: Date.now
     },
   //  cart: cartSchema
-  cart: { type: cartSchema, default: () => ({ products: [] }) },
+  cart: { type: cartSchema, default: () => ({ products: [],coupon:null }) 
+},
 },{versionKey:false});
 
 UserSchema.pre("save", function (next) {
