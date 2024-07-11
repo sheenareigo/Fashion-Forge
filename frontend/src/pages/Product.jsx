@@ -6,18 +6,6 @@ import { getProductById } from '../services/ProductServices';
 import { getImageUrlById } from '../services/ImageServices';
 import { useUserContext } from '../contexts/UserContext';
 
-
-// const flyToCart = keyframes`
-//   0% {
-//     opacity: 1;
-//     transform: translate(0, 0);
-//   }
-//   100% {
-//     opacity: 0;
-//     transform: translate(1000px, -1000px); /* Adjust based on the position of the cart icon */
-//   }
-// `;
-
 const Product = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -29,13 +17,13 @@ const Product = () => {
   const [inCart, setInCart] = useState(false);
   const [amount, setAmount] = useState(0);
   const [imageUrl, setImageUrl] = useState(null);
-  const [loading, setLoading] = useState(true);
+ 
   const { currentUser} = useUserContext();
 
   const userIdFromState = location.state?.userId;
   
- // const [amount, setAmount] = useState(1);
-  const [animate, setAnimate] = useState(false);
+
+  
 
 
 
@@ -44,7 +32,7 @@ const Product = () => {
       getProductById(location.state.productId)
         .then((result) => {
           if (result && result.product) {
-            //console.log('Current User:', currentUser);
+      
             setProduct(result.product);
             setSizes(result.product.size || []);
             getImageUrlById(result.product.image_id)
@@ -77,7 +65,7 @@ const Product = () => {
   const onClickAddCart = async () => {
    
     if (selectedSize !== "") {
-      //console.log("Size",selectedSize);
+   
       try {
           if (!currentUser) {
               toast({
@@ -90,10 +78,7 @@ const Product = () => {
               navigate('/login');
               return;
           }
-          // console.log("Product ID", String(location.state.productId));
-          // console.log("User ID:",currentUser);
-          // console.log("Product Name:",product.product_name);
-          // console.log("Product Price:",product.price);
+
           const response = await axios.post(
               'http://localhost:4000/cart/add',
               {
@@ -108,7 +93,7 @@ const Product = () => {
           );
        
           if (response.status === 200) {
-              //console.log('Product added to cart:', response.data.cart);
+            
               toast({
                   title: 'Product added to cart.',
                   description: 'The product has been successfully added to your cart.',
@@ -116,11 +101,7 @@ const Product = () => {
                   duration: 3000,
                   isClosable: true,
               });
-              // setInCart(true);
-              // setAnimate(true);
-              // setTimeout(() => {
-              //   setAnimate(false);
-              // }, 3000); // Duration of the animation
+
           }
       } catch (error) {
           console.error('Error adding product to cart:', error);
@@ -208,38 +189,7 @@ const Product = () => {
 
               )}
             </Box>
-            {/* <Box mt={10} mb={5} display='flex' flexDirection={{ base: 'column', sm: 'row' }}>
-      {animate && (
-        <Box
-          position='absolute'
-          width='50px'
-          height='50px'
-          bg='facebook.500'
-          borderRadius='50%'
-          animation={`${flyToCart} 1s ease`}
-          pointerEvents='none'
-        />
-      )}
-      
-        <Button
-          onClick={onClickAddCart}
-          my={1}
-          me={{ base: 0, md: 2 }}
-          maxWidth={530}
-          colorScheme='facebook'
-          height={10}
-          width='100%'
-        >
-          ADD TO CART
-        </Button>
-     
-    </Box> */}
-            {/* <Box display='flex' justifyContent='space-between' alignItems='center' p={5} maxWidth={1200} mx='auto'>
-               
-                <Button colorScheme='blue' onClick={handleViewCart}>
-                    View Cart
-                </Button>
-            </Box> */}
+          
 
 
             <Divider />
