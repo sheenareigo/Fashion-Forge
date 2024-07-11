@@ -23,6 +23,18 @@ const CartPage = () => {
         const fetchCart = async () => {
             setLoading(true);
             try {
+                if(!currentUser)
+                    {
+                        toast({
+                            title: 'Log in to view your Cart',
+                            description: 'Log in to view your Cart',
+                            status: 'info',
+                            duration: 3000,
+                            isClosable: true,
+                        });
+                        return;
+
+                    }
                 const response = await axios.get(`http://localhost:4000/cart/${currentUser}`);
                 if (response.data && Array.isArray(response.data.cart.products)) {
                     setCart(response.data.cart);
@@ -384,8 +396,9 @@ const CartPage = () => {
                             );
                         })}
                     </SimpleGrid>
+                    <br/>
                     <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
-                <Text fontSize="2xl" fontWeight="bold" textAlign="center" flex="1">Your Cart Items</Text>
+                    <Text fontSize="2xl" fontWeight="bold" textAlign="center" flex="1">Your Cart Items</Text>
                 <Text fontSize="xl" fontWeight="bold" color="blue.800" marginRight={"25px"}>Total Price: ${discountedTotal.toFixed(2)}</Text>
                 <Input 
                     placeholder="Enter coupon code" 
