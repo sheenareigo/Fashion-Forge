@@ -12,7 +12,7 @@ import { getAllImages } from '../services/ImageServices';
 //import { useSearchContext } from '../contexts/SearchContext';
 
 const settings = {
-  dots: true,
+  dots: false,
   arrows: false,
   fade: true,
   infinite: true,
@@ -89,6 +89,7 @@ const Carousel = () => {
               backgroundSize="contain"
               backgroundImage={`url(${image})`}
               cursor='pointer'
+              marginTop={"60px"}
             >
             {/* <LazyLoadImage
               effect="blur"
@@ -109,3 +110,4 @@ const Carousel = () => {
 }
 
 export default Carousel;
+

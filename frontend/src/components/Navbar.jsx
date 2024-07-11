@@ -11,11 +11,16 @@ import { useUserContext } from '../contexts/UserContext';
 import { getAllCategories } from '../services/CategoryServices';
 
 const Navbar = () => {
+
+  //const [genres, setGenres] = useState([]);
   const [open, setOpen] = useState(false);
+  //const [itemCount, setItemCount] = useState(0);
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useUserContext();
-  const [removeCookie] = useCookies(['currentUser']);
+  //const { cart, refresh } = useCartContext();
+  const [cookies, setCookie, removeCookie] = useCookies(['currentUser']);
   const [category, setCategory] = useState([]);
+  //const [admin]=useGetUserRole(currentUser);
 
   useEffect(() => {
     getAllCategories()
@@ -24,7 +29,12 @@ const Navbar = () => {
     });
   },[]); 
 
+  // const handleClick = (name) => {
+  //   navigate('/search', { state: { category_name: name } });
+  // };
+
   const Logout = () => {
+    
     removeCookie('currentUser', { path: '/' });
     setCurrentUser(null);
     navigate('/');
@@ -81,8 +91,8 @@ const Navbar = () => {
               currentUser &&
               
                 <Menu isOpen={open}>
-                  <Icon fontSize={30} color='inherit' as={Person} style={{ marginRight: '20px' }} />
-                  <Text color='inherit' fontWeight={500} style={{ marginRight: '20px' }} >Account</Text>
+                  <Icon fontSize={30} color='inherit' as={Person} />
+                  <Text color='inherit' fontWeight={500} >Account</Text>
                   <MenuButton />
                   <MenuList >
                     <MenuGroup title='Account' >
@@ -97,13 +107,26 @@ const Navbar = () => {
             {
                !currentUser &&
                <>
-                 <Icon fontSize={30} color='inherit' as={Person} style={{ marginRight: '20px' }}/>
-                 <Text color='inherit' fontWeight={500} style={{ marginRight: '20px' }} >Login</Text>
+                 <Icon fontSize={30} color='inherit' as={Person} />
+                 <Text color='inherit' fontWeight={500} >Login</Text>
                </>
             }
             {}
           </Box>
-
+          {/* <Box
+            color='facebook.500'
+            display='flex'
+            flexDirection='column'
+            cursor='pointer'
+            mx='5'
+            alignItems='center'
+            transition={.5}
+            _hover={{ color: 'facebook.700' }}
+            onClick={() => navigate('/favorites')}
+          >
+            <Icon fontSize={30} color='inherit' as={Favorite} />
+            <Text color='inherit' fontWeight={500} >Favorites</Text>
+          </Box> */}
           <Box
             color='facebook.500'
             display='flex'
@@ -112,7 +135,7 @@ const Navbar = () => {
             alignItems='center'
             transition={.5}
             _hover={{ color: 'facebook.700' }}
-            onClick={() => navigate('/')} //cart
+            onClick={() => navigate('/cart')} //cart
           >
             <Icon fontSize={30} color='inherit' as={ShoppingCart} />
           </Box>

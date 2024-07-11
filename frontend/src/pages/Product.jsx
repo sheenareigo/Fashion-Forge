@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Image, SimpleGrid, Text, Divider, Button, useToast } from '@chakra-ui/react';
+import { Box, Image, SimpleGrid, Text, Divider, Button, useToast,Icon, keyframes  } from '@chakra-ui/react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getProductById } from '../services/ProductServices';
 import { getImageUrlById } from '../services/ImageServices';
 import { useUserContext } from '../contexts/UserContext';
+
+
+// const flyToCart = keyframes`
+//   0% {
+//     opacity: 1;
+//     transform: translate(0, 0);
+//   }
+//   100% {
+//     opacity: 0;
+//     transform: translate(1000px, -1000px); /* Adjust based on the position of the cart icon */
+//   }
+// `;
 
 const Product = () => {
   const navigate = useNavigate();
@@ -21,6 +33,10 @@ const Product = () => {
   const { currentUser} = useUserContext();
 
   const userIdFromState = location.state?.userId;
+  
+ // const [amount, setAmount] = useState(1);
+  const [animate, setAnimate] = useState(false);
+
 
 
   useEffect(() => {
@@ -59,6 +75,7 @@ const Product = () => {
   }, [location.state?.productId, toast]);
 
   const onClickAddCart = async () => {
+   
     if (selectedSize !== "") {
       //console.log("Size",selectedSize);
       try {
@@ -99,6 +116,11 @@ const Product = () => {
                   duration: 3000,
                   isClosable: true,
               });
+              // setInCart(true);
+              // setAnimate(true);
+              // setTimeout(() => {
+              //   setAnimate(false);
+              // }, 3000); // Duration of the animation
           }
       } catch (error) {
           console.error('Error adding product to cart:', error);
@@ -118,6 +140,7 @@ const Product = () => {
         duration: 3000,
         isClosable: true,
       });
+     
     }
   };
   const handleViewCart = () => {
@@ -185,12 +208,38 @@ const Product = () => {
 
               )}
             </Box>
-            <Box display='flex' justifyContent='space-between' alignItems='center' p={5} maxWidth={1200} mx='auto'>
+            {/* <Box mt={10} mb={5} display='flex' flexDirection={{ base: 'column', sm: 'row' }}>
+      {animate && (
+        <Box
+          position='absolute'
+          width='50px'
+          height='50px'
+          bg='facebook.500'
+          borderRadius='50%'
+          animation={`${flyToCart} 1s ease`}
+          pointerEvents='none'
+        />
+      )}
+      
+        <Button
+          onClick={onClickAddCart}
+          my={1}
+          me={{ base: 0, md: 2 }}
+          maxWidth={530}
+          colorScheme='facebook'
+          height={10}
+          width='100%'
+        >
+          ADD TO CART
+        </Button>
+     
+    </Box> */}
+            {/* <Box display='flex' justifyContent='space-between' alignItems='center' p={5} maxWidth={1200} mx='auto'>
                
                 <Button colorScheme='blue' onClick={handleViewCart}>
                     View Cart
                 </Button>
-            </Box>
+            </Box> */}
 
 
             <Divider />
