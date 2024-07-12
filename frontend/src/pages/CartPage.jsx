@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
 import { useCookies } from 'react-cookie';
 import { applyCoupon, removeCoupon } from '../services/CartService';
+import { loadStripe } from "@stripe/stripe-js";
 
 const CartPage = () => {
   const toast = useToast();
@@ -283,6 +284,30 @@ const CartPage = () => {
     }
   };
 
+  const onClickPurchase = async() => {
+    const stripePromise = await loadStripe("pk_test_51Pamz5B4UKoOdXsodITuR2MNbbLV5bf9fb4VNWChzU2fX978l5qzhmTBJzIVc6vLXK9rAAtMcXIo3dcEoJiAEbK300O8XoLjPc");
+    const body = {
+        products : cart.products
+    }
+    const header = {
+        "Content-Type": "application/json"
+    }
+    const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/create-payment-intent`, {
+        method: "POST",
+        headers: header,
+        body: JSON.stringify(body),
+    })
+
+    const session = await response.json();
+    const result = stripePromise.redirectToCheckout({
+        sessionId: session.id
+    });
+
+    if(result.error) {
+        console.log("error");
+    }
+}
+
   if (loading) {
     return <Spinner size="xl" />;
   }
@@ -447,6 +472,7 @@ const CartPage = () => {
               _hover={{ bg: "blue.500" }}
               _active={{ bg: "blue.700" }}
               marginLeft="10px"
+              onClick={onClickPurchase}
             >
               Checkout
             </Button>
