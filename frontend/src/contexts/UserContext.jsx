@@ -1,3 +1,5 @@
+
+
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { useCookies } from 'react-cookie';
 
@@ -11,7 +13,12 @@ export const UserProvider = ({ children }) => {
     if (cookies.currentUser && !currentUser) {
       setCurrentUser(cookies.currentUser);
     }
-  }, [cookies.currentUser, currentUser]);
+  }, [cookies, currentUser]);
+
+  const login = (user) => {
+    setCurrentUser(user);
+    setCookie('currentUser', user, { path: '/', maxAge: 30 * 24 * 60 * 60 }); // 30 days
+  };
 
   const logout = () => {
     setCurrentUser(null);
@@ -19,7 +26,7 @@ export const UserProvider = ({ children }) => {
   };
 
   return (
-    <UserContext.Provider value={{ currentUser, setCurrentUser, logout }}>
+    <UserContext.Provider value={{ currentUser, login, logout, setCurrentUser }}>
       {children}
     </UserContext.Provider>
   );

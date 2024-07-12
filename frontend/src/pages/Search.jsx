@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from 'react';
 import { Box, SimpleGrid, Button, Select, Text, Icon, Heading, Spinner } from '@chakra-ui/react';
 import Pagination from '../components/Pagination';
@@ -21,7 +23,7 @@ const Search = () => {
   const [productsPerPage] = useState(10);
   const [loading, setLoading] = useState(true);
   const { currentUser } = useUserContext();
-  const userId = location.state?.userId || null;
+  const userId = location.state?.userId || currentUser;
 
   useEffect(() => {
     setLoading(true); // Start loading
@@ -49,7 +51,7 @@ const Search = () => {
         });
       setSortBy("recommended");
     }
-  }, [state, search, canSearch]);
+  }, [state, search, canSearch, currentUser]);
 
   const handleChange = (e) => {
     setSortBy(e.target.value);
@@ -108,7 +110,8 @@ const Search = () => {
           <Spinner size='xl' />
         </Box>
       ) : (
-        <SimpleGrid minChildWidth={280} gap={3} spacingX={5}>
+         <SimpleGrid minChildWidth={280} gap={3} spacingX={5}>
+  
           {openFilter && (
             <Box gridColumn={{ base: "span 4", md: "span 2", lg: "span 1" }}>
               <FilterMenu openFilter={openFilter} setProducts={setProducts} setSortBy={setSortBy} />
@@ -153,3 +156,4 @@ const Search = () => {
 }
 
 export default Search;
+
