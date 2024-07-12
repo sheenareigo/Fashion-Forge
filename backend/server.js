@@ -34,6 +34,7 @@ mongoose.connect(process.env.MONGODB_URL, {
   .then(() => {
     console.log('Successfully connected to database.');
     //populateDB();
+    //insertSampleData();
   })
   .catch((error) => {
     console.error('Error connecting to database:', error);
