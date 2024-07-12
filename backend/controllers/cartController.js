@@ -1,6 +1,6 @@
 // controllers/cartController.js
-const User = require('../models/User'); // Adjust path as necessary
-const Product = require('../models/Product'); // Adjust path as necessary
+const User = require('../models/User'); 
+const Product = require('../models/Product');
 
 
 // Controller function to add a product in the user's cart
@@ -8,7 +8,7 @@ exports.addToCart = async (req, res) => {
   try {
     const { userId, productId, productName, quantity , size, image, price} = req.body;
 
-    console.log("from cart controller price",price);
+    
     // Validate the input
     if (!userId || !productId || !quantity  || !size === undefined) {
       console.error('Missing required fields:', { userId, productId, quantity,size });
@@ -39,10 +39,10 @@ exports.addToCart = async (req, res) => {
     // Find if the product already exists in the user's cart
     const existingProduct = user.cart.products.find(item => item.product_id.equals(productId)&& item.size === size);
     if (existingProduct) {
-      // If the product is already in the cart, update the quantity
+    
       existingProduct.quantity += quantity;
     } else {
-      // If the product is not in the cart, add it
+      
       user.cart.products.push({ product_id: productId, productName, quantity ,size, image, price});
     }
 
@@ -78,9 +78,7 @@ exports.removeFromCart = async (req, res) => {
     user.cart.products = user.cart.products.filter(item =>
       !(item.product_id.equals(productId) && item.size === size)
     );
-    console.log("After Updated cart products:", user.cart.products);
-    //console.log("product_id.........",item.product_id)
-    console.log("productId.........",productId)
+  
 
     // Save the updated user document
     await user.save();
@@ -144,7 +142,6 @@ exports.getCart = async (req, res) => {
 
     // Find the user by ID and populate the cart with product details
     const user = await User.findById(userId);
-    console.log("User",user.cart);
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -157,85 +154,6 @@ exports.getCart = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
-
-
-// // Example in-memory cart storage
-// let cartData = {};
-
-// // Increment cart item quantity
-// exports.incrementCartItem = (req, res) => {
-//     const userId = req.params.userId;
-//     const { productId } = req.body;
-
-//     try {
-//         if (!cartData[userId]) {
-//             cartData[userId] = [];
-//         }
-
-//         // Simulate fetching cart data for the user from in-memory storage
-//         const userCart = cartData[userId];
-
-//         // Check if the product already exists in the cart
-//         const cartItemIndex = userCart.findIndex(item => item.productId === productId);
-//         console.log("Item number: ",cartItemIndex)
-//         if (cartItemIndex !== -1) {
-//             // If product exists, increment its quantity
-//             userCart[cartItemIndex].quantity++;
-//         } else {
-//             // If product does not exist, add it to cart with initial quantity of 1
-//             userCart.push({ productId, quantity: 1 });
-//         }
-
-//         console.log("Request Body: ", req.body); // Log request body for debugging
-//         console.log("Current Cart Data: ", userCart); // Log current cart data
-
-//         // Respond with updated cart data
-//         res.json({ success: true, message: 'Cart item quantity incremented successfully.', cart: userCart });
-//     } catch (error) {
-//         console.error('Error incrementing cart item quantity:', error);
-//         res.status(500).json({ success: false, error: 'Internal server error.' });
-//     }
-// };
-
-
-
-
-
-exports.incrementCartItem = async (req, res) => {
-    const userId = req.params.userId;
-    const { productId } = req.body;
-
-    try {
-        // Fetch user from MongoDB
-        const user = await User.findById(userId);
-
-        if (!user) {
-            return res.status(404).json({ success: false, error: 'User not found.' });
-        }
-
-        // Find the product in the cart by productId
-        const productIndex = user.cart.products.findIndex(item => item.product_id === productId);
-
-        if (productIndex !== -1) {
-            // If product exists, increment its quantity
-            user.cart.products[productIndex].quantity++;
-        } else {
-            // If product does not exist, add it to cart with initial quantity of 1
-            user.cart.products.push({ product_id: productId, quantity: 1 });
-        }
-
-        // Save updated user object back to MongoDB
-        await user.save();
-
-        // Respond with updated cart data
-        res.json({ success: true, message: 'Cart item quantity incremented successfully.', cart: user.cart.products });
-    } catch (error) {
-        console.error('Error incrementing cart item quantity:', error);
-        res.status(500).json({ success: false, error: 'Internal server error.' });
-    }
-};
-
 
 exports.getCartByUserId = async (req, res) => {
   const userId = req.params.userId;
@@ -251,5 +169,157 @@ exports.getCartByUserId = async (req, res) => {
   } catch (error) {
       console.error('Error fetching cart data:', error);
       res.status(500).json({ error: 'Error fetching cart data.' });
+  }
+};
+
+
+exports.incrementProductQuantity = async (req, res) => {
+  const { userId, productId, size } = req.body;
+
+  try {
+      // Find the user by userId
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found.' });
+      }
+
+      // Find the product in the user's cart
+      const product = user.cart.products.find(
+          p => p.product_id.toString() === productId && p.size === size
+      );
+
+      if (product) {
+          product.quantity += 1;  
+          
+          // Calculate the new price        
+
+          const originalPrice = product.originalPrice || product.price / (product.quantity - 1);
+          product.price = product.quantity * originalPrice;
+          product.originalPrice = originalPrice;  
+
+
+          await user.save();      // Save the changes to the user document
+          res.json({ cart: user.cart });  // Respond with the updated cart
+      } else {
+          res.status(404).json({ message: 'Product not found in cart.' });
+      }
+  } catch (error) {
+      console.error('Error updating cart:', error);
+      res.status(500).json({ message: 'Error updating cart.', error });
+  }
+};
+
+
+
+exports.decrementProductQuantity = async (req, res) => {
+  const { userId, productId, size } = req.body;
+  console.log("User ID from Decrement ",userId);
+
+  try {
+      // Find the user by userId
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found.' });
+      }
+
+      // Find the product in the user's cart
+      const product = user.cart.products.find(
+          p => p.product_id.toString() === productId && p.size === size
+      );
+
+      if (product) {
+          // Check if quantity is greater than 1 before decrementing
+          if (product.quantity > 1) {
+              product.quantity -= 1;  
+              const originalPrice = product.originalPrice || product.price / (product.quantity + 1);
+              product.price = product.quantity * originalPrice;
+ 
+              
+              await user.save();      // Save the changes to the user document
+              res.json({ cart: user.cart });  // Respond with the updated cart
+          } else {
+              user.cart.products = user.cart.products.filter(
+                  p => !(p.product_id.toString() === productId && p.size === size)
+              );
+              await user.save();  // Save the changes to the user document
+              res.json({ cart: user.cart, message: 'Product removed from cart.' });
+          }
+      } else {
+          res.status(404).json({ message: 'Product not found in cart.' });
+      }
+  } catch (error) {
+      console.error('Error updating cart:', error);
+      res.status(500).json({ message: 'Error updating cart.', error });
+  }
+};
+
+
+
+// Apply coupon to cart
+exports.applyCoupon = async (req, res) => {
+  const { userId, couponCode } = req.body;
+  try {
+      // Find the user by ID and check for errors
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found.' });
+      }
+
+      // Get the current date and the user's registration date
+      const currentDate = new Date();
+      const registrationDate = new Date(user.register_data_time);
+
+      // Calculate the difference in days between the current date and the user's registration date
+      const differenceInDays = Math.floor((currentDate - registrationDate) / (1000 * 60 * 60 * 24));
+
+
+      // Check if the coupon code is valid and if the user is eligible to use it
+      if (differenceInDays > 7 || !user.new_user_discount) {
+         // user.new_user_discount = false;
+          await user.save();
+          return res.status(400).json({ success: false, message: 'Coupon is not valid' });
+      } else {
+          if (couponCode === "FF20") {
+          //    user.new_user_discount = false;
+ 
+          user.cart.coupon=couponCode;
+              await user.save();
+      
+              return res.status(200).json({ success: true, user });
+          } else {
+              return res.status(400).json({ success: false, message: 'Invalid coupon code' });
+          }
+      }
+  } catch (error) {
+      console.error('Error applying coupon:', error);
+      return res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// Remove coupon from cart
+exports.removeCoupon = async (req, res) => {
+  const { userId, couponCode } = req.body;
+  try {
+    console.log("remove coupon controller");
+      // Find the user by ID and check for errors
+      const user = await User.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: 'User not found.' });
+      }
+      if (couponCode=="FF20"){
+      user.cart.coupon=null;
+         // user.new_user_discount = false;
+          await user.save();
+          return res.status(200).json({ success: true, message: 'Coupon removed successfully' });
+
+      }
+      else {
+        return res.status(400).json({ success: false, message: 'Invalid coupon code' });
+    }
+      
+      }
+   catch (error) {
+      console.error('Error applying coupon:', error);
+      return res.status(500).json({ success: false, message: 'Server error' });
   }
 };

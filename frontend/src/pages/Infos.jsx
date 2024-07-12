@@ -1,5 +1,6 @@
+
 import React, { useEffect, useState } from 'react';
-import { Box, Text, Input, InputGroup, InputLeftElement, Button, useToast, IconButton, Stack, FormControl, FormLabel, Heading, VStack } from '@chakra-ui/react';
+import { Box, Text, Input, InputGroup, InputLeftElement, Button, useToast, IconButton, FormControl, FormLabel, Heading, VStack } from '@chakra-ui/react';
 import { Phone, Email, Edit, Close, LocationCity, Map, MarkunreadMailbox, Home } from '@mui/icons-material';
 import { useUserContext } from '../contexts/UserContext';
 import { getUserById, updateUser } from '../services/UserServices';
@@ -30,7 +31,7 @@ const Infos = () => {
 
   useEffect(() => {
     if (currentUser) {
-      getUserById(currentUser)
+      getUserById(currentUser._id)
         .then((result) => {
           const { address, city, province, zip, phone, email, firstName, lastName } = result.user;
           setAddress(address);
@@ -106,10 +107,7 @@ const Infos = () => {
   const onClickSave = () => {
     const updatedData = { address, city, province, zip, phone, email };
     if (validateInput()) {
-      
-      console.log('Updated Data:', updatedData);
-
-      updateUser(currentUser, updatedData)
+      updateUser(currentUser._id, updatedData)
         .then((result) => {
           if (result.status === 'failed') {
             toast({
@@ -155,16 +153,14 @@ const Infos = () => {
         {firstName} {lastName} - Account Information
       </Heading>
       <VStack spacing={6} align="stretch">
-
-      <FormControl>
+        <FormControl>
           <FormLabel fontSize={20} fontWeight={500} color="facebook.500">Email</FormLabel>
-            <Box display="flex" alignItems="center" gap={3}>
-              <InputGroup>
-                <InputLeftElement pointerEvents="none" children={<Email color="gray.300" />} />
-                <Input type="email" placeholder="Email address" value={email} isReadOnly={true} />
-              </InputGroup>
-            </Box>
-     
+          <Box display="flex" alignItems="center" gap={3}>
+            <InputGroup>
+              <InputLeftElement pointerEvents="none" children={<Email color="gray.300" />} />
+              <Input type="email" placeholder="Email address" value={email} isReadOnly={true} />
+            </InputGroup>
+          </Box>
         </FormControl>
 
         <FormControl>
@@ -208,7 +204,7 @@ const Infos = () => {
         </FormControl>
 
         <FormControl>
-          <FormLabel fontSize={20} fontWeight={500} color="facebook.500"l>Province</FormLabel>
+          <FormLabel fontSize={20} fontWeight={500} color="facebook.500">Province</FormLabel>
           {!isEditing.province ? (
             <Box display="flex" alignItems="center" gap={3}>
               <InputGroup>
@@ -266,9 +262,6 @@ const Infos = () => {
             </InputGroup>
           )}
         </FormControl>
-
-     
-        
       </VStack>
     </Box>
   );

@@ -34,17 +34,16 @@ const ClothesCard = ({ productId, isDelivered }) => {
   return (
     <>
       <Box
-        width='100%'
+        width='350px'
         display='flex'
-        alignItems='center'
         flexDirection='column'
         cursor='pointer'
         mt={{ base: 3, sm: 0 }}
         mx={{ base: 0, md: 2 }}
       >
         <Image
-          width='100%'
-          height='auto'
+          width='350px'
+          height='300px'
           maxWidth={500}
           objectFit='cover'
           maxHeight={620}

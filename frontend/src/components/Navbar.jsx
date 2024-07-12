@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
-import { Box, Text, Icon, Menu, MenuList, MenuItem, MenuButton, MenuGroup, Divider } from '@chakra-ui/react';
+import { Box, Text, Icon, Menu, MenuList, MenuItem, MenuButton, MenuGroup, Divider,useToast } from '@chakra-ui/react';
 import { Person, ShoppingCart, ExitToApp, ShoppingBag} from '@mui/icons-material';
 
 import Hamburger from './Hamburger';
@@ -11,16 +11,12 @@ import { useUserContext } from '../contexts/UserContext';
 import { getAllCategories } from '../services/CategoryServices';
 
 const Navbar = () => {
-
-  //const [genres, setGenres] = useState([]);
+  const toast = useToast();
   const [open, setOpen] = useState(false);
-  //const [itemCount, setItemCount] = useState(0);
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useUserContext();
-  //const { cart, refresh } = useCartContext();
   const [cookies, setCookie, removeCookie] = useCookies(['currentUser']);
   const [category, setCategory] = useState([]);
-  //const [admin]=useGetUserRole(currentUser);
 
   useEffect(() => {
     getAllCategories()
@@ -29,15 +25,18 @@ const Navbar = () => {
     });
   },[]); 
 
-  // const handleClick = (name) => {
-  //   navigate('/search', { state: { category_name: name } });
-  // };
-
   const Logout = () => {
     
     removeCookie('currentUser', { path: '/' });
     setCurrentUser(null);
     navigate('/');
+    toast({
+      title: 'Logged Out!',
+      description: 'Log in to view your cart or continue shopping!',
+      status: 'info',
+      duration: 3000,
+      isClosable: true,
+    });
   };
 
   return (
@@ -113,20 +112,6 @@ const Navbar = () => {
             }
             {}
           </Box>
-          {/* <Box
-            color='facebook.500'
-            display='flex'
-            flexDirection='column'
-            cursor='pointer'
-            mx='5'
-            alignItems='center'
-            transition={.5}
-            _hover={{ color: 'facebook.700' }}
-            onClick={() => navigate('/favorites')}
-          >
-            <Icon fontSize={30} color='inherit' as={Favorite} />
-            <Text color='inherit' fontWeight={500} >Favorites</Text>
-          </Box> */}
           <Box
             color='facebook.500'
             display='flex'
@@ -135,7 +120,7 @@ const Navbar = () => {
             alignItems='center'
             transition={.5}
             _hover={{ color: 'facebook.700' }}
-            onClick={() => navigate('/')} //cart
+            onClick={() => navigate('/cart')} //cart
           >
             <Icon fontSize={30} color='inherit' as={ShoppingCart} />
           </Box>

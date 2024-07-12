@@ -6,7 +6,10 @@ const {
     removeFromCart,
     updateCartItem,
     getCart,
-    incrementCartItem
+    applyCoupon,
+    removeCoupon,
+    incrementProductQuantity,
+    decrementProductQuantity
         
       
 } = require('../controllers/cartController'); 
@@ -16,9 +19,9 @@ router.post('/add', addToCart);
 router.delete('/remove', removeFromCart); 
 router.put('/update', updateCartItem); 
 router.get('/:userId', getCart); 
-//router.post('/:userId/increment', incrementCartItem);
-//router.put('/increase/:userId', incrementCartItem);
-router.post('/:userId/increment', incrementCartItem); 
-//router.get('/:userId', cartController.getCartByUserId);
+router.post('/applyCoupon', applyCoupon); 
+router.post('/removeCoupon', removeCoupon); 
+router.put('/increment', incrementProductQuantity);
+router.put('/decrement', decrementProductQuantity);
 
 module.exports = router;

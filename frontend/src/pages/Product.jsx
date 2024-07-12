@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Image, SimpleGrid, Text, Divider, Button, useToast } from '@chakra-ui/react';
+import { Box, Image, SimpleGrid, Text, Divider, Button, useToast,Icon, keyframes  } from '@chakra-ui/react';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getProductById } from '../services/ProductServices';
@@ -17,10 +17,14 @@ const Product = () => {
   const [inCart, setInCart] = useState(false);
   const [amount, setAmount] = useState(0);
   const [imageUrl, setImageUrl] = useState(null);
-  const [loading, setLoading] = useState(true);
+ 
   const { currentUser} = useUserContext();
 
   const userIdFromState = location.state?.userId;
+  
+
+  
+
 
 
   useEffect(() => {
@@ -28,7 +32,7 @@ const Product = () => {
       getProductById(location.state.productId)
         .then((result) => {
           if (result && result.product) {
-            console.log('Current User:', currentUser);
+      
             setProduct(result.product);
             setSizes(result.product.size || []);
             getImageUrlById(result.product.image_id)
@@ -40,7 +44,7 @@ const Product = () => {
               title: 'Error!',
               description: 'Product not found.',
               status: 'error',
-              duration: 2000,
+              duration: 3000,
               isClosable: true,
             });
           }
@@ -51,7 +55,7 @@ const Product = () => {
             title: 'Error!',
             description: 'Failed to fetch product.',
             status: 'error',
-            duration: 2000,
+            duration: 3000,
             isClosable: true,
           });
         });
@@ -59,23 +63,22 @@ const Product = () => {
   }, [location.state?.productId, toast]);
 
   const onClickAddCart = async () => {
+   
     if (selectedSize !== "") {
-      console.log("Size",selectedSize);
+   
       try {
           if (!currentUser) {
               toast({
                   title: 'User not logged in.',
                   description: 'Please log in to add products to the cart.',
                   status: 'warning',
-                  duration: 2000,
+                  duration: 4000,
                   isClosable: true,
               });
+              navigate('/login');
               return;
           }
-          console.log("Product ID", String(location.state.productId));
-          console.log("User ID:",currentUser);
-          console.log("Product Name:",product.product_name);
-          console.log("Product Price:",product.price);
+
           const response = await axios.post(
               'http://localhost:4000/cart/add',
               {
@@ -90,14 +93,15 @@ const Product = () => {
           );
        
           if (response.status === 200) {
-              console.log('Product added to cart:', response.data.cart);
+            
               toast({
                   title: 'Product added to cart.',
                   description: 'The product has been successfully added to your cart.',
                   status: 'success',
-                  duration: 2000,
+                  duration: 3000,
                   isClosable: true,
               });
+
           }
       } catch (error) {
           console.error('Error adding product to cart:', error);
@@ -105,7 +109,7 @@ const Product = () => {
               title: 'Error adding to cart.',
               description: 'There was an error adding the product to your cart.',
               status: 'error',
-              duration: 2000,
+              duration: 3000,
               isClosable: true,
           });
       }
@@ -114,9 +118,10 @@ const Product = () => {
         title: 'Error!',
         description: 'You must choose a size.',
         status: 'error',
-        duration: 2000,
+        duration: 3000,
         isClosable: true,
       });
+     
     }
   };
   const handleViewCart = () => {
@@ -129,9 +134,10 @@ const Product = () => {
             title: 'User not logged in.',
             description: 'Please log in to view your cart.',
             status: 'warning',
-            duration: 2000,
+            duration: 4000,
             isClosable: true,
         });
+        navigate('/login');
     }
 };
 
@@ -183,12 +189,7 @@ const Product = () => {
 
               )}
             </Box>
-            <Box display='flex' justifyContent='space-between' alignItems='center' p={5} maxWidth={1200} mx='auto'>
-               
-                <Button colorScheme='blue' onClick={handleViewCart}>
-                    View Cart
-                </Button>
-            </Box>
+          
 
 
             <Divider />
