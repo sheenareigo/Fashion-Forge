@@ -125,216 +125,166 @@ const MiniImage = require('../models/MiniImage');
 const images = [
   {
     _id: new mongoose.Types.ObjectId(),
-    image_url: "/Images/kids/summer/8s.jpg",
-    mini_image_url: "/Images/kids/summer/8s.jpg"
+    image_url: "/Images/women/summer/ws7.jpg",
+    mini_image_url: "/Images/women/summer/ws7.jpg"
   },
   {
     _id: new mongoose.Types.ObjectId(),
-    image_url: "/Images/kids/summer/9s.jpg",
-    mini_image_url: "/Images/kids/summer/9s.jpg"
+    image_url: "/Images/women/summer/ws8.jpg",
+    mini_image_url: "/Images/women/summer/ws8.jpg"
   },
   {
     _id: new mongoose.Types.ObjectId(),
-    image_url: "/Images/kids/summer/10s.jpg",
-    mini_image_url: "/Images/kids/summer/10s.jpg"
+    image_url: "/Images/women/summer/ws9.jpg",
+    mini_image_url: "/Images/women/summer/ws9.jpg"
   },
   {
     _id: new mongoose.Types.ObjectId(),
-    image_url: "/Images/kids/summer/11s.jpg",
-    mini_image_url: "/Images/kids/summer/11s.jpg"
+    image_url: "/Images/women/summer/ws10.jpg",
+    mini_image_url: "/Images/women/summer/ws10.jpg"
   },
   {
     _id: new mongoose.Types.ObjectId(),
-    image_url: "/Images/kids/summer/12s.jpg",
-    mini_image_url: "/Images/kids/summer/12s.jpg"
+    image_url: "/Images/women/summer/ws11.jpg",
+    mini_image_url: "/Images/women/summer/ws11.jpg"
   },
   {
     _id: new mongoose.Types.ObjectId(),
-    image_url: "/Images/kids/summer/13s.jpg",
-    mini_image_url: "/Images/kids/summer/13s.jpg"
+    image_url: "/Images/women/summer/ws12.jpg",
+    mini_image_url: "/Images/women/summer/ws12.jpg"
   },
   {
     _id: new mongoose.Types.ObjectId(),
-    image_url: "/Images/kids/summer/14s.jpg",
-    mini_image_url: "/Images/kids/summer/14s.jpg"
+    image_url: "/Images/women/summer/ws13.jpg",
+    mini_image_url: "/Images/women/summer/ws13.jpg"
   },
   {
     _id: new mongoose.Types.ObjectId(),
-    image_url: "/Images/kids/summer/15s.jpg",
-    mini_image_url: "/Images/kids/summer/15s.jpg"
-  },
-  {
-    _id: new mongoose.Types.ObjectId(),
-    image_url: "/Images/kids/summer/16s.jpg",
-    mini_image_url: "/Images/kids/summer/16s.jpg"
-  },
-  {
-    _id: new mongoose.Types.ObjectId(),
-    image_url: "/Images/kids/summer/17s.jpg",
-    mini_image_url: "/Images/kids/summer/17s.jpg"
+    image_url: "/Images/women/summer/ws14.jpg",
+    mini_image_url: "/Images/women/summer/ws14.jpg"
   }
 ];
 
 const miniimages = [
-  { url: '/Images/kids/summer/8s.jpg' },
-  { url: '/Images/kids/summer/9s.jpg' },
-  { url: '/Images/kids/summer/10s.jpg' },
-  { url: '/Images/kids/summer/11s.jpg' },
-  { url: '/Images/kids/summer/12s.jpg' },
-  { url: '/Images/kids/summer/13s.jpg' },
-  { url: '/Images/kids/summer/14s.jpg' },
-  { url: '/Images/kids/summer/15s.jpg' },
-  { url: '/Images/kids/summer/16s.jpg' },
-  { url: '/Images/kids/summer/17s.jpg' }
+  { url: '/Images/women/summer/ws7.jpg' },
+  { url: '/Images/women/summer/ws8.jpg' },
+  { url: '/Images/women/summer/ws9.jpg' },
+  { url: '/Images/women/summer/ws10.jpg' },
+  { url: '/Images/women/summer/ws11.jpg' },
+  { url: '/Images/women/summer/ws12.jpg' },
+  { url: '/Images/women/summer/ws13.jpg' },
+  { url: '/Images/women/summer/ws14.jpg' }
 ];
 
-const categoryId="667eeed72d9d9523b50f46ec";
+
+const categoryId="667895eb80dfc29739034685";
 
 const products = [
   {
     product_id: new mongoose.Types.ObjectId(),
     product_name: "summer frock",
     image_id: images[0]._id,
-    color: "White",
-    size: ["S", "M", "L"],
-    description: "new Xifamniy Baby Snowsuit Boy Girl Winter Clothes Coat Outwear Hooded Romper Jumpsuit.",
-    //category: new mongoose.Types.ObjectId("667eeed72d9d9523b50f46ec"),
-    category:categoryId,
-    gender: "Kids",
-    genre: "winter",
+    color: "Blue",
+    size: ["S", "M", "L", "XL"],
+    description: "new Xifamniy Baby Snowsuit Boy Girl Winter Clothes Coat Outwear Hooded Romper Jumpsuit.MISFAY Women Summer Dresses Ruffle Sleeve Casual Loose Swing Button Down A-Line Mid Dress with Pockets.",
+    category: categoryId,
+    gender: "Women",
+    genre: "summer",
     price: 19.99,
     status: true
   },
   {
     product_id: new mongoose.Types.ObjectId(),
-    product_name: "kids summer midi dress",
+    product_name: "summer midi dress",
     image_id: images[1]._id,
-    color: "Blue",
-    size: ["M", "L", "XL"],
-    description: "new Arshiner Girl's Summer Sundress Spaghetti Strap Solid Linen Midi Dress Casual Cami Dresses",
-    //category: new mongoose.Types.ObjectId("667eeed72d9d9523b50f46ec"),
-    category:categoryId,
-    gender: "Kids",
-    genre: "winter",
+    color: "Red",
+    size: ["S", "M", "L", "XL"],
+    description: "Arshiner Girl's Summer Sundress Spaghetti Strap Solid Linen Midi Dress Casual Cami Dresses",
+    category: categoryId,
+    gender: "Women",
+    genre: "summer",
     price: 29.99,
     status: true
   },
   {
     product_id: new mongoose.Types.ObjectId(),
-    product_name: "girls frock ",
+    product_name: "Women Denim Shorts",
     image_id: images[2]._id,
-    color: "Red",
-    size: ["S", "M", "L"],
-    description: "new Infant Baby Girls Clothes Toddler Ruffle Sleeveless Print Top T-shirt Shorts Summer Outfits Set",
-    //category: new mongoose.Types.ObjectId("667eeed72d9d9523b50f46ec"),
-    category:categoryId,
-    gender: "Kids",
-    genre: "winter",
+    color: "Blue",
+    size: ["S", "M", "L", "XL"],
+    description: "Metietila Women's Casual Summer Jean Shorts High Waist Rolled Hem Stretchy Denim Shorts for Ladies.",
+    category: categoryId,
+    gender: "Women",
+    genre: "summer",
     price: 39.99,
     status: true
   },
   {
     product_id: new mongoose.Types.ObjectId(),
-    product_name: "girls turtle neck frock",
+    product_name: "Top",
     image_id: images[3]._id,
     color: "Green",
-    size: ["S", "M", "L"],
-    description: "new MEILONGER Boys Girls Softshell Hiking Pants Fleece Lined Skiing Snow pants Kids Winter Waterproof Outdoor Warm Trousers",
-    //category: new mongoose.Types.ObjectId("667eeed72d9d9523b50f46ec"),
-    category:categoryId,
-    gender: "Kids",
-    genre: "winter",
+    size: ["S", "M", "L", "XL"],
+    description: "RANPHEE Womens Summer Tops Ruffle Sleeve Square Neck Cute Blouses Sleeveless Tank Tops Ladies Fashion Trendy Clothing.",
+    category: categoryId,
+    gender: "Women",
+    genre: "summer",
     price: 24.99,
     status: true
   },
   {
     product_id: new mongoose.Types.ObjectId(),
-    product_name: "kids summer jumpsuit",
+    product_name: "summer shirt",
     image_id: images[4]._id,
-    color: "Yellow",
-    size: ["S", "M", "L"],
-    description: "new TERODACO Kids Long Sleeve Compression 2 Pcs Set Thermal Base Layer Suits Unisex.",
-    //category: new mongoose.Types.ObjectId("667eeed72d9d9523b50f46ec"),
-    category:categoryId,
-    gender: "Kids",
-    genre: "winter",
+    color: "White",
+    size: ["S", "M", "L", "XL"],
+    description: "RANPHEE Womens Summer Tops Ruffle Sleeve Square Neck Cute Blouses Sleeveless Tank Tops Ladies Fashion Trendy Clothing.",
+    category: categoryId,
+    gender: "Women",
+    genre: "summer",
     price: 34.99,
     status: true
   },
   {
     product_id: new mongoose.Types.ObjectId(),
-    product_name: "girls summer shorts",
+    product_name: "summer shorts",
     image_id: images[5]._id,
-    color: "Pink",
-    size: ["S", "M", "L"],
+    color: "Black",
+    size: ["S", "M", "L", "XL"],
     description: "new uideazone Girls Sleeveless Dress Floral Print Summer Casual A Line Sundress 4-12 Years",
-    //category: new mongoose.Types.ObjectId("667eeed72d9d9523b50f46ec"),
-    category:categoryId,
-    gender: "Kids",
-    genre: "winter",
+    category: categoryId,
+    gender: "Women",
+    genre: "summer",
     price: 44.99,
     status: true
   },
   {
     product_id: new mongoose.Types.ObjectId(),
-    product_name: "girls beach dress",
+    product_name: "Summer top",
     image_id: images[6]._id,
-    color: "Purple",
-    size: ["S", "M", "L"],
-    description: "new Arshiner Girls Dresses Flutter Sleeve A-Line Sundress Casual Summer Tiered Swing Midi Pocket Dress",
-    //category: new mongoose.Types.ObjectId("667eeed72d9d9523b50f46ec"),
-    category:categoryId,
-    gender: "Kids",
-    genre: "winter",
+    color: "Blue",
+    size: ["S", "M", "L", "XL"],
+    description: "RANPHEE Womens Summer Tops Ruffle Sleeve Square Neck Cute Blouses Sleeveless Tank Tops Ladies Fashion Trendy Clothing.",
+    category: categoryId,
+    gender: "Women",
+    genre: "summer",
     price: 54.99,
     status: true
   },
   {
     product_id: new mongoose.Types.ObjectId(),
-    product_name: "baby girl  spring frock  ",
+    product_name: "Women's Skirt",
     image_id: images[7]._id,
-    color: "Orange",
-    size: ["S", "M", "L"],
-    description: "new Simple Joys by Carter's baby-boys Hooded Sweater Jacket With Sherpa LiningQuilted Jacket",
-    //category: new mongoose.Types.ObjectId("667eeed72d9d9523b50f46ec"),
-    category:categoryId,
-    gender: "Kids",
-    genre: "winter",
+    color: "Black",
+    size: ["S", "M", "L", "XL"],
+    description: "Women's Summer Cute High Waist Ruffle Skirt Floral Print Swing Beach Mini Skirt.",
+    category: categoryId,
+    gender: "Women",
+    genre: "summer",
     price: 64.99,
     status: true
-  },
-  {
-    product_id: new mongoose.Types.ObjectId(),
-    product_name: "baby girl  spring frock  ",
-    image_id: images[8]._id,
-    color: "Orange",
-    size: ["S", "M", "L"],
-    description: "new Simple Joys by Carter's baby-boys Hooded Sweater Jacket With Sherpa LiningQuilted Jacket",
-    //category: new mongoose.Types.ObjectId("667eeed72d9d9523b50f46ec"),
-    category:categoryId,
-    gender: "Kids",
-    genre: "winter",
-    price: 64.99,
-    status: true
-  },
-  {
-    product_id: new mongoose.Types.ObjectId(),
-    product_name: "baby girl  spring frock  ",
-    image_id: images[9]._id,
-    color: "Orange",
-    size: ["S", "M", "L"],
-    description: "new Simple Joys by Carter's baby-boys Hooded Sweater Jacket With Sherpa LiningQuilted Jacket",
-    //category: new mongoose.Types.ObjectId("667eeed72d9d9523b50f46ec"),
-    category:categoryId,
-    gender: "Kids",
-    genre: "winter",
-    price: 64.99,
-    status: true
-  }      
+  }
 ];
-
-
-
 
 
 const insertSampleData = async () => {
@@ -346,7 +296,7 @@ const insertSampleData = async () => {
     console.log('Inserting products...');
     await Product.insertMany(products);
     console.log('Products inserted');
-    await MiniImage.insertMany(miniimages);
+   // await MiniImage.insertMany(miniimages);
     console.log('mini-images inserted');
     
   } catch (error) {
