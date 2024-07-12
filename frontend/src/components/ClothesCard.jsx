@@ -34,7 +34,7 @@ const ClothesCard = ({ productId, isDelivered }) => {
   return (
     <>
       <Box
-        width='350px'
+        width='100%'
         display='flex'
         flexDirection='column'
         cursor='pointer'
@@ -42,7 +42,7 @@ const ClothesCard = ({ productId, isDelivered }) => {
         mx={{ base: 0, md: 2 }}
       >
         <Image
-          width='350px'
+          width='100%'
           height='300px'
           maxWidth={500}
           objectFit='cover'
