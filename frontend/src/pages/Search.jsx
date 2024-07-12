@@ -18,7 +18,7 @@ const Search = () => {
   const [products, setProducts] = useState([]);
   const [sortBy, setSortBy] = useState("recommended");
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(10);
+  const [productsPerPage] = useState(12);
   const { currentUser } = useUserContext();
   const userId = location.state?.userId || null;
   const [originalProducts, setOriginalProducts] = useState([]);
@@ -129,7 +129,7 @@ const Search = () => {
                     </Box>
                 )}
                 <Box gridColumn={{ base: "span 1", md: openFilter ? "span 1" : "span 2" }}>
-                    <SimpleGrid minChildWidth={280} gap={3} spacingX={5}>
+                    <SimpleGrid minChildWidth={280} gap={3} spacingX={6}>
                         {currentProducts.map((product, index) => (
                             <ClothesCard key={index} productId={product._id} />
                         ))}
