@@ -1,8 +1,11 @@
 import React from 'react';
 import { Box, Text, IconButton, Container } from '@chakra-ui/react';
-import { Apple, Facebook, Google, Instagram, Twitter, YouTube } from '@mui/icons-material';
+import { Apple, Facebook, Google, Instagram, LinkedIn , YouTube } from '@mui/icons-material';
 
 const Footer = () => {
+  const handleClick = (url) => {
+    window.open(url, '_blank');
+  };
   return (
     <Box mt={5} className='footer' >
       <Box
@@ -15,10 +18,10 @@ const Footer = () => {
           <Box py={5}>
             <Text mb={1} textAlign='center' color='blackAlpha.700' fontSize={20} fontWeight={600} >Follow Us</Text>
             <Box display='flex' justifyContent='center' >
-              <IconButton mr={3} colorScheme='blackAlpha' variant='ghost' _hover={{ color: '#C13584' }} as={Instagram} />
-              <IconButton mr={3} colorScheme='blackAlpha' variant='ghost' _hover={{ color: 'facebook.500' }} as={Facebook} />
-              <IconButton mr={3} colorScheme='blackAlpha' variant='ghost' _hover={{ color: 'red' }} as={YouTube} />
-              <IconButton colorScheme='blackAlpha' variant='ghost' _hover={{ color: 'twitter.500' }} as={Twitter} />
+              <IconButton mr={3} onClick={() => handleClick(`https://www.instagram.com/fashionforge12/`)} colorScheme='blackAlpha' variant='ghost' _hover={{ color: '#C13584' }} as={Instagram} />
+              <IconButton mr={3} onClick={() => handleClick(`https://www.facebook.com/profile.php?id=61561634243029`)} colorScheme='blackAlpha' variant='ghost' _hover={{ color: 'facebook.500' }} as={Facebook} />
+              <IconButton mr={3} onClick={()=> handleClick(`https://www.youtube.com/@FashionFusionForge`)} colorScheme='blackAlpha' variant='ghost' _hover={{ color: 'red' }} as={YouTube} />
+              <IconButton colorScheme='blackAlpha' onClick={()=> handleClick(`https://www.linkedin.com/pulse/fashion-forge-shaping-successful-custom-clothing-business-hashim-z62bf/`)} variant='ghost' _hover={{ color: '#0A66C2' }} as={LinkedIn } />
             </Box>
           </Box>
           <Box py={5}>
@@ -33,7 +36,7 @@ const Footer = () => {
       <Container maxW='1200px'display='flex' py={10} justifyContent='space-between' flexDirection={{base:'column',sm:'row'}}  >
             <Box textAlign={{base:'center',sm:'start'}} py={5} >
               <Text fontSize={24} fontWeight={600} >Help</Text>
-              <Text mt={2} _hover={{ textDecoration: 'underline' }} >Frequently Asked Questions</Text>
+              <Text mt={2} onClick={()=> handleClick(`/faqs`)}  _hover={{ textDecoration: 'underline' }} >Frequently Asked Questions</Text>
               <Text mt={2} _hover={{ textDecoration: 'underline' }} >Return And Exchange</Text>
               <Text mt={2} _hover={{ textDecoration: 'underline' }} >Support Team</Text>
             </Box>
