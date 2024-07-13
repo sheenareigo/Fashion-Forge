@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
@@ -13,96 +15,58 @@ const Login = () => {
   const [remember, setRemember] = useState(false);
   const { currentUser,setCurrentUser } = useUserContext();
   const [cookies, setCookie, removeCookie] = useCookies(['currentUser']);
+  const { login } = useUserContext();
   const navigate = useNavigate();
   const toast = useToast();
-  
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const { values, handleSubmit, handleChange, isValid, resetForm } = useFormik({
     initialValues: {
       email: '',
       password: ''
     },
-    onSubmit: values => {
-      LogIn(values.email, values.password)
-        .then((result) => {
 
-          console.log(result.status);
-          if (result.data.currentUser && result.status === 200) {
-            setCurrentUser(result.data.currentUser._id);
-            toast({
-              title: 'Logged in.',
-              description: 'You have successfully logged in.',
-              status: 'success',
-              duration: 2000,
-              isClosable: true
-            });
-            navigate('/', { state: { userId: result.data.currentUser._id } });
-            if (remember) {
-              setCookie('currentUser', result.data.currentUser._id, { path: '/', maxAge: 30 * 24 * 60 * 60 }); // 30 days
-            } else {
-              setCookie('currentUser', result.data.currentUser._id, { path: '/', maxAge: 2 * 60});
-             // setCookie('currentUser', result.data.currentUser._id, { path: '/'});
-            }
-            setIsLoggedIn(true);
-          }
-        }).catch((error) => {
-          if (error.response) {
-            const { status } = error.response;
-            if (status === 401) {
-              resetForm();
-              toast({
-                title: 'Error!',
-                description: 'Wrong email or password.',
-                status: 'error',
-                duration: 2000,
-                isClosable: true,
-              });
-            } else if (status === 400) {
-              resetForm();
-              toast({
-                title: 'Error!',
-                description: 'Email and password are required.',
-                status: 'error',
-                duration: 2000,
-                isClosable: true,
-              });
-            } else {
-              resetForm();
-              toast({
-                title: 'Error!',
-                description: 'Internal server error.',
-                status: 'error',
-                duration: 2000,
-                isClosable: true
-              });
-            }
-          }
+    
+  onSubmit: async (values) => {
+    try {
+      const result = await LogIn(values.email, values.password);
+      if (result.data.currentUser && result.status === 200) {
+        login(result.data.currentUser);
+        toast({
+          title: 'Logged in.',
+          description: 'You have successfully logged in.',
+          status: 'success',
+          duration: 2000,
+          isClosable: true
         });
-    },
-    //validationSchema: LoginValidations
-  });
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigate('/');
-      console.log('Current User:', currentUser);
+        navigate('/', { state: { userId: result.data.currentUser._id } });
+      }
+    } catch (error) {
+      const { status } = error.response;
+      let errorMessage = 'Internal server error.';
+      if (status === 401) {
+        errorMessage = 'Wrong email or password.';
+      } else if (status === 400) {
+        errorMessage = 'Email and password are required.';
+      }
+      resetForm();
+      toast({
+        title: 'Error!',
+        description: errorMessage,
+        status: 'error',
+        duration: 2000,
+        isClosable: true,
+      });
     }
-  }, [isLoggedIn, navigate, currentUser]);
+  }
+});
 
   return (
-    <Box
-      display='flex'
-      justifyContent='center'
-      alignItems='center'
-      width='100vw'
-      height='75vh'
-    >
+    <Box display='flex' justifyContent='center' alignItems='center' width='100vw' height='75vh'>
       <Box border='1px solid #ccc' borderRadius='md' p={4}>
         <Box width={{ base: '100vw', sm: '500px' }} p={2}>
-          <Text textAlign='center' color={'facebook.500'} fontSize={32} fontWeight={600} mb={10} >Login</Text>
-          <FormControl mt={3} >
-            <FormLabel fontSize={20} >Email</FormLabel>
+          <Text textAlign='center' color={'facebook.500'} fontSize={32} fontWeight={600} mb={10}>Login</Text>
+          <FormControl mt={3}>
+            <FormLabel fontSize={20}>Email</FormLabel>
             <Input
               name='email'
               placeholder='Enter Email'
@@ -111,7 +75,7 @@ const Login = () => {
             />
           </FormControl>
           <FormControl mt={3}>
-            <FormLabel fontSize={20} >Password</FormLabel>
+            <FormLabel fontSize={20}>Password</FormLabel>
             <InputGroup size='md'>
               <Input
                 name='password'
@@ -128,20 +92,21 @@ const Login = () => {
               </InputRightElement>
             </InputGroup>
           </FormControl>
-          <Checkbox value={remember} onChange={() => setRemember(!remember)} mt={5} >Remember me</Checkbox>
-          <Button mt={5} width='100%' variant='solid' colorScheme='facebook' disabled={!isValid} onClick={handleSubmit} >Login</Button>
+          <Checkbox value={remember} onChange={() => setRemember(!remember)} mt={5}>Remember me</Checkbox>
+          <Button mt={5} width='100%' variant='solid' colorScheme='facebook' disabled={!isValid} onClick={handleSubmit}>Login</Button>
           <br />
           <Box textAlign='center' mt={2}>
             <Link color='blue.500' onClick={() => navigate('/forgot-password')}>
               Forgot Password?
             </Link>
           </Box>
-          <Text my={3} width='100%' textAlign='center' >or</Text>
-          <Button width='100%' variant='outline' colorScheme='facebook' onClick={() => navigate('/register')} >Register</Button>
+          <Text my={3} width='100%' textAlign='center'>or</Text>
+          <Button width='100%' variant='outline' colorScheme='facebook' onClick={() => navigate('/register')}>Register</Button>
         </Box>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
 export default Login;
+

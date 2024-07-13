@@ -176,6 +176,7 @@ exports.getProductsByQueries = async (req, res) => {
     }
 };
 exports.getProductsByGenre = async (req, res) => {
+    console.log(req.body.gender);
     try {
         const products = await Product.find({
             $and: [

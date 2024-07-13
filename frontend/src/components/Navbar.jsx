@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
+
 import { Box, Text, Icon, Menu, MenuList, MenuItem, MenuButton, MenuGroup, Divider ,useToast} from '@chakra-ui/react';
+
 import { Person, ShoppingCart, ExitToApp, ShoppingBag} from '@mui/icons-material';
 
 import Hamburger from './Hamburger';
@@ -12,20 +14,18 @@ import { getAllCategories } from '../services/CategoryServices';
 import { useCartContext } from '../contexts/CartContext';
 import axios from 'axios'
 const Navbar = () => {
-
-  //const [genres, setGenres] = useState([]);
+  const toast = useToast();
   const [open, setOpen] = useState(false);
-  //const [itemCount, setItemCount] = useState(0);
   const navigate = useNavigate();
   const { currentUser, setCurrentUser } = useUserContext();
-  //const { cart, refresh } = useCartContext();
   const [cookies, setCookie, removeCookie] = useCookies(['currentUser']);
   const [category, setCategory] = useState([]);
   //const [admin]=useGetUserRole(currentUser);
-  const toast = useToast();
+  //const toast = useToast();
   const [totalQuantity, setTotalQuantity] = useState(0);
   const [cart, setCart] = useState({ products: [] });
   //const { totalQuantity } = useCartContext();
+
   useEffect(() => {
     getAllCategories()
     .then((result) => {
@@ -33,15 +33,18 @@ const Navbar = () => {
     });
   },[]); 
 
-  // const handleClick = (name) => {
-  //   navigate('/search', { state: { category_name: name } });
-  // };
-
   const Logout = () => {
     
     removeCookie('currentUser', { path: '/' });
     setCurrentUser(null);
     navigate('/');
+    toast({
+      title: 'Logged Out!',
+      description: 'Log in to view your cart or continue shopping!',
+      status: 'info',
+      duration: 3000,
+      isClosable: true,
+    });
   };
   const handleCartClick = () => {
     
@@ -174,8 +177,10 @@ const Navbar = () => {
             }
             {}
           </Box>
+
           
-          {/* <Box
+          {/* <Box    
+
             color='facebook.500'
             display='flex'
             flexDirection='column'
