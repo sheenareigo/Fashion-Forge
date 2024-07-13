@@ -41,7 +41,8 @@ const Login = () => {
             if (remember) {
               setCookie('currentUser', result.data.currentUser._id, { path: '/', maxAge: 30 * 24 * 60 * 60 }); // 30 days
             } else {
-              setCookie('currentUser', result.data.currentUser._id, { path: '/' });
+              setCookie('currentUser', result.data.currentUser._id, { path: '/', maxAge: 2 * 60});
+             // setCookie('currentUser', result.data.currentUser._id, { path: '/'});
             }
             setIsLoggedIn(true);
           }

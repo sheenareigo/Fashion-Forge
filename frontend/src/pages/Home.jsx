@@ -1,8 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Text, Container, Spinner, Center } from '@chakra-ui/react';
+import { Box, Text, Container, Spinner, Center, Flex  } from '@chakra-ui/react';
 import { AccountBalanceWallet, AssignmentReturn, WorkspacePremium } from '@mui/icons-material';
 import Carousel from '../components/Carousel';
 import Categories from '../components/Categories';
+import { keyframes } from '@emotion/react'; 
+
+
+
+const marquee = keyframes`
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+`;
+
 
 const Home = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -11,7 +24,7 @@ const Home = () => {
     // loading time for fetching images and other content
     setTimeout(() => {
       setIsLoading(false);
-    }, 1000); // Adjust the timeout if req
+    }, 1000); 
   }, []);
 
   if (isLoading) {
@@ -39,10 +52,22 @@ const Home = () => {
             <Text mt={3} fontSize={20} fontWeight={600} color='inherit'>Fashion Forge Quality Assurance</Text>
           </Box>
         </Container>
+      </Box><br></br>
+       
+      <Box  color='facebook.500' py={5} overflow='hidden'>
+        <Flex justifyContent='center' alignItems='center' whiteSpace='nowrap'>
+          <Text
+            fontSize={35}
+            fontWeight={700}
+            animation={`${marquee} 15s linear infinite`}
+          >
+          First-time buyer? Save 20% on your initial order today!
+          </Text>
+        </Flex>
       </Box>
       <Box display='flex' justifyContent='center'>
         <Carousel />
-      </Box>
+      </Box> 
       <Box display='flex' justifyContent='center'>
         <Categories />
       </Box>
