@@ -34,6 +34,7 @@ const Search = () => {
   // }, [userId, navigate]);
   useEffect(() => {
     if (state !== null && state.category_name) {
+      console.log("category",state.category_name);
       getProductByCategoryName(state.category_name)
         .then((result) => {
           setProducts(result.products);

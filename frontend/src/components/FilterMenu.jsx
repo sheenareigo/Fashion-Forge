@@ -26,6 +26,8 @@ const FilterMenu = ({ openFilter, setProducts, setSortBy, onClickReset }) => {
         setMaxPrice(100);
     }, [canSearch]);
 
+    
+
     const onChangePriceRange = (val) => {
         setCanSearch(false);
         setMinPrice(val[0]);
@@ -164,3 +166,4 @@ const FilterMenu = ({ openFilter, setProducts, setSortBy, onClickReset }) => {
 }
 
 export default FilterMenu;
+
