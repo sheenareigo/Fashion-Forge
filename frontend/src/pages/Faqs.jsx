@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Heading, Text, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon } from '@chakra-ui/react';
 
-const FAQPage = () => {
+const FAQSPage = () => {
   return (
     <Box p={5} maxW="800px" mx="auto">
       <Heading as="h2" size="xl" mb={5} textAlign="center" color="facebook.500">
@@ -96,4 +96,4 @@ const FAQPage = () => {
   );
 };
 
-export default FAQPage;
+export default FAQSPage;

@@ -22,7 +22,6 @@ const Product = () => {
 
   const userIdFromState = location.state?.userId;
   
-
   
 
 
@@ -65,7 +64,7 @@ const Product = () => {
   const onClickAddCart = async () => {
    
     if (selectedSize !== "") {
-   
+
       try {
           if (!currentUser) {
               toast({
@@ -85,7 +84,7 @@ const Product = () => {
                 userId:currentUser,
                 productId: String(location.state.productId),
                 productName: String(product.product_name,),
-                quantity: 1, // Default quantity when adding to cart
+                quantity: 1, 
                 size:selectedSize,
                 image:imageUrl,
                 price:(product.price)
@@ -93,7 +92,7 @@ const Product = () => {
           );
        
           if (response.status === 200) {
-            
+
               toast({
                   title: 'Product added to cart.',
                   description: 'The product has been successfully added to your cart.',
@@ -101,7 +100,6 @@ const Product = () => {
                   duration: 3000,
                   isClosable: true,
               });
-
           }
       } catch (error) {
           console.error('Error adding product to cart:', error);
@@ -124,22 +122,7 @@ const Product = () => {
      
     }
   };
-  const handleViewCart = () => {
-    navigate('/cart');
-    if (currentUser) {
-        navigate('/cart', { state: { userId: currentUser } });
-       
-    } else {
-        toast({
-            title: 'User not logged in.',
-            description: 'Please log in to view your cart.',
-            status: 'warning',
-            duration: 4000,
-            isClosable: true,
-        });
-        navigate('/login');
-    }
-};
+  
 
   return (
     <Box p={{ base: 3, md: 10 }}>
@@ -148,7 +131,7 @@ const Product = () => {
           <Image src={imageUrl} alt={product.product_name} />
           <Box p={3} maxWidth={600}>
             <Text fontSize={30}>{product.product_name}</Text>
-            <Text mt={5} mb={3} fontSize={28} fontWeight={400} color='facebook.500'>Price : <b> {product.price}$ </b></Text>
+            <Text mt={5} mb={3} fontSize={28} fontWeight={400} color='facebook.500'>Price : <b> ${product.price} </b></Text>
             <Divider />
             <Text mt={3} fontSize={20} fontWeight={500}>Sizes</Text>
             <Box mt={3} display='flex'>
@@ -160,8 +143,7 @@ const Product = () => {
                   colorScheme='facebook'
                   variant={selectedSize === size ? 'solid' : 'outline'}
                   width={{ base: '25px', sm: '35px', lg: '50px' }}
-                  height={{ base: '30px', sm: '40px', lg: '50px' }}
-                >
+                  height={{ base: '30px', sm: '40px', lg: '50px' }}>
                   {size}
                 </Button>
               ))}
@@ -183,13 +165,12 @@ const Product = () => {
                   width='100%'
                 >
                   ADD TO CART
-                </Button>
-                
-
-
+                </Button>             
               )}
+
             </Box>
           
+
 
 
             <Divider />
