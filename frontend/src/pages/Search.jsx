@@ -132,27 +132,29 @@ const Search = () => {
                   <ClothesCard key={index} productId={product._id} />
                 ))
               ) : (
-                <Box display='flex' justifyContent='start'>
-                  <Box
-                    display='flex'
-                    justifyContent='center'
-                    alignItems='center'
-                    flexDirection='column'
-                    mt={10}
-                    p={3}>
-                    <Icon color='#314E89' fontSize={100} as={SearchOff} />
-                    <Heading textAlign='center' fontSize={30} mt={8}>Sorry, we couldn't find what you are looking for.</Heading>
-                    <Text textAlign='center' fontSize={24} mt={2} fontWeight={300}>But don’t give up! Check out our bestsellers and find something for you!</Text>
-                    <Button
-                      variant='solid'
-                      fontSize={20}
-                      px={10} mt={10}
-                      colorScheme='facebook'
-                      onClick={() => navigate('/')}>
-                      Start Shopping
-                    </Button>
+                <>
+                  <Box display='flex' justifyContent='start'>
+                    <Box
+                      display='flex'
+                      justifyContent='center'
+                      alignItems='center'
+                      flexDirection='column'
+                      mt={10}
+                      p={3}>
+                      <Icon color='#314E89' fontSize={100} as={SearchOff} />
+                      <Heading textAlign='center' fontSize={30} mt={8}>Sorry, we couldn't find what you are looking for.</Heading>
+                      <Text textAlign='center' fontSize={24} mt={2} fontWeight={300}>But don’t give up! Check out our bestsellers and find something for you!</Text>
+                      <Button
+                        variant='solid'
+                        fontSize={20}
+                        px={10} mt={10}
+                        colorScheme='facebook'
+                        onClick={() => navigate('/')}>
+                        Start Shopping
+                      </Button>
+                    </Box>
                   </Box>
-                </Box>
+                </>
               )}
             </SimpleGrid>
           )}
