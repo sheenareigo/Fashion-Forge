@@ -8,7 +8,7 @@ const miniImageRoutes = require('./routes/miniImageRoutes');
 const productRoutes = require('./routes/productRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const cartRoutes = require('./routes/cartRoutes'); 
-
+const orderRoutes = require('./routes/orderRoutes');
 const app = express();
 const port = process.env.PORT || 4000;
 
@@ -25,6 +25,7 @@ app.use('/products', productRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/cart', cartRoutes); // Use cart routes
 app.use('/product', productRoutes);
+app.use('/orders', orderRoutes);
 const insertSampleData = require('./controllers/imageInsertion');
 
 //stripe 
@@ -71,7 +72,8 @@ app.post("/create-payment-intent", async (req, res) => {
     payment_method_types: ["card"],
     line_items: lineItems,
     mode: "payment",
-    success_url: 'http://localhost:3000/infos'   //need to update this to redirect to orders page 
+   // success_url: 'http://localhost:3000/infos'
+   success_url: 'http://localhost:3000/success'      //need to update this to redirect to orders page 
   });
 
   res.json({id: session.id});

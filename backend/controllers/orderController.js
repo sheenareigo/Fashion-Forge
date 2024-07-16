@@ -1,106 +1,73 @@
 const Order = require('../models/Order');
+const User = require('../models/User');
+const { clearUserCart } = require('./cartController');
 
-exports.getAllOrders = async (req, res) => {
-    try {
-        const allOrders = await Order.find({});
+const createOrder = async (req, res) => {
+  const { userId, cart, total, couponCode } = req.body;
 
-        res.status(200).json({
-            allOrders
-        });
-    } catch (error) {
-        res.status(400).json({
-            status: 'failed',
-            error
-        });
+  if (!userId || !cart || !total) {
+    return res.status(400).json({ success: false, error: 'Missing required fields' });
+  }
+
+  try {
+    // Fetch the user's cart details and populate product information
+    const user = await User.findById(userId).populate('cart.products.product_id');
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'User not found' });
     }
+
+    const products = cart.map(item => {
+      const productFromCart = user.cart.products.find(p => p.product_id._id.toString() === item.product_id);
+
+      if (!productFromCart) {
+        throw new Error(`Product with id ${item.product_id} not found in user's cart`);
+      }
+
+      return {
+        product_id: productFromCart.product_id._id,
+        product_name: productFromCart.product_id.product_name,      
+        quantity: item.quantity,
+        //price: productFromCart.product_id.price ,  
+        price: (item.quantity && productFromCart.product_id.price) ? item.quantity * productFromCart.product_id.price : 0 ,
+        size: item.size,
+        image:productFromCart.product_id.image
+      };
+    });
+
+    // Create a new order with product details
+    const newOrder = new Order({
+      user_id: userId,
+      products,
+      total_amount: total,
+      coupon: couponCode || null,
+      status: 'Preparing'
+    });
+
+    // Save the new order to the database
+    await newOrder.save();
+
+    // Clear the user's cart after successfully creating the order
+    user.cart.products = [];
+    await user.save();
+
+    return res.status(200).json({ success: true, order: newOrder });
+  } catch (error) {
+    return res.status(500).json({ success: false, error: error.message });
+  }
 };
 
-exports.getOrderById = async (req, res) => {
+
+
+
+const getOrderHistory = async (req, res) => {
+    const { userId } = req.params;
+  
     try {
-        const order = await Order.findById(req.params.id);
-
-        res.status(200).json({
-            order
-        });
+      const orders = await Order.find({ user_id: userId }).sort({ order_date: -1 });
+      res.status(200).json(orders);
     } catch (error) {
-        res.status(400).json({
-            status: 'failed',
-            error
-        });
+      res.status(500).json({ success: false, error: error.message });
     }
-};
-
-exports.getOrdersByUserId = async (req, res) => {
-    try {
-        const orders = await Order.find({ user_id: req.params.id });
-
-        res.status(200).json({
-            orders
-        });
-    } catch (error) {
-        res.status(400).json({
-            status: 'failed',
-            error
-        });
-    }
-};
-
-exports.getOrdersByStatus = async (req, res) => {
-    try {
-        const orders = await Order.find({ status: req.params.status });
-
-        res.status(200).json({
-            orders
-        });
-    } catch (error) {
-        res.status(400).json({
-            status: 'failed',
-            error
-        });
-    }
-};
-
-exports.addOrder = async (req, res) => {
-    try {
-        const newOrder = await Order.create(req.body);
-
-        res.status(201).json({
-            newOrder
-        });
-    } catch (error) {
-        res.status(400).json({
-            status: 'failed',
-            error
-        });
-    }
-};
-
-exports.updateOrder = async (req, res) => {
-    try {
-        const order = await Order.findByIdAndUpdate(req.params.id, req.body, { new: true });
-
-        res.status(200).json({
-            order
-        });
-    } catch (error) {
-        res.status(400).json({
-            status: 'failed',
-            error
-        });
-    }
-};
-
-exports.deleteOrder = async (req, res) => {
-    try {
-        const order = await Order.findByIdAndDelete(req.params.id);
-
-        res.status(200).json({
-            order
-        });
-    } catch (error) {
-        res.status(400).json({
-            status: 'failed',
-            error
-        });
-    }
-};
+  };
+module.exports = { createOrder,getOrderHistory };

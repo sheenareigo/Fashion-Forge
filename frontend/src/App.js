@@ -15,7 +15,8 @@ import Search from './pages/Search';
 import Product from './pages/Product';
 import CartPage from './pages/CartPage';
 import FAQSPage from './pages/Faqs.jsx';
-
+import SuccessPage from './pages/SuccessPage';
+import OrderHistory from './pages/OrderHistory';
 const App = () => {
 
   const { currentUser } = useUserContext();
@@ -34,6 +35,8 @@ const App = () => {
         <Route path='/product/:id' element={<Product />} />
         <Route path='/search' element={<Search />} />
         <Route path='/cart' element={< CartPage/>} />
+        <Route path="/order-history" element={<OrderHistory />} />
+        <Route path="/success" element={<SuccessPage />} />
         <Route path='/faqs' element={< FAQSPage/>} />
         <Route path='*' element={<Navigate to='/' />} />
    
