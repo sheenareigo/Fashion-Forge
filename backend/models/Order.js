@@ -1,29 +1,41 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-  order_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    unique: true
-  },
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', 
+    ref: 'User',
     required: true
   },
   products: [{
     product_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product', 
+      ref: 'Product',
+      required: true
+    },
+    product_name: {
+      type: String,
       required: true
     },
     quantity: {
       type: Number,
       default: 1
+    },
+    size: {
+      type: String,
+      required: true
+    },
+    price: {
+      type: Number,
+      required: true
+    },
+   image: {
+      type: String,
+      //required: true
     }
   }],
-  address: {
+  coupon: {
     type: String,
+    default: null
   },
   status: {
     type: String,
@@ -32,7 +44,7 @@ const orderSchema = new mongoose.Schema({
   },
   order_date: {
     type: Date,
-    default: Date.now  
+    default: Date.now
   },
   total_amount: {
     type: Number,
@@ -43,3 +55,5 @@ const orderSchema = new mongoose.Schema({
 const Order = mongoose.model('Order', orderSchema);
 
 module.exports = Order;
+
+

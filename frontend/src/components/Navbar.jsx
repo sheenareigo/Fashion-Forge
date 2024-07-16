@@ -32,7 +32,11 @@ const Navbar = () => {
        setCategory(result.allCategories);
     });
   },[]); 
-
+  useEffect(() => {
+    if (cookies.currentUser && !currentUser) {
+      setCurrentUser(cookies.currentUser);
+    }
+  }, [cookies.currentUser, currentUser, setCurrentUser]);
   const Logout = () => {
     
     removeCookie('currentUser', { path: '/' });
@@ -66,6 +70,26 @@ const Navbar = () => {
   };
 
 
+  const handleOrderHistory = () => {
+    
+    const currentUser = cookies.currentUser;
+    if (!currentUser) {
+      toast({
+        title: 'Login required',
+        description: 'Please login to view your cart.',
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+      });
+    } else {
+      navigate('/order-history');
+    }
+
+
+    
+  };
+
+
   // Display Total Quantiy on cart icon
   /*useEffect(() => {
     const fetchCartData = async () => {
@@ -73,7 +97,9 @@ const Navbar = () => {
       console.log("Current User",currentUser);
       if (currentUser) {
         try {
-          const response = await axios.get(`http://localhost:4000/cart/${currentUser}`, {
+          //const response = await axios.get(`http://localhost:4000/cart/${currentUser}`, {
+          const response = await axios.get(`http://localhost:4000/cart/${currentUser._id}`, {
+            
            // params: { userId: currentUser.id }
           });      
 
@@ -101,9 +127,6 @@ const Navbar = () => {
 
 
 
-
-
-  
   return (
     <Box
       display='flex'
@@ -161,7 +184,10 @@ const Navbar = () => {
                   <MenuList >
                     <MenuGroup title='Account' >
                     <MenuItem onClick={() => navigate('/infos')} ><Person sx={{ marginRight: 2 }} /> Manage My Profile</MenuItem>
-                      <MenuItem onClick={() => navigate('/')} ><ShoppingBag sx={{ marginRight: 2 }} /> Orders</MenuItem>
+                      {/* <MenuItem onClick={() => navigate('')} ><ShoppingBag sx={{ marginRight: 2 }} /> Orders</MenuItem> */}
+                      <MenuItem onClick={handleOrderHistory}>
+                        <ShoppingBag sx={{ marginRight: 2 }} /> Orders
+                      </MenuItem>
                     </MenuGroup>
                     <Divider />
                     <MenuItem onClick={Logout} ><ExitToApp sx={{ marginRight: 2 }} /> Logout</MenuItem>
@@ -204,7 +230,7 @@ const Navbar = () => {
           >
           <Icon fontSize={30} color='inherit' as={ShoppingCart} />
           {/* Display Total Quantiy on cart icon */}
-          {/* {totalQuantity > 0 && (
+           {/* {totalQuantity > 0 && (
             <Text
               position='absolute'
               backgroundColor='facebook.500'
@@ -221,7 +247,7 @@ const Navbar = () => {
             >
               {totalQuantity}
             </Text>
-          )} */}
+          )}  */}
     </Box>
         </Box>
         <Hamburger base='none' sm='flex' md='none' />
