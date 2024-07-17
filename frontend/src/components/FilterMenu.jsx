@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Text, Button, Divider, RangeSlider, RangeSliderTrack, RangeSliderFilledTrack, RangeSliderThumb, RadioGroup, Radio } from '@chakra-ui/react';
 import { getProductByColor, getProductBySize, getProductByPrice, getProductsByQueries, getProductBySizeAndGenre, getProductByColorAndGenre, getProductsBySizeAndColor, getProductByGenre } from '../services/ProductServices';
 
-const FilterMenu = ({ openFilter, setProducts, setSortBy, onClickReset }) => {
+const FilterMenu = ({ openFilter, setProducts, setSortBy, onClickReset, category }) => {
     const [canSearch, setCanSearch] = useState(true);
     const [minPrice, setMinPrice] = useState(0);
     const [maxPrice, setMaxPrice] = useState(100);
@@ -14,7 +14,7 @@ const FilterMenu = ({ openFilter, setProducts, setSortBy, onClickReset }) => {
     const DEFAULT_MIN_PRICE = 0;
     const DEFAULT_MAX_PRICE = 100;
     const DEFAULT_GENRE = 'all';
-    const DEFAULT_GENDER = '';
+    const DEFAULT_GENDER = category;
     const DEFAULT_SIZE = 'all';
     const DEFAULT_COLOR = 'all';
 
@@ -24,7 +24,13 @@ const FilterMenu = ({ openFilter, setProducts, setSortBy, onClickReset }) => {
         setGenre("all");
         setMinPrice(0);
         setMaxPrice(100);
-    }, [canSearch]);
+    if (category === 'Men' || category === 'Women' || category === 'Unisex' || category === 'Kids') {
+        setGender(category);
+      } else {
+        setGender(''); 
+      }
+    }, [canSearch, category]);
+
 
     
 
@@ -132,7 +138,6 @@ const FilterMenu = ({ openFilter, setProducts, setSortBy, onClickReset }) => {
                 <RadioGroup display='flex' justifyContent='space-between' flexDirection={{ base: 'column', md: 'row' }} onChange={onChangeGender} value={gender}>
                     <Radio colorScheme='facebook' value='Men' fontWeight={600}>Men</Radio>
                     <Radio colorScheme='facebook' value='Women' fontWeight={600}>Women</Radio>
-                    <Radio colorScheme='facebook' value='Unisex' fontWeight={600}>Unisex</Radio>
                     <Radio colorScheme='facebook' value='Kids' fontWeight={600}>Kids</Radio>
                 </RadioGroup>
                 <Divider my={3} />
@@ -158,7 +163,7 @@ const FilterMenu = ({ openFilter, setProducts, setSortBy, onClickReset }) => {
                     <Radio mb={2} colorScheme='gray' value='Black' fontWeight={600}>Black</Radio>
                     <Radio mb={2} colorScheme='red' value='Red' fontWeight={600}>Red</Radio>
                 </RadioGroup>
-                <Button mt={5} colorScheme='facebook' onClick={onClickSearch}>Search</Button>
+                <Button mt={5} colorScheme='facebook' onClick={onClickSearch}>Apply</Button>
                 <Button mt={2} colorScheme='red' onClick={handleReset}>Reset</Button>
             </Box>
         </Box>
