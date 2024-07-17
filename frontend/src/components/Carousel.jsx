@@ -5,10 +5,11 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Box, IconButton, useBreakpointValue } from '@chakra-ui/react';
 import { ArrowForwardIos, ArrowBackIos } from '@mui/icons-material';
+import { useSearchContext } from '../contexts/SearchContext';
 //import { LazyLoadImage } from 'react-lazy-load-image-component';
-import 'react-lazy-load-image-component/src/effects/blur.css';
+//import 'react-lazy-load-image-component/src/effects/blur.css';
 
-import { getAllImages } from '../services/ImageServices';
+//import { getAllImages, getAllMiniImages } from '../services/ImageServices';
 //import { useSearchContext } from '../contexts/SearchContext';
 
 const settings = {
@@ -18,7 +19,7 @@ const settings = {
   infinite: true,
   autoplay: true,
   speed: 500,
-  autoplaySpeed: 5000,
+  autoplaySpeed: 3000,
   slidesToShow: 1,
   slidesToScroll: 1,
 };
@@ -26,23 +27,31 @@ const settings = {
 const Carousel = () => {
 
   const navigate = useNavigate();
-  //const { setSearch } = useSearchContext();
+  const { setSearch } = useSearchContext();
   const [images, setImages] = useState([]);
   const [slider, setSlider] = useState("");
 
   const top = useBreakpointValue({ base: '80%', sm: '40%' });
   const side = useBreakpointValue({ base: '30%', sm: '10px' });
+  const imageSet = [
+    '/Images/carousel/3.jpg',
+    '/Images/carousel/2.jpg',
+    '/Images/carousel/4.jpg',
+    '/Images/carousel/5.jpg',
+    '/Images/carousel/new-arrival-1.jpg',
+    '/Images/carousel/1.jpg',
+    '/Images/carousel/6.jpg'
+  ];
+  
 
-  useEffect(() => {
-    getAllImages()
-      .then((result) => {
-        setImages(result.imageUrls);
-      });
-  }, []);
+   useEffect(() => {
+    setImages(imageSet);
+   }, []);
 
   const onClickImage = () => {
-    //setSearch('a');
-    //navigate('/search');
+    // setSearch('a');
+    // navigate(`/search`);
+    // e.preventDefault();
   }
 
   return (

@@ -275,8 +275,6 @@ exports.applyCoupon = async (req, res) => {
 
       // Check if the coupon code is valid and if the user is eligible to use it
       if (differenceInDays > 7 || !user.new_user_discount) {
-         // user.new_user_discount = false;
-          await user.save();
           return res.status(400).json({ success: false, message: 'Coupon is not valid' });
       } else {
           if (couponCode === "FF20") {

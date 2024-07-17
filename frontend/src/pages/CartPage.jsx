@@ -77,7 +77,7 @@ const CartPage = () => {
 
   useEffect(() => {
     const total = calculateTotal(cart.products);
-    const calculatedTax = total * 0.10;
+    const calculatedTax = total * 0.13;
     const finalTotal = total + calculatedTax;
     
       
@@ -91,7 +91,6 @@ const CartPage = () => {
 
   const calculateTotal = (products) => {
       const total = products.reduce((acc, item) => acc + (item.price), 0);
-      console.log("Total from func",total);
       return total;
   };
 
@@ -137,7 +136,7 @@ const CartPage = () => {
           if (response.data.cart && Array.isArray(response.data.cart.products)) {
               setCart(response.data.cart);
               const updatedTotal = calculateTotal(response.data.cart.products);
-              console.log("Updated Total",updatedTotal);
+              //console.log("Updated Total",updatedTotal);
               setCartTotal(updatedTotal);
               applyCouponDiscount(updatedTotal);
           } else {
@@ -300,20 +299,71 @@ const CartPage = () => {
       
       const discountAmount = total * 0.20;
       const discountedTotal = total - discountAmount;
-      console.log("Discounted Total: ", discountedTotal);
+      //console.log("Discounted Total: ", discountedTotal);
 
       // Calculate the tax on the discounted total
-      const taxAmount = discountedTotal * 0.10;
+      const taxAmount = discountedTotal * 0.13;
       const discountTotal = discountedTotal + taxAmount;
         
-          console.log("New discount",discountTotal);      
+          //console.log("New discount",discountTotal);      
           setDiscountedTotal(discountTotal);
         
       } else {
           setDiscountedTotal(finalTotal);
-          console.log("discount ",finalTotal);
+          //console.log("discount ",finalTotal);
       }
   };
+
+
+  const handleCheckout = async () => {
+    setLoading(true);
+    try {
+      const appliedCouponCode = couponCode ? couponCode : null;
+  
+      const response = await axios.post('http://localhost:4000/orders/checkout', {
+        userId: currentUser._id,
+        //cart: cart.products,
+        cart: cart.products.map(product => ({
+          product_id: product.product_id,
+          quantity: product.quantity,
+          size: product.size
+        })),
+        //total: finalTotal,
+        total:discountedTotal,
+        couponCode: appliedCouponCode,
+      });
+  
+      if (response.data.success) {
+        setCart({ products: [] });
+        setCartTotal(0);
+        setDiscountedTotal(0);
+        setFinalTotal(0);
+        setCouponCode('');
+        toast({
+          title: 'Order Placed',
+          description: 'Your order has been placed successfully!',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+        navigate('/order-history');
+      } else {
+        throw new Error('Order placement failed');
+      }
+    } catch (error) {
+      toast({
+        title: 'Checkout Error',
+        description: `There was an error during checkout: ${error.message}`,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   const onClickPurchase = async() => {
     const stripePromise = await loadStripe("pk_test_51Pamz5B4UKoOdXsodITuR2MNbbLV5bf9fb4VNWChzU2fX978l5qzhmTBJzIVc6vLXK9rAAtMcXIo3dcEoJiAEbK300O8XoLjPc");
     const body = {
@@ -333,9 +383,25 @@ const CartPage = () => {
         sessionId: session.id
     });
 
-    if(result.error) {
-        console.log("error");
-    }
+    // if(result.error) {
+    //     console.log("error");
+    // }
+    if (result.error) {
+      console.log("Error redirecting to checkout:", result.error.message);
+      toast({
+          title: 'Checkout Error',
+          description: `There was an error during checkout: ${result.error.message}`,
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+      });
+  }
+  else {
+       // If payment is successful, call handleCheckout
+       await handleCheckout();
+ 
+ }
+
   }
   if (loading) {
       return <Spinner size="xl" />;
@@ -375,6 +441,18 @@ const CartPage = () => {
                 <Text fontSize="50px" fontWeight="bold" textAlign="center" flex="1">
                   Your Cart Items
                 </Text>
+                {/* <Button
+                colorScheme="blue"
+                bg="blue.600"
+                color="white"
+                size="lg"
+                _hover={{ bg: "blue.500" }}
+                _active={{ bg: "blue.700" }}
+                gridColumn="span 2"
+                onClick={handleCheckout}
+              >
+                Move to OrderHistory
+              </Button>  */}
               </Box>
               <Box
                 display="grid"
@@ -482,9 +560,10 @@ const CartPage = () => {
                 );
               })}
             </Box>
+           
             {/* <Box borderWidth="1px" borderRadius="lg" padding="4" marginTop="200px" height="400px"> */}
             <Box padding="4" marginTop="200px" height="400px">
-              
+            
 
 
             <Grid templateColumns="repeat(2, 1fr)" gap={4}>
@@ -496,7 +575,7 @@ const CartPage = () => {
               </Text>
 
               <Text fontSize="xl" fontWeight="bold" color="blue.800">
-                Tax (10%):
+                Tax (13%):
               </Text>
               <Text fontSize="xl" fontWeight="bold" color="blue.800">
                 ${tax.toFixed(2)}
@@ -559,6 +638,8 @@ const CartPage = () => {
               >
                 Checkout
               </Button>
+             
+              
             </Grid>
             </Box> 
           
