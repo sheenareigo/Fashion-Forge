@@ -62,10 +62,32 @@ app.post("/create-payment-intent", async (req, res) => {
         name: product.productName,
         
       },
-      unit_amount: Math.round(product.price*100),
+      unit_amount: Math.round((product.price*100)/product.quantity) ,
     },
     quantity: product.quantity
  }));
+
+  // Calculate total price of all products excluding tax product
+  const totalExcludingTax = products.reduce((acc, product) => {
+    if (product.productName !== "Tax") {
+      acc = acc + product.price ;
+    }
+    return acc;
+  }, 0);
+  console.log("total"+totalExcludingTax);
+  // Calculate tax on total price excluding tax product
+  const totalTax = Math.round(totalExcludingTax * 13);
+
+  lineItems.push({
+    price_data: {
+      currency: "usd",
+      product_data: {
+        name: "Tax (13%)",
+      },
+      unit_amount: totalTax,
+    },
+    quantity: 1,
+  });
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
