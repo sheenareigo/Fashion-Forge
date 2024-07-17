@@ -77,7 +77,7 @@ const CartPage = () => {
 
   useEffect(() => {
     const total = calculateTotal(cart.products);
-    const calculatedTax = total * 0.10;
+    const calculatedTax = total * 0.13;
     const finalTotal = total + calculatedTax;
     
       
@@ -91,7 +91,6 @@ const CartPage = () => {
 
   const calculateTotal = (products) => {
       const total = products.reduce((acc, item) => acc + (item.price), 0);
-      console.log("Total from func",total);
       return total;
   };
 
@@ -137,7 +136,7 @@ const CartPage = () => {
           if (response.data.cart && Array.isArray(response.data.cart.products)) {
               setCart(response.data.cart);
               const updatedTotal = calculateTotal(response.data.cart.products);
-              console.log("Updated Total",updatedTotal);
+              //console.log("Updated Total",updatedTotal);
               setCartTotal(updatedTotal);
               applyCouponDiscount(updatedTotal);
           } else {
@@ -300,18 +299,18 @@ const CartPage = () => {
       
       const discountAmount = total * 0.20;
       const discountedTotal = total - discountAmount;
-      console.log("Discounted Total: ", discountedTotal);
+      //console.log("Discounted Total: ", discountedTotal);
 
       // Calculate the tax on the discounted total
-      const taxAmount = discountedTotal * 0.10;
+      const taxAmount = discountedTotal * 0.13;
       const discountTotal = discountedTotal + taxAmount;
         
-          console.log("New discount",discountTotal);      
+          //console.log("New discount",discountTotal);      
           setDiscountedTotal(discountTotal);
         
       } else {
           setDiscountedTotal(finalTotal);
-          console.log("discount ",finalTotal);
+          //console.log("discount ",finalTotal);
       }
   };
 
@@ -576,7 +575,7 @@ const CartPage = () => {
               </Text>
 
               <Text fontSize="xl" fontWeight="bold" color="blue.800">
-                Tax (10%):
+                Tax (13%):
               </Text>
               <Text fontSize="xl" fontWeight="bold" color="blue.800">
                 ${tax.toFixed(2)}
