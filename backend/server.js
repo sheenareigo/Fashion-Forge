@@ -55,10 +55,10 @@ const insertSampleData = require('./controllers/imageInsertion');
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_API_KEY);
 app.post("/create-payment-intent", async (req, res) => {
-  const {products, coupon} = req.body;
+  const {products, userId, cart, total, couponCode} = req.body;
   const lineItems = products.map((product) => {
     let unitAmount;
-    if (coupon) {
+    if (couponCode) {
       unitAmount = Math.round((product.price * 80) / product.quantity);
     } else {
       unitAmount = Math.round((product.price * 100) / product.quantity);
@@ -69,6 +69,7 @@ app.post("/create-payment-intent", async (req, res) => {
         product_data: {
           name: product.productName,
         },
+
         unit_amount: unitAmount,
       },
       quantity: product.quantity,
@@ -83,7 +84,7 @@ app.post("/create-payment-intent", async (req, res) => {
     return acc;
   }, 0);
   
-  if (coupon) {
+  if (couponCode) {
     totalExcludingTax = totalExcludingTax * 0.80;
   }
   // Calculate tax on total price excluding tax product
@@ -104,12 +105,30 @@ app.post("/create-payment-intent", async (req, res) => {
     payment_method_types: ["card"],
     line_items: lineItems,
     mode: "payment",
-    success_url: 'http://localhost:3000/success'      //need to update this to redirect to orders page 
+   // success_url: 'http://localhost:3000/infos'
+   success_url: 'http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}',      //need to update this to redirect to orders page 
+   metadata: {
+    userId: userId,
+    cart: JSON.stringify(cart),
+    total: total.toString(),
+    couponCode: couponCode || ""
+  }
   });
 
   res.json({id: session.id});
 });
 
+app.get("/stripe-session/:session_id", async (req, res) => {
+  const { session_id } = req.params;
+
+  try {
+    const session = await stripe.checkout.sessions.retrieve(session_id);
+    res.json(session);
+  } catch (error) {
+    console.error('Error fetching session data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
