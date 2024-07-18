@@ -55,27 +55,37 @@ const insertSampleData = require('./controllers/imageInsertion');
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_API_KEY);
 app.post("/create-payment-intent", async (req, res) => {
- const {products} = req.body;
- const lineItems = products.map((product)=> ({
-    price_data: {
-      currency: "usd",
-      product_data: {
-        name: product.productName,
-        
+  const {products, coupon} = req.body;
+  const lineItems = products.map((product) => {
+    let unitAmount;
+    if (coupon) {
+      unitAmount = Math.round((product.price * 80) / product.quantity);
+    } else {
+      unitAmount = Math.round((product.price * 100) / product.quantity);
+    }
+    return {
+      price_data: {
+        currency: "usd",
+        product_data: {
+          name: product.productName,
+        },
+        unit_amount: unitAmount,
       },
-      unit_amount: Math.round((product.price*100)/product.quantity) ,
-    },
-    quantity: product.quantity
- }));
-
+      quantity: product.quantity,
+    };
+  });
+ 
   // Calculate total price of all products excluding tax product
-  const totalExcludingTax = products.reduce((acc, product) => {
+  let totalExcludingTax = products.reduce((acc, product) => {
     if (product.productName !== "Tax") {
       acc = acc + product.price ;
     }
     return acc;
   }, 0);
-  console.log("total"+totalExcludingTax);
+  
+  if (coupon) {
+    totalExcludingTax = totalExcludingTax * 0.80;
+  }
   // Calculate tax on total price excluding tax product
   const totalTax = Math.round(totalExcludingTax * 13);
 
@@ -94,8 +104,7 @@ app.post("/create-payment-intent", async (req, res) => {
     payment_method_types: ["card"],
     line_items: lineItems,
     mode: "payment",
-   // success_url: 'http://localhost:3000/infos'
-   success_url: 'http://localhost:3000/success'      //need to update this to redirect to orders page 
+    success_url: 'http://localhost:3000/success'      //need to update this to redirect to orders page 
   });
 
   res.json({id: session.id});

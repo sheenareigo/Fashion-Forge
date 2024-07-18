@@ -379,40 +379,42 @@ const CartPage = () => {
     }
   };
 
-  const onClickPurchase = async () => {
+const onClickCheckout = async() => {
     const stripePromise = await loadStripe("pk_test_51Pamz5B4UKoOdXsodITuR2MNbbLV5bf9fb4VNWChzU2fX978l5qzhmTBJzIVc6vLXK9rAAtMcXIo3dcEoJiAEbK300O8XoLjPc");
     const body = {
-      products: cart.products
-    };
+        products : cart.products,
+        coupon: isCouponApplied
+    }
     const header = {
-      "Content-Type": "application/json"
-    };
+        "Content-Type": "application/json"
+    }
     const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/create-payment-intent`, {
-      method: "POST",
-      headers: header,
-      body: JSON.stringify(body),
-    });
+        method: "POST",
+        headers: header,
+        body: JSON.stringify(body),
+    })
 
     const session = await response.json();
     const result = stripePromise.redirectToCheckout({
-      sessionId: session.id
+        sessionId: session.id
     });
 
     if (result.error) {
       console.log("Error redirecting to checkout:", result.error.message);
       toast({
-        title: 'Checkout Error',
-        description: `There was an error during checkout: ${result.error.message}`,
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
+          title: 'Checkout Error',
+          description: `There was an error during checkout: ${result.error.message}`,
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
       });
-    } else {
-        // If payment is successful, call handleCheckout
+  }
+  else {
+       // If payment is successful, call handleCheckout
        await handleCheckout();
-      console.log("redirecting to checkout");
-    }
-  };
+  }
+
+}
 
   if (loading) {
     return <Spinner size="xl" />;
@@ -636,7 +638,7 @@ const CartPage = () => {
                 _hover={{ bg: "blue.500" }}
                 _active={{ bg: "blue.700" }}
                 gridColumn="span 2"
-                onClick={onClickPurchase}
+                onClick={onClickCheckout}
               >
                 Checkout
               </Button>
