@@ -13,11 +13,11 @@ export const applyCoupon = async (userId, couponCode) => {
 };
 
 
-export const removeCoupon = async (userId, couponCode) => {
+export const removeCoupon = async (userId) => {
    
         const response = await axios.post(`${API_BASE_URL}/cart/removeCoupon`, {
-            userId: userId,
-            couponCode: couponCode,
+            userId: userId
+            
         });
         return response.data;
     
