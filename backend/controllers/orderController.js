@@ -52,6 +52,7 @@ const createOrder = async (req, res) => {
         {
             console.log("new user discount made false");
             user.new_user_discount=false;
+            user.cart.coupon=null;
         }
     await user.save();
 
@@ -93,7 +94,7 @@ const getOrderHistory = async (req, res) => {
         }
 
         // Check and reverse coupon if applicable
-        if (order.coupon === "FF20" && user.cart.coupon === "FF20" && !user.new_user_discount) {
+        if (order.coupon === "FF20"  && !user.new_user_discount) {
            
             const currentDate = new Date();
             const registrationDate = new Date(user.register_data_time);

@@ -381,9 +381,22 @@ const CartPage = () => {
 
   const onClickPurchase = async () => {
     const stripePromise = await loadStripe("pk_test_51Pamz5B4UKoOdXsodITuR2MNbbLV5bf9fb4VNWChzU2fX978l5qzhmTBJzIVc6vLXK9rAAtMcXIo3dcEoJiAEbK300O8XoLjPc");
+    // const body = {
+    //   products: cart.products
+    // };
+
     const body = {
-      products: cart.products
-    };
+        products: cart.products,
+        userId: currentUser._id,
+        cart: cart.products.map(product => ({
+          product_id: product.product_id,
+          quantity: product.quantity,
+          size: product.size
+        })),
+        total: discountedTotal,
+        couponCode: cart.coupon,
+      };
+    
     const header = {
       "Content-Type": "application/json"
     };
@@ -409,7 +422,7 @@ const CartPage = () => {
       });
     } else {
         // If payment is successful, call handleCheckout
-       await handleCheckout();
+      // await handleCheckout();
       console.log("redirecting to checkout");
     }
   };
