@@ -77,7 +77,6 @@ const getOrderHistory = async (req, res) => {
 
   const cancelOrder = async (req, res) => {
     try {
-        console.log("cancel order controller");
         const {orderId} = req.params;
         console.log(orderId);
         const order = await Order.findById(orderId);
@@ -95,7 +94,7 @@ const getOrderHistory = async (req, res) => {
 
         // Check and reverse coupon if applicable
         if (order.coupon === "FF20" && user.cart.coupon === "FF20" && !user.new_user_discount) {
-            console.log("reverse coupon loop");
+           
             const currentDate = new Date();
             const registrationDate = new Date(user.register_data_time);
 
@@ -112,7 +111,7 @@ const getOrderHistory = async (req, res) => {
         if (order.status === 'Preparing' || order.status === 'Shipped') {
             order.status = 'Cancelled';
             await order.save();
-            console.log("cancallation success");
+            
             return res.status(200).send({ message: 'Order cancelled successfully', order });
         } 
         else {
