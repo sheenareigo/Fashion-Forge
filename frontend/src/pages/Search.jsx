@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, SimpleGrid, Button, Select, Text, Icon, Heading, Spinner } from '@chakra-ui/react';
+import { Box, SimpleGrid, Button, Select, Text, Icon, Heading } from '@chakra-ui/react';
 import Pagination from '../components/Pagination';
 import ClothesCard from '../components/ClothesCard';
 import FilterMenu from '../components/FilterMenu';
@@ -8,6 +8,7 @@ import { useSearchContext } from '../contexts/SearchContext';
 import { SearchOff } from '@mui/icons-material';
 import { useUserContext } from '../contexts/UserContext';
 import { useLocation, useNavigate } from 'react-router-dom';
+
 
 const Search = () => {
   const navigate = useNavigate();
@@ -22,32 +23,36 @@ const Search = () => {
   const { currentUser } = useUserContext();
   const userId = location.state?.userId || null;
   const [originalProducts, setOriginalProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [categoryName, setCategoryName] = useState("All");
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      setIsLoading(true);
-
-      try {
-        if (state !== null && state.category_name) {
-          const result = await getProductByCategoryName(state.category_name);
+    if (state !== null && state.category_name) {
+     setCategoryName(state.category_name);
+     getProductByCategoryName(state.category_name)
+        .then((result) => {
           setProducts(result.products);
-          setOriginalProducts(result.products); // Save original products
-        }
+          setOriginalProducts(result.products); 
+          setFilteredProducts(result.products); 
+        })
+        .catch((error) => {
+          console.error('Error fetching products by category:', error);
+        });
+    }
 
-        if (search && canSearch) {
-          const result = await getProductBySearch(search);
+   else if (search !== "" && search !== " " && search !== null && search !== undefined && canSearch) {
+      setCategoryName("Men");
+      getProductBySearch(search)
+        .then((result) => {
           setProducts(result.products);
-          setOriginalProducts(result.products); // Save original products
-        }
-      } catch (error) {
-        console.error('Error fetching products:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProducts();
+          setOriginalProducts(result.products); 
+          setFilteredProducts(result.products); 
+        })
+        .catch((error) => {
+          console.error('Error fetching products by search:', error);
+        });
+      setSortBy("recommended");
+    }
   }, [state, search, canSearch]);
 
   const handleChange = (e) => {
@@ -60,25 +65,33 @@ const Search = () => {
   };
 
   const sortByPriceAsc = () => {
-    setProducts(prevProducts => [...prevProducts].sort((a, b) => a.price - b.price));
+    setFilteredProducts(prevProducts => [...prevProducts].sort((a, b) => a.price - b.price));
   };
 
   const sortByPriceDesc = () => {
-    setProducts(prevProducts => [...prevProducts].sort((a, b) => b.price - a.price));
+    setFilteredProducts(prevProducts => [...prevProducts].sort((a, b) => b.price - a.price));
   };
 
   const onClickReset = () => {
-    setProducts(originalProducts); // Restore original products
+    setFilteredProducts(originalProducts); // Restore original products
     setSortBy("recommended");
   };
 
   // Get current products for pagination
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
   // Pagination handler
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  // Update filtered products based on filter results
+  const updateFilteredProducts = (filtered) => {
+  const commonProducts = originalProducts.filter(original =>
+      filtered.some(filteredProduct => filteredProduct._id === original._id)
+    );
+    setFilteredProducts(commonProducts);
+  };
 
   return (
     <Box px={{ base: 2, sm: 3, md: 5 }} my={3} py={3} backgroundColor='whitesmoke'>
@@ -104,6 +117,7 @@ const Search = () => {
           backgroundColor='#fff'
           width='170px'
         >
+          <option value='recommended'>Best Sellers</option>
           <option value='lowest'>Lowest Price</option>
           <option value='highest'>Highest Price</option>
         </Select>
@@ -114,53 +128,45 @@ const Search = () => {
           <Box>
             <FilterMenu
               openFilter={openFilter}
-              setProducts={setProducts}
+              setProducts={updateFilteredProducts}
               setSortBy={setSortBy}
-              onClickReset={onClickReset} 
+              onClickReset={onClickReset}
+              category={categoryName}
             />
           </Box>
         )}
         <Box gridColumn={{ base: "span 1", md: openFilter ? "span 1" : "span 2" }}>
-          {isLoading ? (
-            <Box display='flex' justifyContent='center' alignItems='center' minHeight='200px'>
-              <Spinner size='xl' color='facebook.500' />
-            </Box>
-          ) : (
-            <SimpleGrid minChildWidth={280} gap={3} spacingX={6}>
-              {products.length > 0 ? (
-                currentProducts.map((product, index) => (
-                  <ClothesCard key={index} productId={product._id} />
-                ))
-              ) : (
-                <>
-                  <Box display='flex' justifyContent='start'>
-                    <Box
-                      display='flex'
-                      justifyContent='center'
-                      alignItems='center'
-                      flexDirection='column'
-                      mt={10}
-                      p={3}>
-                      <Icon color='#314E89' fontSize={100} as={SearchOff} />
-                      <Heading textAlign='center' fontSize={30} mt={8}>Sorry, we couldn't find what you are looking for.</Heading>
-                      <Text textAlign='center' fontSize={24} mt={2} fontWeight={300}>But don’t give up! Check out our bestsellers and find something for you!</Text>
-                      <Button
-                        variant='solid'
-                        fontSize={20}
-                        px={10} mt={10}
-                        colorScheme='facebook'
-                        onClick={() => navigate('/')}>
-                        Start Shopping
-                      </Button>
-                    </Box>
-                  </Box>
-                </>
-              )}
-            </SimpleGrid>
-          )}
+          <SimpleGrid minChildWidth={280} gap={3} spacingX={6}>
+            {currentProducts.map((product, index) => (
+              <ClothesCard key={index} productId={product._id} />
+            ))}
+            {filteredProducts.length === 0 && (
+              <Box display='flex' justifyContent='start'>
+                <Box
+                  display='flex'
+                  justifyContent='center'
+                  alignItems='center'
+                  flexDirection='column'
+                  mt={10}
+                  p={3}>
+                  <Icon color='#314E89' fontSize={100} as={SearchOff} />
+                  <Heading textAlign='center' fontSize={30} mt={8}>Sorry, we couldn't find what you are looking for.</Heading>
+                  <Text textAlign='center' fontSize={24} mt={2} fontWeight={300}>But don’t give up! Check out our bestsellers and find something for you!</Text>
+                  <Button
+                    variant='solid'
+                    fontSize={20}
+                    px={10} mt={10}
+                    colorScheme='facebook'
+                    onClick={() => navigate('/')}>
+                    Start Shopping
+                  </Button>
+                </Box>
+              </Box>
+            )}
+          </SimpleGrid>
           <Pagination
             productsPerPage={productsPerPage}
-            totalProducts={products.length}
+            totalProducts={filteredProducts.length}
             paginate={paginate}
           />
         </Box>

@@ -11,8 +11,6 @@ export const getProductById = async (id) => {
 };
 
 export const getProductByPrice = async (lowest, uppest, gender) => {
-    console.log("price service ");
-    console.log(gender);
     const { data } = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/products/query/price`, {
         lowest,
         uppest,
@@ -27,8 +25,7 @@ export const getProductByCategoryName = async (category_name) => {
 };
 
 export const getProductByColor = async (color, lowest, uppest, gender) => {
-    console.log("size and gender", gender,lowest,uppest);
-    const { data } = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/products/color`, {
+     const { data } = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/products/color`, {
         color,
         lowest,
         uppest,
@@ -38,7 +35,6 @@ export const getProductByColor = async (color, lowest, uppest, gender) => {
 };
 
 export const getProductBySize = async (size, lowest, uppest, gender) => {
-    console.log("size and gender",size, gender,lowest,uppest);
     const { data } = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/products/size`, {
         size,
         lowest,
