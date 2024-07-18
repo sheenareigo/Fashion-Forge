@@ -55,28 +55,38 @@ const insertSampleData = require('./controllers/imageInsertion');
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_API_KEY);
 app.post("/create-payment-intent", async (req, res) => {
- const {products, userId, cart, total, couponCode } = req.body;
- const lineItems = products.map((product)=> ({
-    price_data: {
-      currency: "usd",
-      product_data: {
-        name: product.productName,
-        
+  const {products, userId, cart, total, couponCode} = req.body;
+  const lineItems = products.map((product) => {
+    let unitAmount;
+    if (couponCode) {
+      unitAmount = Math.round((product.price * 80) / product.quantity);
+    } else {
+      unitAmount = Math.round((product.price * 100) / product.quantity);
+    }
+    return {
+      price_data: {
+        currency: "usd",
+        product_data: {
+          name: product.productName,
+        },
+
+        unit_amount: unitAmount,
       },
-
-      unit_amount: Math.round((product.price*100)/product.quantity) ,
-    },
-    quantity: product.quantity,
- }));
-
+      quantity: product.quantity,
+    };
+  });
+ 
   // Calculate total price of all products excluding tax product
-  const totalExcludingTax = products.reduce((acc, product) => {
+  let totalExcludingTax = products.reduce((acc, product) => {
     if (product.productName !== "Tax") {
       acc = acc + product.price ;
     }
     return acc;
   }, 0);
-  console.log("total"+totalExcludingTax);
+  
+  if (couponCode) {
+    totalExcludingTax = totalExcludingTax * 0.80;
+  }
   // Calculate tax on total price excluding tax product
   const totalTax = Math.round(totalExcludingTax * 13);
 
@@ -97,7 +107,6 @@ app.post("/create-payment-intent", async (req, res) => {
     mode: "payment",
    // success_url: 'http://localhost:3000/infos'
    success_url: 'http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}',      //need to update this to redirect to orders page 
-   cancel_url: 'http://localhost:3000/cancel',
    metadata: {
     userId: userId,
     cart: JSON.stringify(cart),
