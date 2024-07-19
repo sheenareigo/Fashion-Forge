@@ -296,7 +296,7 @@ exports.applyCoupon = async (req, res) => {
 
 // Remove coupon from cart
 exports.removeCoupon = async (req, res) => {
-  const { userId, couponCode } = req.body;
+  const { userId } = req.body;
   try {
     console.log("remove coupon controller");
       // Find the user by ID and check for errors
@@ -304,7 +304,7 @@ exports.removeCoupon = async (req, res) => {
       if (!user) {
           return res.status(404).json({ message: 'User not found.' });
       }
-      if (couponCode=="FF20"){
+      if (user.cart.coupon=="FF20"){
       user.cart.coupon=null;
          // user.new_user_discount = false;
           await user.save();
@@ -312,7 +312,7 @@ exports.removeCoupon = async (req, res) => {
 
       }
       else {
-        return res.status(400).json({ success: false, message: 'Invalid coupon code' });
+        return res.status(400).json({ success: false, message: 'No coupon applied' });
     }
       
       }
