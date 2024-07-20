@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useToast } from '@chakra-ui/react';
 import { useUserContext } from '../contexts/UserContext';
+import { successEmail } from '../services/OrderServices';
 
 const SuccessPage = () => {
   const navigate = useNavigate();
@@ -12,7 +13,6 @@ const SuccessPage = () => {
   const { currentUser } = useUserContext();
   const [loading, setLoading] = useState(true);
   const [sessionData, setSessionData] = useState(null);
-
   const query = new URLSearchParams(location.search);
   const session_id = query.get('session_id');
 
@@ -53,10 +53,12 @@ const SuccessPage = () => {
     };
   }, [session_id]);
 
+
+  
   const handleCheckout = async (session) => {
     try {
       const { userId, total, couponCode, cart } = session.metadata;
-
+      await successEmail(userId);
       const response = await axios.post('http://localhost:4000/orders/checkout', {
         userId,
         cart: JSON.parse(cart).map(product => ({

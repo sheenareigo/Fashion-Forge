@@ -9,3 +9,13 @@ export const cancelOrder = async (orderId) => {
         throw error;
     }
 };
+
+export const successEmail = async (userID) => {
+  try {
+    const response = await axios.post('http://localhost:4000/orders/success-email', { userID });
+    return response.data;
+  } catch (error) {
+    console.error('Error sending success email:', error);
+    throw error;
+  }
+};
