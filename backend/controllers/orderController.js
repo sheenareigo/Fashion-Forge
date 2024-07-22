@@ -23,7 +23,6 @@ const createOrder = async (req, res) => {
   }
 
   try {
-    // Fetch the user's cart details and populate product information
     const user = await User.findById(userId).populate('cart.products.product_id');
 
     if (!user) {
