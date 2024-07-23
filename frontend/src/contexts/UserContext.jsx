@@ -17,7 +17,10 @@ export const UserProvider = ({ children }) => {
 
   const login = (user) => {
     setCurrentUser(user);
-    setCookie('currentUser', user, { path: '/', maxAge: 30 * 24 * 60 * 60 }); // 30 days
+    const expirationDate = new Date();
+    expirationDate.setMinutes(expirationDate.getMinutes() + 2); // Set expiration to 2 minutes from now
+    setCookie('currentUser', user, { path: '/', expires: expirationDate });
+    setCookie('currentUserExpires', expirationDate.toISOString(), { path: '/' });
   };
 
   const logout = () => {
