@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Box, Heading, Text, VStack, Stack, Divider, Flex, Spinner, Center, Image, HStack, useToast, Button, useDisclosure, AlertDialog, AlertDialogBody, AlertDialogFooter, AlertDialogHeader, AlertDialogContent, AlertDialogOverlay } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useUserContext } from '../contexts/UserContext';
-import { cancelOrder } from '../services/OrderServices';
+import { cancelOrder, cancellationEmail } from '../services/OrderServices';
 
 const OrderHistory = () => {
   const { currentUser, setCurrentUser } = useUserContext();
@@ -16,6 +16,7 @@ const OrderHistory = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const cancelRef = useRef();
+
 
   useEffect(() => {
     if (cookies.currentUser && !currentUser) {
@@ -33,6 +34,7 @@ const OrderHistory = () => {
       }
 
       const response = await axios.get(`http://localhost:4000/orders/order-history/${userId}`);
+      console.log(response);
       if (Array.isArray(response.data)) {
         setOrders(response.data);
       } else {
@@ -69,6 +71,8 @@ const OrderHistory = () => {
           isClosable: true,
         });
         fetchOrders(); // Refresh the orders after cancellation
+        //console.log(response.data.order.user_id);
+        await cancellationEmail(response.data.order.user_id,selectedOrderId);
       } else {
         toast({
           title: 'Error Cancelling Order',

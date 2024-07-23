@@ -58,7 +58,7 @@ const SuccessPage = () => {
   const handleCheckout = async (session) => {
     try {
       const { userId, total, couponCode, cart } = session.metadata;
-      await successEmail(userId);
+    
       const response = await axios.post('http://localhost:4000/orders/checkout', {
         userId,
         cart: JSON.parse(cart).map(product => ({
@@ -69,7 +69,7 @@ const SuccessPage = () => {
         total: parseFloat(total),
         couponCode: couponCode || null,
       });
-
+      console.log(response.data.order._id);
       if (response.data.success) {
         toast({
           title: 'Order Placed',
@@ -78,6 +78,8 @@ const SuccessPage = () => {
           duration: 3000,
           isClosable: true,
         });
+        console.log(response.data.order._id)
+        await successEmail(userId,response.data.order._id);
       } else {
         throw new Error('Order placement failed');
       }

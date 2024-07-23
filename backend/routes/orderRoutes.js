@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { createOrder, getOrderHistory, cancelOrder } = require('../controllers/orderController');
+const { createOrder, getOrderHistory, cancelOrder,cancellationEmail } = require('../controllers/orderController');
 const { successEmail } = require('../controllers/orderController');
 
 
@@ -14,5 +14,7 @@ router.get('/order-history/:userId', getOrderHistory);
 router.patch('/cancel/:orderId', cancelOrder);
 
 router.post('/success-email', successEmail);
+
+router.post('/cancelemail', cancellationEmail);
 
 module.exports = router;
