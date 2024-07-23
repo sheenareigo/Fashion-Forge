@@ -92,7 +92,7 @@ const Login = () => {
               </InputRightElement>
             </InputGroup>
           </FormControl>
-          <Checkbox value={remember} onChange={() => setRemember(!remember)} mt={5}>Remember me</Checkbox>
+          {/* <Checkbox value={remember} onChange={() => setRemember(!remember)} mt={5}>Remember me</Checkbox> */}
           <Button mt={5} width='100%' variant='solid' colorScheme='facebook' disabled={!isValid} onClick={handleSubmit}>Login</Button>
           <br />
           <Box textAlign='center' mt={2}>
