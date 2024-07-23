@@ -45,7 +45,7 @@ const Home = () => {
           </Box>
           <Box color='#fff' alignItems='center' display='flex' flexDirection='column' mt={{ base: 5, md: 0 }}>
             <AssignmentReturn sx={{ fontSize: 50 }} color='inherit' />
-            <Text mt={3} fontSize={20} fontWeight={600} color='inherit'>30 Days Free Returns</Text>
+            <Text mt={3} fontSize={20} fontWeight={600} color='inherit'>24 Hours Free Returns</Text>
           </Box>
           <Box color='#fff' alignItems='center' display='flex' flexDirection='column' mt={{ base: 5, md: 0 }}>
             <WorkspacePremium sx={{ fontSize: 50 }} color='inherit' />

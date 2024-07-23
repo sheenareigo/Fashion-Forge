@@ -1,10 +1,11 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, FormControl, FormLabel, FormErrorMessage, InputGroup, Input, Select, Text, InputRightElement, Button, Checkbox, useToast } from '@chakra-ui/react';
+import { Box, FormControl, FormLabel, FormErrorMessage, InputGroup, Input, Select, Text, InputRightElement, Button, Checkbox, useToast,Flex } from '@chakra-ui/react';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useFormik } from 'formik';
-
+import TermsAndConditionsPopup from '../components/TermsAndConditionsPopup';
+import PrivacyPolicyPopup from '../components/PrivacyPolicyPopup';
 //import RegisterValidations from '../validations/RegisterValidations';
 import { Register as Signup } from '../services/AuthServices';
 
@@ -13,6 +14,23 @@ const Register = () => {
   const [show, setShow] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
+  const [isTermsModalOpen, setTermsModalOpen] = useState(false);
+  const [isPrivacyPolicyOpen, setPrivacyPolicyOpen] = useState(false);
+
+  const openTermsModal = () => {
+    setTermsModalOpen(true);
+  };
+
+  const closeTermsModal = () => {
+    setTermsModalOpen(false);
+  };
+  const openPrivacyPolicyPopup = () => {
+    setPrivacyPolicyOpen(true);
+  };
+
+  const closePrivacyPolicyPopup = () => {
+    setPrivacyPolicyOpen(false);
+  };
 
   const { handleSubmit, handleChange, values, resetForm, handleBlur, touched, isValid, errors } = useFormik({
     initialValues: {
@@ -20,6 +38,7 @@ const Register = () => {
       lastName: '',
       email: '',
       password: '',
+      confirmPassword: '',
       phone: '',
       street: '',
       city: '',
@@ -32,10 +51,12 @@ const Register = () => {
    onSubmit: values => {
   
   const phonePattern = /^[0-9]{10}$/;
-  const namePattern = /^[A-Za-z]+$/;
+  const namePattern = /^[A-Za-z]{1,10}$/;
   const canadaPostalCodePattern = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const streetPattern = /^[A-Za-z0-9\s,.-]+$/;
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}[^0-9\s]$/;
+  const streetPattern = /^(\d+\s)?[A-Za-z\s,.-]+$/;
+  const locationPattern =  /^[A-Za-z\s]{1,20}$/;
+
   // Validation flags
   let isValid = true;
   let errorMessage = '';
@@ -45,7 +66,7 @@ const Register = () => {
     errorMessage = 'First name is required.';
     isValid = false;
   } else if (!namePattern.test(values.firstName)) {
-    errorMessage = 'First name must contain only alphabets.';
+    errorMessage = 'First name must contain only alphabets and be between 1 and 10 characters long.';
     isValid = false;
   }
   // Validate last name
@@ -53,7 +74,7 @@ const Register = () => {
     errorMessage = 'Last name is required.';
     isValid = false;
   } else if (!namePattern.test(values.lastName)) {
-    errorMessage = 'Last name must contain only alphabets.';
+    errorMessage = 'Last name must contain only alphabets and be between 1 and 10 characters long.';
     isValid = false;
   }
 
@@ -63,7 +84,7 @@ const Register = () => {
     errorMessage = 'Address is required.';
     isValid = false;
   } else if (!streetPattern.test(values.street)) {
-    errorMessage = 'Address contains invalid characters.';
+    errorMessage = 'Address contains invalid characters and be between 1 and 20 characters long.';
     isValid = false;
   }
  // Validate Postal Code
@@ -76,20 +97,21 @@ const Register = () => {
   }
  
    // Validate city
-  if (!values.city) {
-    errorMessage = 'City name is required.';
-    isValid = false;
-  } else if (!namePattern.test(values.city)) {
-    errorMessage = 'City name must contain only alphabets.';
-    isValid = false;
-  }
+    if (!values.city) {
+      errorMessage = 'City name is required.';
+      isValid = false;
+    } else if (!locationPattern.test(values.city)) {
+      errorMessage = 'City name must contain only alphabets and be between 1 and 20 characters long.';
+      isValid = false;
+    }
+    
 
   // Validate province
   if (!values.province) {
     errorMessage = 'Province name is required.';
     isValid = false;
-  } else if (!namePattern.test(values.province)) {
-    errorMessage = 'Province name must contain only alphabets.';
+  } else if (!locationPattern.test(values.province)) {
+    errorMessage = 'Province name must contain only alphabets and be between 1 and 20 characters long.';
     isValid = false;
   }
 
@@ -119,7 +141,20 @@ const Register = () => {
     isValid = false;
   }
 
-
+  if (!values.terms) {
+    errorMessage = 'You must accept the terms and conditions.';
+    isValid = false;
+  }
+  // Validate Confirm Password only if Password is valid
+  if (isValid) {
+    if (!values.confirmPassword) {
+      errorMessage = 'Confirm Password is required.';
+      isValid = false;
+    } else if (values.confirmPassword !== values.password) {
+      errorMessage = 'Passwords do not match.';
+      isValid = false;
+    }
+  }
   if (isValid) {
     Signup(values.firstName, values.lastName, values.email, values.password, values.street, values.city,
            values.province, values.zip, values.country, values.phone)
@@ -280,7 +315,54 @@ const Register = () => {
           </InputGroup>
           {touched.password && <FormErrorMessage>{errors.password}</FormErrorMessage>}
         </FormControl>
-        <Checkbox name='terms' isChecked={values.terms} onChange={handleChange} mt={5} >I agree the <strong>Terms of Service</strong> and <strong>Privacy Policy</strong>.</Checkbox>
+        {/* confirm password */}
+        <FormControl isRequired mt={3} isInvalid={touched.confirmPassword && errors.confirmPassword} >
+          <FormLabel fontSize={20} >Confirm Password</FormLabel>
+          <InputGroup size='md'>
+            <Input
+              name='confirmPassword'
+              pr='4.5rem'
+              type={show ? 'text' : 'password'}
+              placeholder='Re-enter password'
+              onChange={handleChange}
+              value={values.confirmPassword}
+              onBlur={handleBlur}
+            />
+            <InputRightElement width='4.5rem'>
+              <Button h='1.75rem' size='sm' variant='ghost' onClick={() => setShow(!show)}>
+                {show ? <VisibilityOff /> : <Visibility />}
+              </Button>
+            </InputRightElement>
+          </InputGroup>
+          {touched.confirmPassword && <FormErrorMessage>{errors.confirmPassword}</FormErrorMessage>}
+        </FormControl>
+        {/*<Checkbox name='terms' isChecked={values.terms} onChange={handleChange} mt={5} >I agree the <strong>Terms of Service</strong> and <strong>Privacy Policy</strong>.</Checkbox>*/}
+        <Checkbox
+            name='terms'
+            colorScheme='teal'
+            mt={3}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            isChecked={values.terms}
+            isInvalid={touched.terms && errors.terms}
+          >
+
+             <Flex>
+              I agree to the&nbsp;
+              <Text onClick={openTermsModal} _hover={{ textDecoration: 'underline', cursor: 'pointer' }}>
+              <strong>Terms of Service</strong><TermsAndConditionsPopup isOpen={isTermsModalOpen} onClose={closeTermsModal} /></Text>
+              &nbsp;and&nbsp;
+              <Text onClick={openPrivacyPolicyPopup} _hover={{ textDecoration: 'underline', cursor: 'pointer' }}>
+            <strong>Privacy Policy</strong><PrivacyPolicyPopup isOpen={isPrivacyPolicyOpen} onClose={closePrivacyPolicyPopup} />
+            .</Text>
+  </Flex>
+            
+            </Checkbox>
+          {touched.terms && errors.terms && (
+            <Text color='red.500' fontSize='sm'>
+              {errors.terms}
+            </Text>
+          )}
         <Button mt={5} width='100%' variant='solid' colorScheme='facebook' disabled={!isValid} onClick={handleSubmit} >Register</Button>
         <br />
         <Text my={3} width='100%' textAlign='center' >or</Text>
