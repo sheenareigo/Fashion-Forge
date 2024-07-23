@@ -10,12 +10,28 @@ export const cancelOrder = async (orderId) => {
     }
 };
 
-export const successEmail = async (userID) => {
+export const successEmail = async (userID, orderID) => {
   try {
-    const response = await axios.post('http://localhost:4000/orders/success-email', { userID });
+    console.log(userID, orderID);
+    const response = await axios.post('http://localhost:4000/orders/success-email', { userID:userID ,
+        orderID:orderID });
     return response.data;
   } catch (error) {
     console.error('Error sending success email:', error);
     throw error;
   }
+};
+
+  export const cancellationEmail = async (userID,orderID) => {
+    try {
+        console.log(userID, orderID);
+      const response = await axios.post('http://localhost:4000/orders/cancelemail', 
+        { userID:userID ,
+          orderID:orderID
+        });
+      return response.data;
+    } catch (error) {
+      console.error('Error sending success email:', error);
+      throw error;
+    }
 };

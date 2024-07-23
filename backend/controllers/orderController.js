@@ -141,7 +141,7 @@ const getOrderHistory = async (req, res) => {
 
 const successEmail = async (req, res) => {
   try {
-    const { userID } = req.body;
+    const { userID, orderID } = req.body;
 
     const user = await User.findById(userID).select('email');
 
@@ -152,8 +152,8 @@ const successEmail = async (req, res) => {
     const mailOptions = {
       from: 'fashionforgeservices@gmail.com',
       to: user.email, 
-      subject: 'Order confirmation',
-      text: 'Your order has been placed successfully. Thank you for your purchase!'
+      subject: 'Order confirmation: '+ orderID,
+      text: 'Your order with ID: ' +orderID +' has been placed successfully. Thank you for your purchase!'
     };
 
     transporter.sendMail(mailOptions, function(error, info){
@@ -170,8 +170,45 @@ const successEmail = async (req, res) => {
     console.error('Error sending success email:', error);
     res.status(500).json({ message: 'Server error' });
   }
+
+  
+};
+
+const cancellationEmail = async (req, res) => {
+    try {
+      console.log("cancellation order controller");
+      const { userID, orderID } = req.body;
+      console.log(userID, orderID);
+  
+      const user = await User.findById(userID).select('email');
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+  
+      const mailOptions = {
+        from: 'fashionforgeservices@gmail.com',
+        to: user.email, 
+        subject: 'Order Cancellation',
+        text: 'Your order with order id:'+ orderID + ' has been cancelled successfully. Your refund will be processed within 24 to 48 hours!'
+      };
+  
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.error('Email sending error:', error);
+          return res.status(500).json({ message: 'Email sending error' });
+        } else {
+          console.log('Email sent: ' + info.response);
+          return res.json({ message: 'Success email sent' });
+        }
+      });
+  
+    } catch (error) {
+      console.error('Error sending success email:', error);
+      res.status(500).json({ message: 'Server error' });
+    }
 };
 
 
 
-module.exports = { createOrder,getOrderHistory,cancelOrder,successEmail };
+module.exports = { createOrder,getOrderHistory,cancelOrder,successEmail,cancellationEmail };
