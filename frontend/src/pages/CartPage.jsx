@@ -326,6 +326,7 @@ const CartPage = () => {
       const discountedTotal = total - discountAmount;
       const taxAmount = discountedTotal * 0.13;
       const discountTotal = discountedTotal + taxAmount;
+      setTax(taxAmount);
       setDiscountedTotal(discountTotal);
     } else {
       setDiscountedTotal(finalTotal);

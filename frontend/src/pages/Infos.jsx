@@ -25,9 +25,13 @@ const Infos = () => {
     email: false
   });
 
-  const phonePattern = /^[0-9]{10}$/;
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const streetPattern = /^[A-Za-z0-9\s,.-]+$/;
+ 
+  const phonePattern = /^[0-9]{10}$/; 
+  const canadaPostalCodePattern = /^[A-Za-z]\d[A-Za-z] \d[A-Za-z]\d$/;
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}[^0-9\s]$/; 
+  const streetPattern = /^(\d+\s)?[A-Za-z\s,.-]+$/;
+  const locationPattern =  /^[A-Za-z\s]{1,20}$/;
+
 
   useEffect(() => {
     if (currentUser) {
@@ -54,28 +58,55 @@ const Infos = () => {
     let isValid = true;
 
     // Validate Address
-    if (!address) {
-      errorMessage = 'Address is required.';
-      isValid = false;
-    } else if (!streetPattern.test(address)) {
-      errorMessage = 'Address contains invalid characters.';
-      isValid = false;
-    }
+  if (!address) {
+    errorMessage = 'Address is required.';
+    isValid = false;
+  } else if (!streetPattern.test(address)) {
+    errorMessage = 'Address contains invalid characters and be between 1 and 20 characters long.';
+    isValid = false;
+  }
+ // Validate Postal Code
+  if (!zip) {
+    errorMessage = 'Postal code is required.';
+    isValid = false;
+  } else if (!canadaPostalCodePattern.test(zip)) {
+    errorMessage = 'Postal code is invalid';
+    isValid = false;
+  }
+ 
 
-    // Validate Phone Number
-    if (!phonePattern.test(phone)) {
-      errorMessage = 'Please enter a valid phone number. It must be exactly 10 digits.';
+    if (!city) {
+      errorMessage = 'City name is required.';
+      isValid = false;
+    } else if (!locationPattern.test(city)) {
+      errorMessage = 'City name must contain only alphabets and be between 1 and 20 characters long.';
       isValid = false;
     }
+    
 
-    // Validate Email
-    if (!email) {
-      errorMessage = 'Email ID is required.';
-      isValid = false;
-    } else if (!emailPattern.test(email)) {
-      errorMessage = 'Email ID is invalid.';
-      isValid = false;
-    }
+  // Validate province
+  if (!province) {
+    errorMessage = 'Province name is required.';
+    isValid = false;
+  } else if (!locationPattern.test(province)) {
+    errorMessage = 'Province name must contain only alphabets and be between 1 and 20 characters long.';
+    isValid = false;
+  }
+
+  // Validate phone number
+  if (!phonePattern.test(phone)) {
+    errorMessage = 'Please enter a valid phone number. It must be exactly 10 digits.';
+    isValid = false;
+  }
+  // Validate Email ID
+  if (!email) {
+    errorMessage = 'Email ID is required.';
+    isValid = false;
+  } else if (!emailPattern.test(email)) {
+    errorMessage = 'Email ID is invalid';
+    isValid = false;
+  }
+
 
     if (!isValid) {
       toast({
