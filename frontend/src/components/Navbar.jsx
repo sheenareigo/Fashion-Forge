@@ -32,11 +32,29 @@ const Navbar = () => {
        setCategory(result.allCategories);
     });
   },[]); 
+  // useEffect(() => {
+  //   if (cookies.currentUser && !currentUser) {
+  //     setCurrentUser(cookies.currentUser);
+  //   }
+  // }, [cookies.currentUser, currentUser, setCurrentUser]);
+
   useEffect(() => {
-    if (cookies.currentUser && !currentUser) {
+    const currentUserExpires = cookies.currentUserExpires ? new Date(cookies.currentUserExpires) : null;
+    const now = new Date();
+  
+    if (currentUserExpires && now > currentUserExpires) {
+      // Cookie has expired, so clear it
+      removeCookie('currentUser', { path: '/' });
+      removeCookie('currentUserExpires', { path: '/' });
+      setCurrentUser(null);
+    } else if (cookies.currentUser && !currentUser) {
       setCurrentUser(cookies.currentUser);
     }
-  }, [cookies.currentUser, currentUser, setCurrentUser]);
+  
+  }, [cookies.currentUser, currentUser, cookies.currentUserExpires, setCurrentUser, removeCookie]);
+  
+
+
   const Logout = () => {
     
     removeCookie('currentUser', { path: '/' });
