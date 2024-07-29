@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Menu, MenuButton, MenuList, MenuItem, IconButton, Box, MenuGroup, MenuDivider } from '@chakra-ui/react';
+import { Menu, MenuButton, MenuList, MenuItem, IconButton, Box, MenuGroup, MenuDivider, useToast } from '@chakra-ui/react';
 import { Edit, ExitToApp, Favorite, Inventory, MapsHomeWork, Menu as MenuIcon, Person, Report, ShoppingBag, ShoppingCart } from '@mui/icons-material';
-
+import { useCookies } from 'react-cookie';
 import { getAllCategories } from '../services/CategoryServices';
 //import useGetUserRole from '../hooks/useGetUserRole';
 import { useUserContext } from '../contexts/UserContext';
 //import CategoryMenuItems from './CategoryMenuItems';
 
 const Hamburger = ({ base, sm, md }) => {
-
+    const [cookies, setCookie, removeCookie] = useCookies(['currentUser']);
     const navigate = useNavigate();
-    const { currentUser } = useUserContext();
     const [category, setCategory] = useState([]);
+    const { currentUser, setCurrentUser } = useUserContext();
+    const toast = useToast();
 
     useEffect(() => {
          getAllCategories()
@@ -22,6 +23,16 @@ const Hamburger = ({ base, sm, md }) => {
     }, []);
 
     const onClickLogout = () => {
+        removeCookie('currentUser', { path: '/' });
+        setCurrentUser(null);
+        navigate('/');
+        toast({
+          title: 'Logged Out!',
+          description: 'Log in to view your cart or continue shopping!',
+          status: 'info',
+          duration: 3000,
+          isClosable: true,
+        });
 
     };
 
@@ -47,8 +58,8 @@ const Hamburger = ({ base, sm, md }) => {
                     { 
                         currentUser &&
                         <MenuGroup title='Account'>
-                            <MenuItem onClick={() => navigate('/infos')} ><Person sx={{ marginRight: 2 }} /> My Informations</MenuItem>
-                            <MenuItem onClick={() => navigate('/orders')} ><ShoppingBag sx={{ marginRight: 2 }} /> Orders</MenuItem>
+                            <MenuItem onClick={() => navigate('/infos')} ><Person sx={{ marginRight: 2 }} /> Manage My Profile</MenuItem>
+                            <MenuItem onClick={() => navigate('/order-history')} ><ShoppingBag sx={{ marginRight: 2 }} /> Orders</MenuItem>
                             {/* <MenuItem onClick={() => navigate('/favorites')} ><Favorite sx={{ marginRight: 2 }} />Favorites</MenuItem> */}
                             <MenuItem onClick={() => navigate('/cart')} ><ShoppingCart sx={{ marginRight: 2 }} />Cart</MenuItem>
                             <MenuItem onClick={onClickLogout} ><ExitToApp sx={{ marginRight: 2 }} />Log out</MenuItem>
