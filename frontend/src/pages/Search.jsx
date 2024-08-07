@@ -9,6 +9,7 @@ import { SearchOff } from '@mui/icons-material';
 import { useUserContext } from '../contexts/UserContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 
+
 const Search = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -25,50 +26,10 @@ const Search = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [categoryName, setCategoryName] = useState("All");
 
-  const handleNewSearch = (newSearch) => {
-    localStorage.setItem('search', newSearch);
-    localStorage.removeItem('category');
-    getProductBySearch(newSearch)
-      .then((result) => {
-        setProducts(result.products);
-        setOriginalProducts(result.products); 
-        setFilteredProducts(result.products); 
-      })
-      .catch((error) => {
-        console.error('Error fetching products by search:', error);
-      });
-  };
-
-  const handleCategorySelection = (newCategory) => {
-    localStorage.setItem('category', newCategory);
-    localStorage.removeItem('search');
-    getProductByCategoryName(newCategory)
-      .then((result) => {
-        setProducts(result.products);
-        setOriginalProducts(result.products); 
-        setFilteredProducts(result.products); 
-      })
-      .catch((error) => {
-        console.error('Error fetching products by category:', error);
-      });
-  };
-
   useEffect(() => {
-    const savedSearch = localStorage.getItem('search');
-    const savedCategory = localStorage.getItem('category');
-    if (savedSearch && canSearch) {
-      getProductBySearch(savedSearch)
-        .then((result) => {
-          setProducts(result.products);
-          setOriginalProducts(result.products); 
-          setFilteredProducts(result.products); 
-        })
-        .catch((error) => {
-          console.error('Error fetching products by search:', error);
-        });
-    } else if (savedCategory) {
-      setCategoryName(savedCategory);
-      getProductByCategoryName(savedCategory)
+    if (state !== null && state.category_name) {
+     setCategoryName(state.category_name);
+     getProductByCategoryName(state.category_name)
         .then((result) => {
           setProducts(result.products);
           setOriginalProducts(result.products); 
@@ -78,23 +39,9 @@ const Search = () => {
           console.error('Error fetching products by category:', error);
         });
     }
-  }, [canSearch]);
 
-  useEffect(() => {
-    if (state !== null && state.category_name) {
-      setCategoryName(state.category_name);
-      localStorage.setItem('category', state.category_name);
-      getProductByCategoryName(state.category_name)
-        .then((result) => {
-          setProducts(result.products);
-          setOriginalProducts(result.products); 
-          setFilteredProducts(result.products); 
-        })
-        .catch((error) => {
-          console.error('Error fetching products by category:', error);
-        });
-    } else if (search && canSearch) {
-      localStorage.setItem('search', search);
+   else if (search !== "" && search !== " " && search !== null && search !== undefined && canSearch) {
+      setCategoryName("Men");
       getProductBySearch(search)
         .then((result) => {
           setProducts(result.products);
@@ -140,7 +87,7 @@ const Search = () => {
 
   // Update filtered products based on filter results
   const updateFilteredProducts = (filtered) => {
-    const commonProducts = originalProducts.filter(original =>
+  const commonProducts = originalProducts.filter(original =>
       filtered.some(filteredProduct => filteredProduct._id === original._id)
     );
     setFilteredProducts(commonProducts);
